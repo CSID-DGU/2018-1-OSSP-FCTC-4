@@ -414,6 +414,10 @@ void movePacman(Game& game, Grid& grid, Pacman& pacman, int newLocation) {		// Æ
 	}
 }
 
+void moveEnemy() {
+
+}
+
 void moveLeft(Game& game, Grid& grid, Pacman& pacman) {
 	movePacman(game, grid, pacman, -1);			// ¿ÞÂÊ
 }
