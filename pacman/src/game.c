@@ -513,6 +513,9 @@ static void process_pellets(PacmanGame *game)
 
 			p->eaten = true;
 			game->pacman.score += pellet_points(p);
+			if(pellet_check(p)) {
+				game->pacman.godMode = true;
+			}
 
 			//play eat sound
 
@@ -534,7 +537,13 @@ static bool check_pacghost_collision(PacmanGame *game)
 	{
 		Ghost *g = &game->ghosts[i];
 
-		if (collides(&game->pacman.body, &g->body)) return true;
+		if (collides(&game->pacman.body, &g->body)) {
+			if(game->pacman.godMode == false)
+				return true;
+			else {
+				// ghost die.
+			}
+		}
 	}
 
 	return false;

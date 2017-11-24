@@ -86,8 +86,8 @@ void draw_pacman_lives(int numLives);
 //
 
 void draw_ghost(Ghost *ghost);
-//void draw_scared_ghost();
-//void draw_eyes();
+void draw_scared_ghost(Ghost *ghost, unsigned int timeGhostScared);
+void draw_eyes(Ghost *ghost);
 
 //
 // Points rendering

@@ -38,3 +38,6 @@ int pellet_points(Pellet *pellet);
 
 //Returns the number of movement frames this pellet makes pacman miss when eaten.
 int pellet_nop_frames(Pellet *pellet);
+
+//Pellet Godmode check
+bool pellet_check(Pellet *pellet);

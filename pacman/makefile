@@ -11,7 +11,7 @@ Project := game
 Modes   := Debug #Release# - uncomment for release build too`
 
 # Directory where target binary is created and object files
-TargetDir         := bin
+TargetDir         := .
 # Search Path For Include Files (InclPaths is included before mode specific InclPaths_MODE)
 InclPaths         := .
 InclPaths_Debug   :=

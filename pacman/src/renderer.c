@@ -412,6 +412,42 @@ void draw_ghost(Ghost *ghost)
 	draw_image_coord_offset(image, x, y, xOffset, yOffset);
 }
 
+void draw_scared_ghost(Ghost *ghost, unsigned int dt)
+{
+	//hangs on first image for 200ms
+	//cycles through rest of images at constant rate
+	//hangs on "plop" image for a while
+
+	unsigned int perFrame = 1000;
+	int imageNum = 1;
+
+	int numFrames = 10;
+
+	SDL_Surface *image;
+
+	if(dt < numFrames * perFrame) {
+		if((dt/1000) % 2 == 0){
+			image = scared_ghost_image(0);
+		} else {
+			image = scared_ghost_image(1);
+		}
+	} else {
+		return ;
+	}
+
+	int x = ghost->body.x;
+	int y = ghost->body.y + Y_OFFSET;
+
+	int xOffset = ghost->body.xOffset - 6;
+	int yOffset = ghost->body.yOffset - 6;
+
+	draw_image_coord_offset(image, x, y, xOffset, yOffset);
+}
+
+void draw_eyes(Ghost *ghost) {
+	//
+}
+
 //
 // Points rendering
 //

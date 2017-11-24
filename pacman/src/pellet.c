@@ -34,3 +34,11 @@ int pellet_nop_frames(Pellet *pellet)
 	printf("error\n");
 	exit(1);
 }
+
+bool pellet_check(Pellet *pellet) {
+	if(pellet->type == SmallPellet) {
+		return false;
+	} else {
+		return true;
+	}
+}

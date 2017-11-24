@@ -24,18 +24,18 @@ void reset_ghost(Ghost *ghost, GhostType type)
 	Direction dir;
 	Direction next;
 	MovementMode mode;
-
+	//
 	switch (type)
 	{
 		case Blinky: { x = 14; y = 11; ox = -8; oy =  0; mode = Scatter; dir = Left; next = Left; break; }
-		//case Inky: { x = 12; y = 14; ox = -8; oy =  0; mode = LeavingPen; dir = Up;   next = Down; break; }
-		//case Clyde: { x = 16; y = 14; ox = -8; oy =  0; mode = Scatter; dir = Up;   next = Down; break; }
-		//case Pinky: { x = 14; y = 14; ox = -8; oy =  0; mode = Chase; dir = Down; next = Down; break; }
+		case Inky: { x = 12; y = 14; ox = -8; oy =  0; mode = Chase; dir = Up;   next = Down; break; }
+		case Clyde: { x = 16; y = 14; ox = -8; oy =  0; mode = Chase; dir = Up;   next = Down; break; }
+		case Pinky: { x = 14; y = 14; ox = -8; oy =  0; mode = Chase; dir = Down; next = Down; break; }
 
 		//testing
-		case Inky:  { x = 14; y = 11; ox = -8; oy =  0; mode = Scatter; dir = Left; next = Left; break; }
-		case Clyde: { x = 14; y = 11; ox = -8; oy =  0; mode = Scatter; dir = Left; next = Left; break; }
-		case Pinky: { x = 14; y = 11; ox = -8; oy =  0; mode = Scatter; dir = Left; next = Left; break; }
+		//case Inky:  { x = 14; y = 11; ox = -8; oy =  0; mode = Scatter; dir = Left; next = Left; break; }
+		//case Clyde: { x = 14; y = 11; ox = -8; oy =  0; mode = Scatter; dir = Left; next = Left; break; }
+		//case Pinky: { x = 14; y = 11; ox = -8; oy =  0; mode = Scatter; dir = Left; next = Left; break; }
 
 		default: printf("error ghost\naborting\n"); exit(1);
 	}
@@ -168,8 +168,8 @@ void execute_red_logic(Ghost *redGhost, Pacman *pacman)
 void execute_pink_logic(Ghost *pinkGhost, Pacman *pacman)
 {
 	// Pinks's AI is to set his target position to pacmans, plus a few more in the distance
-	int targetOffsetX = 0;
-	int targetOffsetY = 0;
+	int targetOffsetX = 1;
+	int targetOffsetY = 1;
 
 	//use dir_xy_buggy to get 4 up AND 4 left, as per bug in original game
 	dir_xy_buggy(pacman->body.curDir, &targetOffsetX, &targetOffsetY);
