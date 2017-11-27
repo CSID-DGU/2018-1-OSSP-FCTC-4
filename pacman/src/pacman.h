@@ -27,6 +27,7 @@ typedef struct
 	int livesLeft;
 	int score;
 	bool godMode;
+	unsigned godDt;
 	Direction lastAttemptedMoveDirection;
 	MovementType movementType;
 } Pacman;

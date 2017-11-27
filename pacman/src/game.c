@@ -25,6 +25,8 @@ static bool resolve_telesquare(PhysicsBody *body);          //wraps the body aro
 void game_tick(PacmanGame *game)
 {
 	unsigned dt = ticks_game() - game->ticksSinceModeChange;
+	static unsigned godTime = 0;
+	static bool godStart = false;
 
 	switch (game->gameState)
 	{
@@ -128,6 +130,9 @@ void game_tick(PacmanGame *game)
 void game_render(PacmanGame *game)
 {
 	unsigned dt = ticks_game() - game->ticksSinceModeChange;
+	static unsigned godOriginDt = 0;
+	static unsigned godDt = 0;
+	static bool godChange = false;
 
 	//common stuff that is rendered in every mode:
 	// 1up + score, highscore, base board, lives, small pellets, fruit indicators
@@ -174,7 +179,23 @@ void game_render(PacmanGame *game)
 
 			draw_pacman(&game->pacman);
 
-			for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
+			if(game->pacman.godMode == false) {
+				for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
+			} else {
+				if(godChange == false) {
+					godOriginDt = ticks_game();
+					godChange = true;
+				}
+				godDt = ticks_game() - godOriginDt;
+				for (int i = 0; i < 4; i++) {
+					if(draw_scared_ghost(&game->ghosts[i], godDt)){
+						// nothing
+					} else {
+						game->pacman.godMode = false;
+						godChange = false;
+					}
+				}
+			}
 			break;
 		case WinState:
 			draw_pacman_static(&game->pacman);
