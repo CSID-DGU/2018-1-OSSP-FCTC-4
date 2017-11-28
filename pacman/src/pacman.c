@@ -9,7 +9,6 @@ void pacman_init(Pacman *pacman)
 
 	pacman->missedFrames = 0;
 	pacman->godMode = false;
-	pacman->godDt = 0;
 }
 
 void pacman_level_init(Pacman *pacman)

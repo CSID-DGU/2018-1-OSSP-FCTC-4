@@ -130,7 +130,6 @@ void game_tick(PacmanGame *game)
 void game_render(PacmanGame *game)
 {
 	unsigned dt = ticks_game() - game->ticksSinceModeChange;
-	static unsigned godOriginDt = 0;
 	static unsigned godDt = 0;
 	static bool godChange = false;
 
@@ -183,10 +182,10 @@ void game_render(PacmanGame *game)
 				for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
 			} else {
 				if(godChange == false) {
-					godOriginDt = ticks_game();
+					game->pacman.originDt = ticks_game();
 					godChange = true;
 				}
-				godDt = ticks_game() - godOriginDt;
+				godDt = ticks_game() - game->pacman.originDt;
 				for (int i = 0; i < 4; i++) {
 					if(draw_scared_ghost(&game->ghosts[i], godDt)){
 						// nothing
@@ -536,6 +535,7 @@ static void process_pellets(PacmanGame *game)
 			game->pacman.score += pellet_points(p);
 			if(pellet_check(p)) {
 				game->pacman.godMode = true;
+				game->pacman.originDt = ticks_game();
 			}
 
 			//play eat sound
