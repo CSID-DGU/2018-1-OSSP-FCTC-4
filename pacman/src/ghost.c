@@ -15,6 +15,7 @@ void ghosts_init(Ghost ghosts[4])
 	{
 		reset_ghost(&ghosts[i], ghosts[i].ghostType);
 	}
+
 }
 
 void reset_ghost(Ghost *ghost, GhostType type)
@@ -49,6 +50,7 @@ void reset_ghost(Ghost *ghost, GhostType type)
 	//ghost->movementMode = mode;
 	ghost->transDirection = Left;
 	ghost->nextDirection = Left;
+	ghost->isDead = false;
 }
 
 void send_to_home(Ghost *ghost, GhostType type)
@@ -66,6 +68,18 @@ void send_to_home(Ghost *ghost, GhostType type)
 			printf("error ghost\naborting\n");
 			exit(1);
 	}
+
+	ghost->targetX = targetX;
+	ghost->targetY = targetY;
+}
+
+void death_send(Ghost *ghost)
+{
+	int targetX;
+	int targetY;
+
+	targetX = 13;
+	targetY = 15;
 
 	ghost->targetX = targetX;
 	ghost->targetY = targetY;

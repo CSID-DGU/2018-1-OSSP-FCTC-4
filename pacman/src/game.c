@@ -25,8 +25,6 @@ static bool resolve_telesquare(PhysicsBody *body);          //wraps the body aro
 void game_tick(PacmanGame *game)
 {
 	unsigned dt = ticks_game() - game->ticksSinceModeChange;
-	static unsigned godTime = 0;
-	static bool godStart = false;
 
 	switch (game->gameState)
 	{
@@ -187,7 +185,9 @@ void game_render(PacmanGame *game)
 				}
 				godDt = ticks_game() - game->pacman.originDt;
 				for (int i = 0; i < 4; i++) {
-					if(draw_scared_ghost(&game->ghosts[i], godDt)){
+					if(&game->ghosts[i].isDead) {
+						draw_eyes(&game->ghosts[i]);
+					} else if(draw_scared_ghost(&game->ghosts[i], godDt)){
 						// nothing
 					} else {
 						game->pacman.godMode = false;
@@ -562,7 +562,8 @@ static bool check_pacghost_collision(PacmanGame *game)
 			if(game->pacman.godMode == false)
 				return true;
 			else {
-				// ghost die.
+				g->isDead = true;
+				death_send(g);
 			}
 		}
 	}

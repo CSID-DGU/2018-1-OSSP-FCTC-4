@@ -31,6 +31,7 @@ typedef struct
 	Direction nextDirection;  //direction ghost should face when reaching the center of the next tilea
 	GhostType ghostType;
 	MovementMode movementMode;
+	bool isDead;
 } Ghost;
 
 void ghosts_init(Ghost ghosts[4]);
@@ -43,6 +44,7 @@ void execute_ghost_logic(Ghost *targetGhost, GhostType type, Ghost *redGhost, Pa
 Direction next_direction(Ghost *ghost, Board *board);
 
 void send_to_home(Ghost *ghost, GhostType type);
+void death_send(Ghost *ghost);
 
 void execute_red_logic(Ghost *redGhost, Pacman *pacman);
 void execute_pink_logic(Ghost *pinkGhost, Pacman *pacman);

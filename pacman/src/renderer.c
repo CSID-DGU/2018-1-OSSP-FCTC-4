@@ -419,7 +419,6 @@ bool draw_scared_ghost(Ghost *ghost, unsigned int dt)
 	//hangs on "plop" image for a while
 
 	unsigned int perFrame = 1000;
-	int imageNum = 1;
 
 	int numFrames = 10;
 
@@ -446,7 +445,16 @@ bool draw_scared_ghost(Ghost *ghost, unsigned int dt)
 }
 
 void draw_eyes(Ghost *ghost) {
-	//
+	//ghost dead
+	SDL_Surface *image = ghost_eye_image(ghost->body.curDir);
+
+	int x = ghost->body.x;
+	int y = ghost->body.y + Y_OFFSET;
+
+	int xOffset = ghost->body.xOffset - 6;
+	int yOffset = ghost->body.yOffset - 6;
+
+	draw_image_coord_offset(image, x, y, xOffset, yOffset);
 }
 
 //
