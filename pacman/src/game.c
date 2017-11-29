@@ -557,7 +557,7 @@ static bool check_pacghost_collision(PacmanGame *game)
 	for (int i = 0; i < 4; i++)
 	{
 		Ghost *g = &game->ghosts[i];
-
+//
 		if (collides(&game->pacman.body, &g->body)) {
 			if(game->pacman.godMode == false)
 				return true;
