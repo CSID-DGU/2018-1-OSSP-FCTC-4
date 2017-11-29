@@ -31,7 +31,7 @@ typedef struct
 	Direction nextDirection;  //direction ghost should face when reaching the center of the next tilea
 	GhostType ghostType;
 	MovementMode movementMode;
-	bool isDead;
+	int isDead; // 0 = false, 1 = true, 2 = rebirth
 } Ghost;
 
 void ghosts_init(Ghost ghosts[4]);

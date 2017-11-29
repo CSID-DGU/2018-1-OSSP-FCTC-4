@@ -79,10 +79,14 @@ void death_send(Ghost *ghost)
 	int targetY;
 
 	targetX = 13;
-	targetY = 15;
+	targetY = 11;
 
 	ghost->targetX = targetX;
 	ghost->targetY = targetY;
+
+	if((ghost->body.x) == 13 && (ghost->body.y == 11)) {
+		ghost->isDead = 2;
+	}
 }
 
 typedef struct
@@ -177,6 +181,8 @@ void execute_red_logic(Ghost *redGhost, Pacman *pacman)
 	// Red's AI is to set his target position to pacmans
 	redGhost->targetX = pacman->body.x;
 	redGhost->targetY = pacman->body.y;
+
+	if(redGhost->isDead == 1) {death_send(redGhost);}
 }
 
 void execute_pink_logic(Ghost *pinkGhost, Pacman *pacman)
@@ -193,6 +199,8 @@ void execute_pink_logic(Ghost *pinkGhost, Pacman *pacman)
 
 	pinkGhost->targetX = pacman->body.x + targetOffsetX;
 	pinkGhost->targetY = pacman->body.y + targetOffsetY;
+
+	if(pinkGhost->isDead == 1) {death_send(pinkGhost);}
 }
 
 void execute_orange_logic(Ghost *orangeGhost, Pacman *pacman)
@@ -215,6 +223,8 @@ void execute_orange_logic(Ghost *orangeGhost, Pacman *pacman)
 	{
 		send_to_home(orangeGhost, orangeGhost->ghostType);
 	}
+
+	if(orangeGhost->isDead == 1) {death_send(orangeGhost);}
 }
 
 void execute_blue_logic(Ghost *blueGhost, Ghost *redGhost, Pacman *pacman)
@@ -239,6 +249,8 @@ void execute_blue_logic(Ghost *blueGhost, Ghost *redGhost, Pacman *pacman)
 
 	blueGhost->targetX = targetX;
 	blueGhost->targetY = targetY;
+
+	if(blueGhost->isDead == 1) {death_send(blueGhost);}
 }
 
 int ghost_speed_normal(int level)

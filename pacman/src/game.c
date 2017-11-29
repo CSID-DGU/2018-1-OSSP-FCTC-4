@@ -91,6 +91,7 @@ void game_tick(PacmanGame *game)
 			break;
 		case LevelBeginState:
 			if (dt > 1800) enter_state(game, GamePlayState);
+			game->pacman.godMode = false;
 
 			break;
 		case GamePlayState:
@@ -177,7 +178,13 @@ void game_render(PacmanGame *game)
 			draw_pacman(&game->pacman);
 
 			if(game->pacman.godMode == false) {
-				for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
+				for (int i = 0; i < 4; i++) {
+					if(game->ghosts[i].isDead == 1) {
+						draw_eyes(&game->ghosts[i]);
+					} else
+						draw_ghost(&game->ghosts[i]);
+				}
+
 			} else {
 				if(godChange == false) {
 					game->pacman.originDt = ticks_game();
@@ -185,13 +192,18 @@ void game_render(PacmanGame *game)
 				}
 				godDt = ticks_game() - game->pacman.originDt;
 				for (int i = 0; i < 4; i++) {
-					if(&game->ghosts[i].isDead) {
+					if(game->ghosts[i].isDead == 1) {
 						draw_eyes(&game->ghosts[i]);
 					} else if(draw_scared_ghost(&game->ghosts[i], godDt)){
 						// nothing
+						if(game->ghosts[i].isDead == 2) {
+							draw_ghost(&game->ghosts[i]);
+						}
 					} else {
 						game->pacman.godMode = false;
 						godChange = false;
+						if(game->ghosts[i].isDead == 2)
+							game->ghosts[i].isDead = 0;
 					}
 				}
 			}
@@ -514,6 +526,7 @@ static void process_fruit(PacmanGame *game)
 
 static void process_pellets(PacmanGame *game)
 {
+	int j = 0;
 	//if pacman and pellet collide
 	//give pacman that many points
 	//set pellet to not be active
@@ -536,6 +549,10 @@ static void process_pellets(PacmanGame *game)
 			if(pellet_check(p)) {
 				game->pacman.godMode = true;
 				game->pacman.originDt = ticks_game();
+				for(j = 0; j< 4; j++) {
+					if(game->ghosts[j].isDead == 2)
+						game->ghosts[j].isDead = 0;
+				}
 			}
 
 			//play eat sound
@@ -562,7 +579,8 @@ static bool check_pacghost_collision(PacmanGame *game)
 			if(game->pacman.godMode == false)
 				return true;
 			else {
-				g->isDead = true;
+				if(g->isDead == 2) {return true;}
+				g->isDead = 1;
 				death_send(g);
 			}
 		}
