@@ -3,6 +3,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 void ghosts_init(Ghost ghosts[4])
 {
@@ -16,6 +17,7 @@ void ghosts_init(Ghost ghosts[4])
 		reset_ghost(&ghosts[i], ghosts[i].ghostType);
 	}
 
+	srand(time(NULL));
 }
 
 void reset_ghost(Ghost *ghost, GhostType type)
@@ -28,7 +30,7 @@ void reset_ghost(Ghost *ghost, GhostType type)
 	//
 	switch (type)
 	{
-		case Blinky: { x = 14; y = 11; ox = -8; oy =  0; mode = Scatter; dir = Left; next = Left; break; }
+		case Blinky: { x = 14; y = 11; ox = -8; oy =  0; mode = Chase; dir = Left; next = Left; break; }
 		case Inky: { x = 12; y = 14; ox = -8; oy =  0; mode = Chase; dir = Up;   next = Down; break; }
 		case Clyde: { x = 16; y = 14; ox = -8; oy =  0; mode = Chase; dir = Up;   next = Down; break; }
 		case Pinky: { x = 14; y = 14; ox = -8; oy =  0; mode = Chase; dir = Down; next = Down; break; }
@@ -178,9 +180,16 @@ void execute_ghost_logic(Ghost *targetGhost, GhostType type, Ghost *redGhost, Pa
 
 void execute_red_logic(Ghost *redGhost, Pacman *pacman)
 {
+	// Red's Ai is random x, y
+	int rNum = rand() % 26;
+	int rNum2 = rand() % 30;
+
+	redGhost->targetX = rNum;
+	redGhost->targetY = rNum2;
+
 	// Red's AI is to set his target position to pacmans
-	redGhost->targetX = pacman->body.x;
-	redGhost->targetY = pacman->body.y;
+	//redGhost->targetX = pacman->body.x;
+	//redGhost->targetY = pacman->body.y;
 
 	if(redGhost->isDead == 1) {death_send(redGhost);}
 }

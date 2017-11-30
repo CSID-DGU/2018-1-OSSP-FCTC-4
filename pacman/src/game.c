@@ -12,6 +12,7 @@
 #include "sound.h"
 #include "text.h"
 #include "window.h"
+#include <stdio.h>
 
 static void process_player(PacmanGame *game);
 static void process_fruit(PacmanGame *game);
@@ -574,6 +575,13 @@ static bool check_pacghost_collision(PacmanGame *game)
 	for (int i = 0; i < 4; i++)
 	{
 		Ghost *g = &game->ghosts[i];
+		switch(g->ghostType) {
+		case Blinky : printf("red : %d \n", g->isDead); break;
+		case Inky: printf("blue : %d \n", g->isDead); break;
+		case Clyde: printf("orange : %d \n", g->isDead); break;
+		case Pinky: printf("pink : %d \n", g->isDead); break;
+		}
+
 
 		if (collides(&game->pacman.body, &g->body)) {
 			if(game->pacman.godMode == false)
