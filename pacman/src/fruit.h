@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include "board.h"
 
 #define NUM_FRUIT 8
 
@@ -50,7 +51,7 @@ Fruit fruit_for_level(int level);
 int rand_fruit_visible_time(void);
 
 //Resets the given fruit back to its default state.
-void reset_fruit(GameFruit *gameFruit);
+void reset_fruit(GameFruit *gameFruit, Board *board);
 
 //Assigns the appropriate fruit based of the level, and generates a visible-time for the fruit.
 void regen_fruit(GameFruit *gameFruit, int level);

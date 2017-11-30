@@ -12,7 +12,8 @@
 #include "sound.h"
 #include "text.h"
 #include "window.h"
-#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 static void process_player(PacmanGame *game);
 static void process_fruit(PacmanGame *game);
@@ -170,11 +171,18 @@ void game_render(PacmanGame *game)
 			draw_large_pellets(&game->pelletHolder, true);
 			draw_board(&game->board);
 
-			if (game->gameFruit1.fruitMode == Displaying) draw_fruit_game(game->currentLevel);
-			if (game->gameFruit2.fruitMode == Displaying) draw_fruit_game(game->currentLevel);
+			if (game->gameFruit1.fruitMode == Displaying) draw_fruit_game(game->currentLevel, &game->gameFruit1);
+			if (game->gameFruit2.fruitMode == Displaying) draw_fruit_game(game->currentLevel, &game->gameFruit2);
+			if (game->gameFruit3.fruitMode == Displaying) draw_fruit_game(game->currentLevel, &game->gameFruit3);
+			if (game->gameFruit4.fruitMode == Displaying) draw_fruit_game(game->currentLevel, &game->gameFruit4);
+			if (game->gameFruit5.fruitMode == Displaying) draw_fruit_game(game->currentLevel, &game->gameFruit5);
 
 			if (game->gameFruit1.eaten && ticks_game() - game->gameFruit1.eatenAt < 2000) draw_fruit_pts(&game->gameFruit1);
 			if (game->gameFruit2.eaten && ticks_game() - game->gameFruit2.eatenAt < 2000) draw_fruit_pts(&game->gameFruit2);
+			if (game->gameFruit3.eaten && ticks_game() - game->gameFruit2.eatenAt < 2000) draw_fruit_pts(&game->gameFruit2);
+			if (game->gameFruit4.eaten && ticks_game() - game->gameFruit2.eatenAt < 2000) draw_fruit_pts(&game->gameFruit2);
+			if (game->gameFruit5.eaten && ticks_game() - game->gameFruit2.eatenAt < 2000) draw_fruit_pts(&game->gameFruit2);
+
 
 			draw_pacman(&game->pacman);
 
@@ -477,22 +485,43 @@ static void process_fruit(PacmanGame *game)
 
 	GameFruit *f1 = &game->gameFruit1;
 	GameFruit *f2 = &game->gameFruit2;
+	GameFruit *f3 = &game->gameFruit3;
+	GameFruit *f4 = &game->gameFruit4;
+	GameFruit *f5 = &game->gameFruit5;
 
 	int curLvl = game->currentLevel;
 
-	if (pelletsEaten >= 70 && f1->fruitMode == NotDisplaying)
+	if (pelletsEaten >= 30 && f1->fruitMode == NotDisplaying)
 	{
 		f1->fruitMode = Displaying;
 		regen_fruit(f1, curLvl);
 	}
-	else if (pelletsEaten == 170 && f2->fruitMode == NotDisplaying)
+	else if (pelletsEaten == 60 && f2->fruitMode == NotDisplaying)
 	{
 		f2->fruitMode = Displaying;
 		regen_fruit(f2, curLvl);
 	}
+	else if (pelletsEaten == 90 && f3->fruitMode == NotDisplaying)
+	{
+		f3->fruitMode = Displaying;
+		regen_fruit(f3, curLvl);
+	}
+	else if (pelletsEaten == 120 && f4->fruitMode == NotDisplaying)
+	{
+		f4->fruitMode = Displaying;
+		regen_fruit(f4, curLvl);
+	}
+	else if (pelletsEaten == 150 && f5->fruitMode == NotDisplaying)
+	{
+		f5->fruitMode = Displaying;
+		regen_fruit(f5, curLvl);
+	}
 
 	unsigned int f1dt = ticks_game() - f1->startedAt;
 	unsigned int f2dt = ticks_game() - f2->startedAt;
+	unsigned int f3dt = ticks_game() - f3->startedAt;
+	unsigned int f4dt = ticks_game() - f4->startedAt;
+	unsigned int f5dt = ticks_game() - f5->startedAt;
 
 	Pacman *pac = &game->pacman;
 
@@ -500,11 +529,22 @@ static void process_fruit(PacmanGame *game)
 	{
 		if (f1dt > f1->displayTime) f1->fruitMode = Displayed;
 	}
-
 	if (f2->fruitMode == Displaying)
 	{
 		if (f2dt > f2->displayTime) f2->fruitMode = Displayed;
 	}
+	if (f3->fruitMode == Displaying)
+		{
+			if (f3dt > f3->displayTime) f3->fruitMode = Displayed;
+		}
+	if (f4->fruitMode == Displaying)
+		{
+			if (f4dt > f4->displayTime) f4->fruitMode = Displayed;
+		}
+	if (f5->fruitMode == Displaying)
+		{
+			if (f5dt > f5->displayTime) f5->fruitMode = Displayed;
+		}
 
 	//check for collisions
 
@@ -523,6 +563,28 @@ static void process_fruit(PacmanGame *game)
 		f2->eatenAt = ticks_game();
 		pac->score += fruit_points(f2->fruit);
 	}
+	if (f3->fruitMode == Displaying && collides_obj(&pac->body, f3->x, f3->y))
+	{
+		f3->fruitMode = Displayed;
+		f3->eaten = true;
+		f3->eatenAt = ticks_game();
+		pac->score += fruit_points(f3->fruit);
+	}
+	if (f4->fruitMode == Displaying && collides_obj(&pac->body, f4->x, f4->y))
+	{
+		f4->fruitMode = Displayed;
+		f4->eaten = true;
+		f4->eatenAt = ticks_game();
+		pac->score += fruit_points(f4->fruit);
+	}
+	if (f5->fruitMode == Displaying && collides_obj(&pac->body, f5->x, f5->y))
+	{
+		f5->fruitMode = Displayed;
+		f5->eaten = true;
+		f5->eatenAt = ticks_game();
+		pac->score += fruit_points(f5->fruit);
+	}
+
 }
 
 static void process_pellets(PacmanGame *game)
@@ -575,13 +637,14 @@ static bool check_pacghost_collision(PacmanGame *game)
 	for (int i = 0; i < 4; i++)
 	{
 		Ghost *g = &game->ghosts[i];
+		/*
 		switch(g->ghostType) {
 		case Blinky : printf("red : %d \n", g->isDead); break;
 		case Inky: printf("blue : %d \n", g->isDead); break;
 		case Clyde: printf("orange : %d \n", g->isDead); break;
 		case Pinky: printf("pink : %d \n", g->isDead); break;
 		}
-
+		*/
 
 		if (collides(&game->pacman.body, &g->body)) {
 			if(game->pacman.godMode == false)
@@ -624,8 +687,12 @@ void level_init(PacmanGame *game)
 	ghosts_init(game->ghosts);
 
 	//reset fruit
-	reset_fruit(&game->gameFruit1);
-	reset_fruit(&game->gameFruit2);
+	reset_fruit(&game->gameFruit1, &game->board);
+	reset_fruit(&game->gameFruit2, &game->board);
+	reset_fruit(&game->gameFruit3, &game->board);
+	reset_fruit(&game->gameFruit4, &game->board);
+	reset_fruit(&game->gameFruit5, &game->board);
+
 }
 
 void pacdeath_init(PacmanGame *game)
@@ -633,8 +700,12 @@ void pacdeath_init(PacmanGame *game)
 	pacman_level_init(&game->pacman);
 	ghosts_init(game->ghosts);
 
-	reset_fruit(&game->gameFruit1);
-	reset_fruit(&game->gameFruit2);
+	reset_fruit(&game->gameFruit1, &game->board);
+	reset_fruit(&game->gameFruit2, &game->board);
+	reset_fruit(&game->gameFruit3, &game->board);
+	reset_fruit(&game->gameFruit4, &game->board);
+	reset_fruit(&game->gameFruit5, &game->board);
+
 }
 
 //TODO: make this method based on a state, not a conditional

@@ -236,13 +236,13 @@ void draw_fruit_indicators(int currentLevel)
 }
 
 //Draws the fruit in the middle of the level.
-void draw_fruit_game(int currentLevel)
+void draw_fruit_game(int currentLevel, GameFruit *gameFruit)
 {
 	Fruit fruit = fruit_for_level(currentLevel);
 	SDL_Surface *image = get_fruit_image(fruit);
 
 	//TODO: maybe this offset isn't the same for all fruit. Investigate
-	draw_image_coord_offset(image, 13, 19, 0, 8);
+	draw_image_coord_offset(image, gameFruit->x + 0.5, gameFruit->y + 2, 0, 8);
 }
 
 //

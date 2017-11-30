@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include <SDL/SDL.h>
 
@@ -47,8 +48,16 @@ Fruit fruit_for_level(int level)
 	}
 }
 
-void reset_fruit(GameFruit *gameFruit)
+void reset_fruit(GameFruit *gameFruit, Board *board)
 {
+	//srand((unsigned)time(NULL));
+	int randX = 0;
+	int randY = 0;
+	do {
+			randX = rand() % 26;
+			randY = rand() % 30;
+	} while( (is_valid_square(board, randX, randY) || is_tele_square(randX, randY) ) == false);
+
 	gameFruit->fruit = Cherry;
 	gameFruit->fruitMode = NotDisplaying;
 	gameFruit->startedAt = 0;
@@ -57,8 +66,8 @@ void reset_fruit(GameFruit *gameFruit)
 	gameFruit->eaten = false;
 	gameFruit->eatenAt = 0;
 
-	gameFruit->x = 13;
-	gameFruit->y = 17;
+	gameFruit->x = randX;
+	gameFruit->y = randY;
 }
 
 void regen_fruit(GameFruit *gameFruit, int level)
