@@ -179,9 +179,9 @@ void game_render(PacmanGame *game)
 
 			if (game->gameFruit1.eaten && ticks_game() - game->gameFruit1.eatenAt < 2000) draw_fruit_pts(&game->gameFruit1);
 			if (game->gameFruit2.eaten && ticks_game() - game->gameFruit2.eatenAt < 2000) draw_fruit_pts(&game->gameFruit2);
-			if (game->gameFruit3.eaten && ticks_game() - game->gameFruit2.eatenAt < 2000) draw_fruit_pts(&game->gameFruit2);
-			if (game->gameFruit4.eaten && ticks_game() - game->gameFruit2.eatenAt < 2000) draw_fruit_pts(&game->gameFruit2);
-			if (game->gameFruit5.eaten && ticks_game() - game->gameFruit2.eatenAt < 2000) draw_fruit_pts(&game->gameFruit2);
+			if (game->gameFruit3.eaten && ticks_game() - game->gameFruit3.eatenAt < 2000) draw_fruit_pts(&game->gameFruit3);
+			if (game->gameFruit4.eaten && ticks_game() - game->gameFruit4.eatenAt < 2000) draw_fruit_pts(&game->gameFruit4);
+			if (game->gameFruit5.eaten && ticks_game() - game->gameFruit5.eatenAt < 2000) draw_fruit_pts(&game->gameFruit5);
 
 
 			draw_pacman(&game->pacman);
