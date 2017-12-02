@@ -60,7 +60,7 @@ void draw_game_gameover(void);
 //
 
 void draw_fruit_indicators(int currentLevel);
-void draw_fruit_game(int currentLevel);
+void draw_fruit_game(int currentLevel, GameFruit *gameFruit);
 
 //
 // Pellet renderering
