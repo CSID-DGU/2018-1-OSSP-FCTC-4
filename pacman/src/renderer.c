@@ -473,6 +473,14 @@ void draw_fruit_pts(GameFruit *gameFruit)
 	draw_image_coord(image, gameFruit->x, gameFruit->y + 3);
 }
 
+void draw_ghost_pts(GameFruit *gameFruit)
+{
+	Fruit f = gameFruit->fruit;
+	SDL_Surface *image = get_fruit_score_image(f);
+
+	draw_image_coord(image, gameFruit->x, gameFruit->y + 3);
+}
+
 //
 //
 // Board rendering
