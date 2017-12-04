@@ -242,7 +242,7 @@ void draw_fruit_game(int currentLevel, GameFruit *gameFruit)
 	SDL_Surface *image = get_fruit_image(fruit);
 
 	//TODO: maybe this offset isn't the same for all fruit. Investigate
-	draw_image_coord_offset(image, gameFruit->x + 0.5, gameFruit->y + 2, 0, 8);
+	draw_image_coord_offset(image, gameFruit->x, gameFruit->y + 2, -5, 8);
 }
 
 //
@@ -330,7 +330,11 @@ void draw_pacman(Pacman *pacman)
 	int xOffset = pacman->body.xOffset - 4;
 	int yOffset = offset + pacman->body.yOffset - 4;
 
-	draw_image_coord_offset(pacman_ani_image(aniDir, frame), pacman->body.x, pacman->body.y, xOffset, yOffset);
+	if(!pacman->boostOn) {
+		draw_image_coord_offset(pacman_ani_image(aniDir, frame), pacman->body.x, pacman->body.y, xOffset, yOffset);
+	} else {
+		draw_image_coord_offset(pacman_ani_boost_image(aniDir, frame), pacman->body.x, pacman->body.y, xOffset, yOffset);
+	}
 }
 
 void draw_pacman_static(Pacman *pacman)

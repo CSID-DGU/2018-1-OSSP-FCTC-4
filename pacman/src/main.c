@@ -202,6 +202,16 @@ static void key_down_hacks(int keycode)
 	//TODO: remove this hack and try make it work with the physics body
 	if (keycode == SDLK_SPACE) fps_sethz((rateSwitch = !rateSwitch) ? 200 : 60);
 
+	if (keycode == SDLK_b) {
+		if(!pacmanGame.pacman.boostOn) {
+			pacmanGame.pacman.body.velocity = 100;
+			pacmanGame.pacman.boostOn = true;
+		} else {
+			pacmanGame.pacman.body.velocity = 80;
+			pacmanGame.pacman.boostOn = false;
+		}
+	}
+
 	//TODO: move logic into the tick method of the menu
 	if (state == Menu && keycode == SDLK_5 && numCredits < 99)
 	{

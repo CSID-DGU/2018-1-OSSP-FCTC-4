@@ -38,6 +38,7 @@ SDL_Surface* pts_peach_image(void);
 
 SDL_Surface* pacman_image(void);
 SDL_Surface* pacman_ani_image(Direction dir, int frame);
+SDL_Surface* pacman_ani_boost_image(Direction dir, int frame);
 SDL_Surface* pacman_death_image(int i);
 SDL_Surface* pacman_life_image(void);
 

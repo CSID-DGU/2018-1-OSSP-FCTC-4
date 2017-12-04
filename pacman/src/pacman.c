@@ -9,6 +9,7 @@ void pacman_init(Pacman *pacman)
 
 	pacman->missedFrames = 0;
 	pacman->godMode = false;
+	pacman->boostOn = false;
 }
 
 void pacman_level_init(Pacman *pacman)
@@ -19,7 +20,7 @@ void pacman_level_init(Pacman *pacman)
 void pacman_location_init(Pacman *pacman)
 {
 	pacman->body = (PhysicsBody) {14, 23, -8, 0, Left, Left, 1, 0, 0};
-	pacman->body.velocity = 100;
+	pacman->body.velocity = 80;
 	pacman->movementType = Unstuck;
 	pacman->lastAttemptedMoveDirection = Left;
 }

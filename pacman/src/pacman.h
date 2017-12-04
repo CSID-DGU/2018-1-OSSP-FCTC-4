@@ -27,6 +27,7 @@ typedef struct
 	int livesLeft;
 	int score;
 	bool godMode;
+	bool boostOn;
 	unsigned originDt;
 	Direction lastAttemptedMoveDirection;
 	MovementType movementType;
