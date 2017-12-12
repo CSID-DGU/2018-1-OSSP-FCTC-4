@@ -1,8 +1,4 @@
-Pacman Folder : Our new Pacman (4795 Lines)
-Pacman_original : Original version from (4482 Lines) 
-                  https://github.com/TroyShaw/Pacman
-                  
-                  
+                
 
 Pacman
 ======
