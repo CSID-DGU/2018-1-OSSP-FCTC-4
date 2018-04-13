@@ -3,10 +3,10 @@
 리눅스 SDL을 이용한 Pacman
 <br><br>
 Pacman_2018_OSSP Folder : Our new Pacman (    Lines) <br>
-Pacman 2017_OSSP Folder : Our new Pacman (4795 Lines) <br>
+Pacman 2017_OSSP Folder : Our new Pacman (4795 Lines) 
 From https://github.com/CSID-DGU/2017-2-OSSP-Awkward-3 <br>
-Pacman_original Folder : Original version (4482 Lines) <br> 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; From https://github.com/TroyShaw/Pacman
+Pacman_original Folder : Original version (4482 Lines) 
+From https://github.com/TroyShaw/Pacman
 <br><br>
 
 <Original Pacman's License>
