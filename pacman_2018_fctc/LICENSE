@@ -1,14 +1,3 @@
-# 2018-1-OSSP-FCTC-4
-
-리눅스 SDL을 이용한 Pacman
-<br><br>
-Pacman 2017_OSSP Folder : Our new Pacman (4795 Lines) <br>
-Pacman_original Folder : Original version (4482 Lines) <br> 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; From https://github.com/TroyShaw/Pacman
-<br><br>
-
-<Original Pacman's License>
-
 The MIT License (MIT)
 
 Copyright (c) 2014 Troy Shaw
@@ -29,4 +18,3 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-                  
