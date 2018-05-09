@@ -168,6 +168,8 @@ void game_render(PacmanGame *game)
 			draw_board(&game->board);
 			break;
 		case GamePlayState:
+			//stage 표시
+			draw_stage(game->currentLevel);
 			draw_large_pellets(&game->pelletHolder, true);
 			draw_board(&game->board);
 

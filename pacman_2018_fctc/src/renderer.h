@@ -44,6 +44,7 @@ void draw_instrc_corporate_info(void);
 void draw_common_oneup(bool flashing, int score);
 void draw_common_twoup(bool flashing, int score);
 void draw_common_highscore(int highscore);
+void draw_stage(int curLvl);
 void draw_credits(int numCredits);
 
 //
