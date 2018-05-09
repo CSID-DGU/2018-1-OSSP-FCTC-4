@@ -133,6 +133,9 @@ static void game_init(void)
 
 	//set to be in menu
 	state = Menu;
+	
+	//set to be in solo play
+	menuSystem.mode = Solo;
 
 	//init the framerate manager
 	fps_init(60);
@@ -216,6 +219,12 @@ static void key_down_hacks(int keycode)
 	if (state == Menu && keycode == SDLK_5 && numCredits < 99)
 	{
 		numCredits++;
+	}
+	
+	if (state == Menu && (keycode == SDLK_UP || keycode == SDLK_DOWN) )
+	{
+		if(menuSystem.mode == Solo) menuSystem.mode = Multi;
+		else menuSystem.mode = Solo;
 	}
 
 	if (keycode == SDLK_9)

@@ -33,6 +33,7 @@ typedef struct
 	GameState gameState;
 	unsigned int ticksSinceModeChange;
 	Pacman pacman;
+	Pacman pacman_enemy;
 	Ghost ghosts[4];
 	Board board;
 	PelletHolder pelletHolder;

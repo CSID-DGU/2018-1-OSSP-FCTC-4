@@ -1,5 +1,6 @@
 #pragma once
 
+#include "main.h"
 //Defines what action we should take at a particular time while on the menu.
 typedef enum
 {
@@ -10,6 +11,7 @@ typedef enum
 //Defines the menu system.
 typedef struct
 {
+	ModeState mode;
 	MenuAction action;
 	unsigned int ticksSinceModeChange;
 } MenuSystem;
