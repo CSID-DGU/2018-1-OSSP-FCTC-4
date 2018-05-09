@@ -116,7 +116,9 @@ Direction next_direction(Ghost *ghost, Board *board)
 	Boardoffset offsets[4] = { {0, -1}, {-1, 0}, {0, 1}, {1, 0} };
 
 	int x, y;
-	dir_xy(ghost->nextDirection, &x, &y);
+	// 고스트의 다음 방향(nextDirection)에 따라서 x, y 값을 결정한다.
+	// Up(0, -1), Down(0, 1), Left(-1, 0), Right(1, 0)
+	dir_xy(ghost->nextDirection, &x, &y); 
 
 	//calculate the distances between the squares (or if it is even valid)
 	for (int i = 0; i < 4; i++)
@@ -125,10 +127,11 @@ Direction next_direction(Ghost *ghost, Board *board)
 		int testY = ghost->body.y + y + offsets[i].y;
 
 		//allow for when ghost is going through teleporter
-		if (testX == 0) testX = 26;
+		if (testX ==  0) testX = 26;
 		if (testX == 27) testX = 1;
 
 		//make sure the square is a valid walkable square
+		// square가 걸을 수 있는 square인지 확인한다.
 		if (!(is_valid_square(board, testX, testY) || is_tele_square(testX, testY))) continue;
 
 		//a further condition is that ghosts cannot enter certain squares moving upwards
@@ -161,8 +164,9 @@ Direction next_direction(Ghost *ghost, Board *board)
 	return shortest.dir;
 }
 
-void execute_ghost_logic(Ghost *targetGhost, GhostType type, Ghost *redGhost, Pacman *pacman)
+void execute_ghost_logic(int curLvl, Ghost *targetGhost, GhostType type, Ghost *redGhost, Pacman *pacman)
 {
+	printf("current Level : %d \n", curLvl);
 	if (targetGhost->movementMode == Scatter)
 	{
 		send_to_home(targetGhost, type);

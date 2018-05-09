@@ -465,7 +465,8 @@ static void process_ghosts(PacmanGame *game)
 		if (result == NewSquare)
 		{
 			//if they are in a new tile, rerun their target update logic
-			execute_ghost_logic(g, g->ghostType, &game->ghosts[0], &game->pacman);
+			// execute ghost AI logic according to currentLeve
+			execute_ghost_logic(game->currentLevel, g, g->ghostType, &game->ghosts[0], &game->pacman);
 
 			g->nextDirection = next_direction(g, &game->board);
 		}
@@ -637,12 +638,13 @@ static bool check_pacghost_collision(PacmanGame *game)
 	for (int i = 0; i < 4; i++)
 	{
 		Ghost *g = &game->ghosts[i];
+		
 		/*
 		switch(g->ghostType) {
 		case Blinky : printf("red : %d \n", g->isDead); break;
-		case Inky: printf("blue : %d \n", g->isDead); break;
-		case Clyde: printf("orange : %d \n", g->isDead); break;
-		case Pinky: printf("pink : %d \n", g->isDead); break;
+		case Inky   : printf("blue : %d \n", g->isDead); break;
+		case Clyde  : printf("orange : %d \n", g->isDead); break;
+		case Pinky  : printf("pink : %d \n", g->isDead); break;
 		}
 		*/
 
