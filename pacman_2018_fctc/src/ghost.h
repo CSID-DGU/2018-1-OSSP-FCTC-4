@@ -38,7 +38,7 @@ void ghosts_init(Ghost ghosts[4]);
 
 void reset_ghost(Ghost *ghost, GhostType type);
 
-void execute_ghost_logic(Ghost *targetGhost, GhostType type, Ghost *redGhost, Pacman *pacman);
+void execute_ghost_logic(int curLvl, Ghost *targetGhost, GhostType type, Ghost *redGhost, Pacman *pacman);
 
 //gets the next direction the ghost will travel in based on their target square
 Direction next_direction(Ghost *ghost, Board *board);
