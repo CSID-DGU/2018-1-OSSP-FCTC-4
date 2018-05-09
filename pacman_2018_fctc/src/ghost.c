@@ -166,7 +166,6 @@ Direction next_direction(Ghost *ghost, Board *board)
 
 void execute_ghost_logic(int curLvl, Ghost *targetGhost, GhostType type, Ghost *redGhost, Pacman *pacman)
 {
-	// printf("current Level : %d \n", curLvl);
 	if (targetGhost->movementMode == Scatter)
 	{
 		send_to_home(targetGhost, type);
