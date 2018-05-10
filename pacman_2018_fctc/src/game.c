@@ -554,8 +554,15 @@ static void process_item(PacmanGame *game)
 		f1->eaten = true;
 		f1->eatenAt = ticks_game();
 		pac->score += item_points(f1->item);
+		
 		if(f1->item==Life)
-			pac->livesLeft += 1;
+			pac->livesLeft += 1;		
+		
+		if(f1->item==Move_Fast) 
+			pac->body.velocity = 120;
+
+		if(f1->item==Move_Slow)
+			pac->body.velocity = 60;
 	}
 
 	if (f2->itemMode == Displaying && collides_obj(&pac->body, f2->x, f2->y))
@@ -564,8 +571,15 @@ static void process_item(PacmanGame *game)
 		f2->eaten = true;
 		f2->eatenAt = ticks_game();
 		pac->score += item_points(f2->item);
+		
 		if(f2->item==Life)
 			pac->livesLeft += 1;
+			
+		if(f2->item==Move_Fast) 
+			pac->body.velocity = 120;	
+
+		if(f2->item==Move_Slow)
+			pac->body.velocity = 60;
 	}
 	if (f3->itemMode == Displaying && collides_obj(&pac->body, f3->x, f3->y))
 	{
@@ -573,8 +587,15 @@ static void process_item(PacmanGame *game)
 		f3->eaten = true;
 		f3->eatenAt = ticks_game();
 		pac->score += item_points(f3->item);
+		
 		if(f3->item==Life)
 			pac->livesLeft += 1;
+			
+		if(f3->item==Move_Fast) 
+			pac->body.velocity = 120;
+
+		if(f3->item==Move_Slow)
+			pac->body.velocity = 60;
 	}
 	if (f4->itemMode == Displaying && collides_obj(&pac->body, f4->x, f4->y))
 	{
@@ -582,8 +603,15 @@ static void process_item(PacmanGame *game)
 		f4->eaten = true;
 		f4->eatenAt = ticks_game();
 		pac->score += item_points(f4->item);
+		
 		if(f4->item==Life)
 			pac->livesLeft += 1;
+			
+		if(f4->item==Move_Fast) 
+			pac->body.velocity = 120;
+
+		if(f4->item==Move_Slow)
+			pac->body.velocity = 60;
 	}
 	if (f5->itemMode == Displaying && collides_obj(&pac->body, f5->x, f5->y))
 	{
@@ -591,8 +619,15 @@ static void process_item(PacmanGame *game)
 		f5->eaten = true;
 		f5->eatenAt = ticks_game();
 		pac->score += item_points(f5->item);
+		
 		if(f5->item==Life)
 			pac->livesLeft += 1;
+			
+		if(f5->item==Move_Fast) 
+			pac->body.velocity = 120;
+	
+		if(f5->item==Move_Slow)
+			pac->body.velocity = 60;
 	}
 
 }
@@ -604,6 +639,7 @@ static void process_pellets(PacmanGame *game)
 	//give pacman that many points
 	//set pellet to not be active
 	//decrease num of alive pellets
+	
 	PelletHolder *holder = &game->pelletHolder;
 
 	for (int i = 0; i < holder->totalNum; i++)
