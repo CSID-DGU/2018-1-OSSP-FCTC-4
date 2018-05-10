@@ -1,7 +1,7 @@
 #pragma once
 
 #include "board.h"
-#include "fruit.h"
+#include "item.h"
 #include "ghost.h"
 #include "pacman.h"
 #include "pellet.h"
@@ -36,7 +36,7 @@ typedef struct
 	Ghost ghosts[4];
 	Board board;
 	PelletHolder pelletHolder;
-	GameFruit gameFruit1, gameFruit2, gameFruit3, gameFruit4, gameFruit5;
+	GameItem gameItem1, gameItem2, gameItem3, gameItem4, gameItem5;
 	int highscore;
 	int currentLevel;
 } PacmanGame;

@@ -16,7 +16,7 @@
 #include <time.h>
 
 static void process_player(PacmanGame *game);
-static void process_fruit(PacmanGame *game);
+static void process_item(PacmanGame *game);
 static void process_ghosts(PacmanGame *game);
 static void process_pellets(PacmanGame *game);
 
@@ -43,7 +43,7 @@ void game_tick(PacmanGame *game)
 			process_player(game);
 			process_ghosts(game);
 
-			process_fruit(game);
+			process_item(game);
 			process_pellets(game);
 
 			if (game->pacman.score > game->highscore) game->highscore = game->pacman.score;
@@ -142,7 +142,7 @@ void game_render(PacmanGame *game)
 	draw_pacman_lives(game->pacman.livesLeft);
 
 	draw_small_pellets(&game->pelletHolder);
-	draw_fruit_indicators(game->currentLevel);
+	draw_item_indicators(game->currentLevel);
 
 	//in gameover state big pellets don't render
 	//in gamebegin + levelbegin big pellets don't flash
@@ -171,17 +171,17 @@ void game_render(PacmanGame *game)
 			draw_large_pellets(&game->pelletHolder, true);
 			draw_board(&game->board);
 
-			if (game->gameFruit1.fruitMode == Displaying) draw_fruit_game(game->currentLevel, &game->gameFruit1);
-			if (game->gameFruit2.fruitMode == Displaying) draw_fruit_game(game->currentLevel, &game->gameFruit2);
-			if (game->gameFruit3.fruitMode == Displaying) draw_fruit_game(game->currentLevel, &game->gameFruit3);
-			if (game->gameFruit4.fruitMode == Displaying) draw_fruit_game(game->currentLevel, &game->gameFruit4);
-			if (game->gameFruit5.fruitMode == Displaying) draw_fruit_game(game->currentLevel, &game->gameFruit5);
+			if (game->gameItem1.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem1);
+			if (game->gameItem2.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem2);
+			if (game->gameItem3.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem3);
+			if (game->gameItem4.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem4);
+			if (game->gameItem5.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem5);
 
-			if (game->gameFruit1.eaten && ticks_game() - game->gameFruit1.eatenAt < 2000) draw_fruit_pts(&game->gameFruit1);
-			if (game->gameFruit2.eaten && ticks_game() - game->gameFruit2.eatenAt < 2000) draw_fruit_pts(&game->gameFruit2);
-			if (game->gameFruit3.eaten && ticks_game() - game->gameFruit3.eatenAt < 2000) draw_fruit_pts(&game->gameFruit3);
-			if (game->gameFruit4.eaten && ticks_game() - game->gameFruit4.eatenAt < 2000) draw_fruit_pts(&game->gameFruit4);
-			if (game->gameFruit5.eaten && ticks_game() - game->gameFruit5.eatenAt < 2000) draw_fruit_pts(&game->gameFruit5);
+			if (game->gameItem1.eaten && ticks_game() - game->gameItem1.eatenAt < 2000) draw_item_pts(&game->gameItem1);
+			if (game->gameItem2.eaten && ticks_game() - game->gameItem2.eatenAt < 2000) draw_item_pts(&game->gameItem2);
+			if (game->gameItem3.eaten && ticks_game() - game->gameItem3.eatenAt < 2000) draw_item_pts(&game->gameItem3);
+			if (game->gameItem4.eaten && ticks_game() - game->gameItem4.eatenAt < 2000) draw_item_pts(&game->gameItem4);
+			if (game->gameItem5.eaten && ticks_game() - game->gameItem5.eatenAt < 2000) draw_item_pts(&game->gameItem5);
 
 
 			draw_pacman(&game->pacman);
@@ -479,42 +479,42 @@ static void process_ghosts(PacmanGame *game)
 	}
 }
 
-static void process_fruit(PacmanGame *game)
+static void process_item(PacmanGame *game)
 {
 	int pelletsEaten = game->pelletHolder.totalNum - game->pelletHolder.numLeft;
 
-	GameFruit *f1 = &game->gameFruit1;
-	GameFruit *f2 = &game->gameFruit2;
-	GameFruit *f3 = &game->gameFruit3;
-	GameFruit *f4 = &game->gameFruit4;
-	GameFruit *f5 = &game->gameFruit5;
+	GameItem *f1 = &game->gameItem1;
+	GameItem *f2 = &game->gameItem2;
+	GameItem *f3 = &game->gameItem3;
+	GameItem *f4 = &game->gameItem4;
+	GameItem *f5 = &game->gameItem5;
 
 	int curLvl = game->currentLevel;
 
-	if (pelletsEaten >= 30 && f1->fruitMode == NotDisplaying)
+	if (pelletsEaten >= 30 && f1->itemMode == NotDisplaying)
 	{
-		f1->fruitMode = Displaying;
-		regen_fruit(f1, curLvl);
+		f1->itemMode = Displaying;
+		regen_item(f1, curLvl);
 	}
-	else if (pelletsEaten == 60 && f2->fruitMode == NotDisplaying)
+	else if (pelletsEaten == 60 && f2->itemMode == NotDisplaying)
 	{
-		f2->fruitMode = Displaying;
-		regen_fruit(f2, curLvl);
+		f2->itemMode = Displaying;
+		regen_item(f2, curLvl);
 	}
-	else if (pelletsEaten == 90 && f3->fruitMode == NotDisplaying)
+	else if (pelletsEaten == 90 && f3->itemMode == NotDisplaying)
 	{
-		f3->fruitMode = Displaying;
-		regen_fruit(f3, curLvl);
+		f3->itemMode = Displaying;
+		regen_item(f3, curLvl);
 	}
-	else if (pelletsEaten == 120 && f4->fruitMode == NotDisplaying)
+	else if (pelletsEaten == 120 && f4->itemMode == NotDisplaying)
 	{
-		f4->fruitMode = Displaying;
-		regen_fruit(f4, curLvl);
+		f4->itemMode = Displaying;
+		regen_item(f4, curLvl);
 	}
-	else if (pelletsEaten == 150 && f5->fruitMode == NotDisplaying)
+	else if (pelletsEaten == 150 && f5->itemMode == NotDisplaying)
 	{
-		f5->fruitMode = Displaying;
-		regen_fruit(f5, curLvl);
+		f5->itemMode = Displaying;
+		regen_item(f5, curLvl);
 	}
 
 	unsigned int f1dt = ticks_game() - f1->startedAt;
@@ -525,64 +525,74 @@ static void process_fruit(PacmanGame *game)
 
 	Pacman *pac = &game->pacman;
 
-	if (f1->fruitMode == Displaying)
+	if (f1->itemMode == Displaying)
 	{
-		if (f1dt > f1->displayTime) f1->fruitMode = Displayed;
+		if (f1dt > f1->displayTime) f1->itemMode = Displayed;
 	}
-	if (f2->fruitMode == Displaying)
+	if (f2->itemMode == Displaying)
 	{
-		if (f2dt > f2->displayTime) f2->fruitMode = Displayed;
+		if (f2dt > f2->displayTime) f2->itemMode = Displayed;
 	}
-	if (f3->fruitMode == Displaying)
+	if (f3->itemMode == Displaying)
 		{
-			if (f3dt > f3->displayTime) f3->fruitMode = Displayed;
+			if (f3dt > f3->displayTime) f3->itemMode = Displayed;
 		}
-	if (f4->fruitMode == Displaying)
+	if (f4->itemMode == Displaying)
 		{
-			if (f4dt > f4->displayTime) f4->fruitMode = Displayed;
+			if (f4dt > f4->displayTime) f4->itemMode = Displayed;
 		}
-	if (f5->fruitMode == Displaying)
+	if (f5->itemMode == Displaying)
 		{
-			if (f5dt > f5->displayTime) f5->fruitMode = Displayed;
+			if (f5dt > f5->displayTime) f5->itemMode = Displayed;
 		}
 
 	//check for collisions
 
-	if (f1->fruitMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
+	if (f1->itemMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
 	{
-		f1->fruitMode = Displayed;
+		f1->itemMode = Displayed;
 		f1->eaten = true;
 		f1->eatenAt = ticks_game();
-		pac->score += fruit_points(f1->fruit);
+		pac->score += item_points(f1->item);
+		if(f1->item==Life)
+			pac->livesLeft += 1;
 	}
 
-	if (f2->fruitMode == Displaying && collides_obj(&pac->body, f2->x, f2->y))
+	if (f2->itemMode == Displaying && collides_obj(&pac->body, f2->x, f2->y))
 	{
-		f2->fruitMode = Displayed;
+		f2->itemMode = Displayed;
 		f2->eaten = true;
 		f2->eatenAt = ticks_game();
-		pac->score += fruit_points(f2->fruit);
+		pac->score += item_points(f2->item);
+		if(f2->item==Life)
+			pac->livesLeft += 1;
 	}
-	if (f3->fruitMode == Displaying && collides_obj(&pac->body, f3->x, f3->y))
+	if (f3->itemMode == Displaying && collides_obj(&pac->body, f3->x, f3->y))
 	{
-		f3->fruitMode = Displayed;
+		f3->itemMode = Displayed;
 		f3->eaten = true;
 		f3->eatenAt = ticks_game();
-		pac->score += fruit_points(f3->fruit);
+		pac->score += item_points(f3->item);
+		if(f3->item==Life)
+			pac->livesLeft += 1;
 	}
-	if (f4->fruitMode == Displaying && collides_obj(&pac->body, f4->x, f4->y))
+	if (f4->itemMode == Displaying && collides_obj(&pac->body, f4->x, f4->y))
 	{
-		f4->fruitMode = Displayed;
+		f4->itemMode = Displayed;
 		f4->eaten = true;
 		f4->eatenAt = ticks_game();
-		pac->score += fruit_points(f4->fruit);
+		pac->score += item_points(f4->item);
+		if(f4->item==Life)
+			pac->livesLeft += 1;
 	}
-	if (f5->fruitMode == Displaying && collides_obj(&pac->body, f5->x, f5->y))
+	if (f5->itemMode == Displaying && collides_obj(&pac->body, f5->x, f5->y))
 	{
-		f5->fruitMode = Displayed;
+		f5->itemMode = Displayed;
 		f5->eaten = true;
 		f5->eatenAt = ticks_game();
-		pac->score += fruit_points(f5->fruit);
+		pac->score += item_points(f5->item);
+		if(f5->item==Life)
+			pac->livesLeft += 1;
 	}
 
 }
@@ -687,11 +697,11 @@ void level_init(PacmanGame *game)
 	ghosts_init(game->ghosts);
 
 	//reset fruit
-	reset_fruit(&game->gameFruit1, &game->board);
-	reset_fruit(&game->gameFruit2, &game->board);
-	reset_fruit(&game->gameFruit3, &game->board);
-	reset_fruit(&game->gameFruit4, &game->board);
-	reset_fruit(&game->gameFruit5, &game->board);
+	reset_item(&game->gameItem1, &game->board);
+	reset_item(&game->gameItem2, &game->board);
+	reset_item(&game->gameItem3, &game->board);
+	reset_item(&game->gameItem4, &game->board);
+	reset_item(&game->gameItem5, &game->board);
 
 }
 
@@ -700,11 +710,11 @@ void pacdeath_init(PacmanGame *game)
 	pacman_level_init(&game->pacman);
 	ghosts_init(game->ghosts);
 
-	reset_fruit(&game->gameFruit1, &game->board);
-	reset_fruit(&game->gameFruit2, &game->board);
-	reset_fruit(&game->gameFruit3, &game->board);
-	reset_fruit(&game->gameFruit4, &game->board);
-	reset_fruit(&game->gameFruit5, &game->board);
+	reset_item(&game->gameItem1, &game->board);
+	reset_item(&game->gameItem2, &game->board);
+	reset_item(&game->gameItem3, &game->board);
+	reset_item(&game->gameItem4, &game->board);
+	reset_item(&game->gameItem5, &game->board);
 
 }
 

@@ -221,14 +221,14 @@ static void key_down_hacks(int keycode)
 	if (keycode == SDLK_9)
 	{
 		printf("plus\n");
-		for (int i = 0; i < 4; i++) pacmanGame.ghosts[i].body.velocity += 15;
+		for (int i = 0; i < 4; i++) pacmanGame.ghosts[i].body.velocity += 5;
 
 		printf("ghost speed: %d\n", pacmanGame.ghosts[0].body.velocity);
 	}
 	else if (keycode == SDLK_0)
 	{
 		printf("minus\n");
-		for (int i = 0; i < 4; i++) pacmanGame.ghosts[i].body.velocity -= 15;
+		for (int i = 0; i < 4; i++) pacmanGame.ghosts[i].body.velocity -= 5;
 
 		printf("ghost speed: %d\n", pacmanGame.ghosts[0].body.velocity);
 	}

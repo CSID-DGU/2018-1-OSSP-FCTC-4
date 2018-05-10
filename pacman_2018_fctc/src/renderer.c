@@ -213,7 +213,7 @@ void draw_game_gameover(void)
 //
 //
 
-void draw_fruit_indicators(int currentLevel)
+void draw_item_indicators(int currentLevel)
 {
 	if (currentLevel < 1)
 	{
@@ -228,21 +228,21 @@ void draw_fruit_indicators(int currentLevel)
 
 	for (int i = index; i > 0; i--)
 	{
-		Fruit fruit = fruit_for_level(currentLevel - (index - i));
-		SDL_Surface *image = get_fruit_image(fruit);
+		Item item = item_for_level(currentLevel - (index - i));
+		SDL_Surface *image = get_item_image(item);
 
 		apply_surface(x - i * 16 * 2, y, image);
 	}
 }
 
 //Draws the fruit in the middle of the level.
-void draw_fruit_game(int currentLevel, GameFruit *gameFruit)
+void draw_item_game(int currentLevel, GameItem *gameItem)
 {
-	Fruit fruit = fruit_for_level(currentLevel);
-	SDL_Surface *image = get_fruit_image(fruit);
+	Item item = item_for_level(currentLevel);
+	SDL_Surface *image = get_item_image(item);
 
 	//TODO: maybe this offset isn't the same for all fruit. Investigate
-	draw_image_coord_offset(image, gameFruit->x, gameFruit->y + 2, -5, 8);
+	draw_image_coord_offset(image, gameItem->x, gameItem->y + 2, -5, 8);
 }
 
 //
@@ -465,20 +465,20 @@ void draw_eyes(Ghost *ghost) {
 // Points rendering
 //
 
-void draw_fruit_pts(GameFruit *gameFruit)
+void draw_item_pts(GameItem *gameItem)
 {
-	Fruit f = gameFruit->fruit;
-	SDL_Surface *image = get_fruit_score_image(f);
+	Item f = gameItem->item;
+	SDL_Surface *image = get_itemshow_image(f);
 
-	draw_image_coord(image, gameFruit->x, gameFruit->y + 3);
+	draw_image_coord(image, gameItem->x, gameItem->y + 3);
 }
 
-void draw_ghost_pts(GameFruit *gameFruit)
+void draw_ghost_pts(GameItem *gameItem)
 {
-	Fruit f = gameFruit->fruit;
-	SDL_Surface *image = get_fruit_score_image(f);
+	Item f = gameItem->item;
+	SDL_Surface *image = get_itemshow_image(f);
 
-	draw_image_coord(image, gameFruit->x, gameFruit->y + 3);
+	draw_image_coord(image, gameItem->x, gameItem->y + 3);
 }
 
 //
