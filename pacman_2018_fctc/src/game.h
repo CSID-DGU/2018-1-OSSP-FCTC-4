@@ -16,6 +16,12 @@ typedef enum
 	GameoverState
 } GameState;
 
+typedef enum
+{
+	Solo,
+	Multi
+} Mode;
+
 //what you do in current state
 
 //what causes you to transition from state A -> state B
@@ -40,6 +46,7 @@ typedef struct
 	GameFruit gameFruit1, gameFruit2, gameFruit3, gameFruit4, gameFruit5;
 	int highscore;
 	int currentLevel;
+	Mode mode;
 } PacmanGame;
 
 //Updates the game 1 tick, or 1/60th of a second.
@@ -52,7 +59,7 @@ void game_render(PacmanGame *game);
 bool is_game_over(PacmanGame *game);
 
 //Call this at start of level 1 to initialize all entities and game objects.
-void gamestart_init(PacmanGame *game);
+void gamestart_init(PacmanGame *game, int mode);
 
 //Call this at the start of each level to reinitialize all entities to a default state.
 void level_init(PacmanGame *game);

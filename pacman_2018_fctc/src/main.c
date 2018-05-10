@@ -135,7 +135,7 @@ static void game_init(void)
 	state = Menu;
 	
 	//set to be in solo play
-	menuSystem.mode = Solo;
+	menuSystem.mode = SoloState;
 
 	//init the framerate manager
 	fps_init(60);
@@ -145,7 +145,7 @@ static void game_init(void)
 
 static void startgame_init(void)
 {
-	gamestart_init(&pacmanGame);
+	gamestart_init(&pacmanGame, menuSystem.mode);
 }
 
 static void resource_init(void)
@@ -223,8 +223,8 @@ static void key_down_hacks(int keycode)
 	
 	if (state == Menu && (keycode == SDLK_UP || keycode == SDLK_DOWN) )
 	{
-		if(menuSystem.mode == Solo) menuSystem.mode = Multi;
-		else menuSystem.mode = Solo;
+		if(menuSystem.mode == SoloState) menuSystem.mode = MultiState;
+		else menuSystem.mode = SoloState;
 	}
 
 	if (keycode == SDLK_9)

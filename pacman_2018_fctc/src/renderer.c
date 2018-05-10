@@ -146,7 +146,7 @@ void draw_common_twoup(bool flashing, int score)
 
 	char scoreStr[256];
 	sprintf(scoreStr, "%01i", score);
-	draw_text_coord(get_screen(), scoreStr, 6 - int_length(score), 1);
+	draw_text_coord(get_screen(), scoreStr, 25 - int_length(score), 1);
 }
 
 void draw_common_highscore(int highscore)
@@ -211,7 +211,8 @@ void draw_game_playerone_start(void)
 
 void draw_game_playertwo_start(void)
 {
-
+	set_text_color(OrangeText);
+	draw_text_coord(get_screen(), "PLAYER TWO", 9, 16);
 }
 
 void draw_game_ready(void)
@@ -418,6 +419,18 @@ void draw_pacman_lives(int numLives)
 	}
 }
 
+void draw_pacman_lives_player2(int numLives)
+{
+	int x = 18 * 16;
+	int y = 34 * 16;
+
+	for (int i = 0; i < numLives; i++)
+	{
+		apply_surface(x, y, pacman_life_image());
+
+		x += 16 * 2;
+	}
+}
 //
 // Ghost rendering
 //

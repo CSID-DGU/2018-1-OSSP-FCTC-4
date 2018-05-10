@@ -15,8 +15,8 @@ typedef enum
 
 typedef enum
 {
-	Solo,
-	Multi
+	SoloState,
+	MultiState
 } ModeState;
 
 //Returns the number of credits the user currently has.
