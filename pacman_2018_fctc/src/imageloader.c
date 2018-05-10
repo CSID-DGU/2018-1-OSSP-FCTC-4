@@ -379,7 +379,7 @@ void load_misc_images(void)
 
 	char dirStr[256];
 
-	const char *itemPntStr[] = {"100", "200", "300", "400", "500"};
+	const char *itemPntStr[] = {"Fast", "Slow", "USD", "Missile", "Life"};
 	const char *ghostPntStr[] = {"200", "400", "800", "1600"};
 
 	for (int i = 0; i < NUM_ITEM; i++)
