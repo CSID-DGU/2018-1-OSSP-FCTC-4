@@ -1,5 +1,6 @@
 #pragma once
 
+#include "main.h"
 #include "board.h"
 #include "fruit.h"
 #include "ghost.h"
@@ -18,9 +19,9 @@ typedef enum
 
 typedef enum
 {
-	Solo,
-	Multi
-} Mode;
+	One,
+	Two
+} Player;
 
 //what you do in current state
 
@@ -46,7 +47,7 @@ typedef struct
 	GameFruit gameFruit1, gameFruit2, gameFruit3, gameFruit4, gameFruit5;
 	int highscore;
 	int currentLevel;
-	Mode mode;
+	ModeState mode;
 } PacmanGame;
 
 //Updates the game 1 tick, or 1/60th of a second.

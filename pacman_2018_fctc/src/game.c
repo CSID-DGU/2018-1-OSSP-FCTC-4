@@ -4,7 +4,6 @@
 #include "board.h"
 #include "fps.h"
 #include "input.h"
-#include "main.h"
 #include "pacman.h"
 #include "pellet.h"
 #include "physics.h"
@@ -15,7 +14,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-static void process_player(Pacman *pacman, Board *board, Mode mode);
+static void process_player(Pacman *game, Board *board, Player player);
 static void process_fruit(PacmanGame *game);
 static void process_ghosts(PacmanGame *game);
 static void process_pellets(PacmanGame *game);
@@ -40,16 +39,15 @@ void game_tick(PacmanGame *game)
 			break;
 		case GamePlayState:
 			// everyone can move and this is the standard 'play' game mode
-			process_player(&game->pacman, &game->board, game->mode);
-			// if(game->mode == Multi) process_player(&game->pacman_enemy, &game->board, game->mode);
-			// process_player(game);
+			process_player(&game->pacman, &game->board, One);
+			if(game->mode == MultiState) process_player(&game->pacman_enemy, &game->board, Two);
 			process_ghosts(game);
 
 			process_fruit(game);
 			process_pellets(game);
 
 			if (game->pacman.score > game->highscore) game->highscore = game->pacman.score;
-			else if(game->mode == Multi && (game->pacman_enemy.score > game->highscore) ) game->highscore = game->pacman_enemy.score;
+			else if(game->mode == MultiState && (game->pacman_enemy.score > game->highscore) ) game->highscore = game->pacman_enemy.score;
 
 			break;
 		case WinState:
@@ -88,7 +86,7 @@ void game_tick(PacmanGame *game)
 	bool collidedWithGhost = check_pacghost_collision(game);
 	int lives = game->pacman.livesLeft;
 	int player2_lives = -1;
-	if(game->mode == Multi) player2_lives = game->pacman_enemy.livesLeft;
+	if(game->mode == MultiState) player2_lives = game->pacman_enemy.livesLeft;
 
 	switch (game->gameState)
 	{
@@ -142,12 +140,12 @@ void game_render(PacmanGame *game)
 	//common stuff that is rendered in every mode:
 	// 1up + score, highscore, base board, lives, small pellets, fruit indicators
 	draw_common_oneup(true, game->pacman.score);
-	if(game->mode == Multi) draw_common_twoup(true, game->pacman_enemy.score);
+	if(game->mode == MultiState) draw_common_twoup(true, game->pacman_enemy.score);
 	
 	draw_common_highscore(game->highscore);
 
 	draw_pacman_lives(game->pacman.livesLeft);
-	if(game->mode == Multi) draw_pacman_lives_player2(game->pacman_enemy.livesLeft);
+	if(game->mode == MultiState) draw_pacman_lives_player2(game->pacman_enemy.livesLeft);
 
 	draw_small_pellets(&game->pelletHolder);
 	draw_fruit_indicators(game->currentLevel);
@@ -170,7 +168,7 @@ void game_render(PacmanGame *game)
 
 			//we also draw pacman and ghosts (they are idle currently though)
 			draw_pacman_static(&game->pacman);
-			if(game->mode == Multi) draw_pacman_static(&game->pacman_enemy);
+			if(game->mode == MultiState) draw_pacman_static(&game->pacman_enemy);
 			
 			for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
 
@@ -195,7 +193,7 @@ void game_render(PacmanGame *game)
 
 
 			draw_pacman(&game->pacman);
-			if(game->mode == Multi) draw_pacman(&game->pacman_enemy);
+			if(game->mode == MultiState) draw_pacman(&game->pacman_enemy);
 
 			if(game->pacman.godMode == false) {
 				for (int i = 0; i < 4; i++) {
@@ -230,7 +228,7 @@ void game_render(PacmanGame *game)
 			break;
 		case WinState:
 			draw_pacman_static(&game->pacman);
-			if(game->mode == Multi) draw_pacman_static(&game->pacman_enemy);
+			if(game->mode == MultiState) draw_pacman_static(&game->pacman_enemy);
 
 			if (dt < 2000)
 			{
@@ -252,7 +250,7 @@ void game_render(PacmanGame *game)
 
 				//TODO: this actually draws the last frame pacman was on when he died
 				draw_pacman_static(&game->pacman);
-				if(game->mode == Multi) draw_pacman_static(&game->pacman_enemy);
+				if(game->mode == MultiState) draw_pacman_static(&game->pacman_enemy);
 
 				for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
 			}
@@ -260,7 +258,7 @@ void game_render(PacmanGame *game)
 			{
 				//draw the death animation
 				draw_pacman_death(&game->pacman, dt - 1000);
-				if(game->mode == Multi) draw_pacman_death(&game->pacman_enemy, dt - 1000);
+				if(game->mode == MultiState) draw_pacman_death(&game->pacman_enemy, dt - 1000);
 			}
 
 			draw_large_pellets(&game->pelletHolder, true);
@@ -281,7 +279,7 @@ static void enter_state(PacmanGame *game, GameState state)
 	{
 		case GameBeginState:
 			game->pacman.livesLeft--;
-			if(game->mode == Multi) game->pacman_enemy.livesLeft--;
+			if(game->mode == MultiState) game->pacman_enemy.livesLeft--;
 
 			break;
 		case WinState:
@@ -348,12 +346,9 @@ bool can_move(Pacman *pacman, Board *board, Direction dir)
 	return is_valid_square(board, newX, newY) || is_tele_square(newX, newY);
 }
 
-// static void process_player(PacmanGame *game)
-static void process_player(Pacman *pacman, Board *board, Mode mode)
+//static void process_player(PacmanGame *game)
+static void process_player(Pacman *pacman, Board *board, Player player)
 {
-	// Pacman *pacman = &game->pacman;
-	// Board *board = &game->board;
-
 	if (pacman->missedFrames != 0)
 	{
 		pacman->missedFrames--;
@@ -361,10 +356,14 @@ static void process_player(Pacman *pacman, Board *board, Mode mode)
 	}
 
 	Direction oldLastAttemptedDir = pacman->lastAttemptedMoveDirection;
-
+	
 	Direction newDir;
 
-	bool dirPressed = dir_pressed_now(&newDir, mode);
+	bool dirPressed = dir_pressed_now(&newDir);
+	
+	// 눌려진 버튼에따라 움직이게함
+	if(key_who_player() && player == Two) dirPressed = false;
+	else if(!key_who_player() && player == One) dirPressed = false;
 	
 	if (dirPressed)
 	{
@@ -679,14 +678,14 @@ static bool check_pacghost_collision(PacmanGame *game)
 void gamestart_init(PacmanGame *game, int mode)
 {
 	// play mode 저장
-	if(mode == Solo) game->mode = Solo;
-	else game->mode = Multi;
+	if(mode == SoloState) game->mode = SoloState;
+	else game->mode = MultiState;
 	
 	level_init(game);
 
 	// mode가 1(multi) 라면 상대방 팩맨도 생성한다.
 	pacman_init(&game->pacman);
-	if(game->mode == Multi) pacman_init(&game->pacman_enemy);
+	if(game->mode == MultiState) pacman_init(&game->pacman_enemy);
 	
 	//we need to reset all fruit
 	//fuit_init();
@@ -702,7 +701,7 @@ void level_init(PacmanGame *game)
 {
 	//reset pacmans position
 	pacman_level_init(&game->pacman);
-	if(game->mode == Multi) pacman_level_init(&game->pacman_enemy);
+	if(game->mode == MultiState) pacman_level_init(&game->pacman_enemy);
 	
 	//reset pellets
 	pellets_init(&game->pelletHolder);
