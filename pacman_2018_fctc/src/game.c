@@ -525,8 +525,6 @@ static void process_item(PacmanGame *game)
 
 	Pacman *pac = &game->pacman;
 	
-	Ghost *gho = &game->ghosts;
-	
 	if (f1->itemMode == Displaying)
 	{
 		if (f1dt > f1->displayTime) f1->itemMode = Displayed;
@@ -567,7 +565,7 @@ static void process_item(PacmanGame *game)
 			pac->body.velocity = 60;
 			
 		if(f1->item==Prof)
-			gho->body.velocity = 1;
+		for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 	}
 
 	if (f2->itemMode == Displaying && collides_obj(&pac->body, f2->x, f2->y))
@@ -587,7 +585,7 @@ static void process_item(PacmanGame *game)
 			pac->body.velocity = 60;
 
 		if(f2->item==Prof)
-			gho->body.velocity = 1;
+		for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 	}
 
 	if (f3->itemMode == Displaying && collides_obj(&pac->body, f3->x, f3->y))
@@ -607,8 +605,9 @@ static void process_item(PacmanGame *game)
 			pac->body.velocity = 60;
 
 		if(f3->item==Prof)
-			gho->body.velocity = 1;
+		for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 	}
+	
 	if (f4->itemMode == Displaying && collides_obj(&pac->body, f4->x, f4->y))
 	{
 		f4->itemMode = Displayed;
@@ -626,8 +625,9 @@ static void process_item(PacmanGame *game)
 			pac->body.velocity = 60;
 		
 		if(f4->item==Prof)
-			gho->body.velocity = 1;	
+		for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 	}
+	
 	if (f5->itemMode == Displaying && collides_obj(&pac->body, f5->x, f5->y))
 	{
 		f5->itemMode = Displayed;
@@ -645,7 +645,7 @@ static void process_item(PacmanGame *game)
 			pac->body.velocity = 60;
 
 		if(f5->item==Prof)
-			gho->body.velocity = 1;
+		for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 	}
 
 }
