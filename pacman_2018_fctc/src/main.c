@@ -140,7 +140,7 @@ static void internal_render(void)
 static void game_init(void)
 {
 	//Load the board here. We only need to do it once
-	load_board(&pacmanGame.board, &pacmanGame.pelletHolder, "maps/encodedboard");
+	load_board(&pacmanGame.board, &pacmanGame.pelletHolder, "maps/map3test");
 
 	//set to be in menu
 	state = Menu;
