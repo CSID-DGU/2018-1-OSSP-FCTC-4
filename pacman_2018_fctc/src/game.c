@@ -366,8 +366,12 @@ static void process_player(Pacman *pacman, Board *board, Player player)
 	Direction newDir;
 
 	bool dirPressed;
-	if(player == One) dirPressed = dir_pressed_now(&newDir);
-	else dirPressed = dir_pressed_now_player2(&newDir);
+	if(player == One) {
+		dirPressed = dir_pressed_now(&newDir);
+	}
+	else {
+		dirPressed = dir_pressed_now_player2(&newDir);
+	}
 	// 눌려진 버튼에따라 움직이게함
 	//if(!player) dirPressed = false;
 	

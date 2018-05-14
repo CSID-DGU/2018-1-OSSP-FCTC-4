@@ -20,16 +20,6 @@ static unsigned int keysReleasedFrame_player2[MAX_KEYS] = {0};
 
 static unsigned int curKeyFrame = 1;
 
-void print_keysHeld(void){
-	printf("\nUP: %d / DOWN: %d / LEFT: %d / RIGHT: %d\n",keysHeld[SDLK_UP],keysHeld[SDLK_DOWN],keysHeld[SDLK_LEFT],keysHeld[SDLK_RIGHT]);
-	printf("w: %d / s: %d / a: %d / d: %d\n\n",keysHeld[SDLK_w],keysHeld[SDLK_s],keysHeld[SDLK_a],keysHeld[SDLK_d]);
-}
-
-void print_keysHeld_player2(void){
-	printf("\nUP: %d / DOWN: %d / LEFT: %d / RIGHT: %d\n",keysHeld_player2[SDLK_UP],keysHeld_player2[SDLK_DOWN],keysHeld_player2[SDLK_LEFT],keysHeld_player2[SDLK_RIGHT]);
-	printf("w: %d / s: %d / a: %d / d: %d\n\n",keysHeld_player2[SDLK_w],keysHeld_player2[SDLK_s],keysHeld_player2[SDLK_a],keysHeld_player2[SDLK_d]);
-}
-
 void keyevents_finished(void)
 {
 	curKeyFrame++;
@@ -60,8 +50,6 @@ void handle_keydown_player2(int keycode)
 	if (!keysHeld_player2[keycode]) keysPressedFrame_player2[keycode] = curKeyFrame;
 
 	keysHeld_player2[keycode] = true;
-	printf("UP: %d / DOWN: %d / LEFT: %d / RIGHT: %d\n",keysHeld[SDLK_UP],keysHeld[SDLK_DOWN],keysHeld[SDLK_LEFT],keysHeld[SDLK_RIGHT]);
-	printf("w: %d / s: %d / a: %d / d: %d\n",keysHeld[SDLK_w],keysHeld[SDLK_s],keysHeld[SDLK_a],keysHeld[SDLK_d]);
 }
 
 void handle_keyup_player2(int keycode)
@@ -72,21 +60,7 @@ void handle_keyup_player2(int keycode)
 
 	keysHeld_player2[keycode] = false;
 }
-/*
-bool dir_key_held(Direction direction)
-{
-	switch (direction)
-	{
-		case Up:    return keysHeld[SDLK_UP]    || keysHeld[SDLK_w];
-		case Down:  return keysHeld[SDLK_DOWN]  || keysHeld[SDLK_s];
-		case Left:  return keysHeld[SDLK_LEFT]  || keysHeld[SDLK_a];
-		case Right: return keysHeld[SDLK_RIGHT] || keysHeld[SDLK_d];
-	}
 
-	printf("should never reach here\n");
-	exit(1);
-}
-*/
 bool dir_key_held(Direction direction)
 {
 	switch (direction)
@@ -260,21 +234,7 @@ static int frame_for_direction_player2(Direction dir)
 	printf("should never reach here\n");
 	exit(1);
 }
-/*
-static int frame_for_direction(Direction dir)
-{	
-	switch (dir)
-	{
-		case Up:    return max(keysPressedFrame[SDLK_UP]   , keysPressedFrame[SDLK_w]);
-		case Down:  return max(keysPressedFrame[SDLK_DOWN] , keysPressedFrame[SDLK_s]);
-		case Left:  return max(keysPressedFrame[SDLK_LEFT] , keysPressedFrame[SDLK_a]);
-		case Right: return max(keysPressedFrame[SDLK_RIGHT], keysPressedFrame[SDLK_d]);
-	}
 
-	printf("should never reach here\n");
-	exit(1);
-}
-*/
 static void check_keycode(int keycode)
 {
 	if (keycode >= MAX_KEYS)

@@ -16,10 +16,6 @@
 #include "text.h"
 #include "window.h"
 
-#include <pthread.h>
-pthread_t threads[2];
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-
 //Initializes all resources.
 static void resource_init(void);
 
@@ -62,7 +58,7 @@ int main(void)
 	main_loop();
 
 	clean_up();
-	pthread_mutex_destroy(&mutex);
+	
 	return 0;
 }
 
@@ -72,10 +68,7 @@ static void main_loop(void)
 	{
 		Player p1 = One, p2 = Two;
 		if(state == Game && pacmanGame.mode == MultiState) {
-			pthread_create(&threads[0], NULL, process_events, &p1);
-			pthread_create(&threads[1], NULL, process_events, &p2);
-			pthread_join(threads[0], NULL);
-			pthread_join(threads[1], NULL);
+			process_events(&p2);
 		}
 		else process_events(&p1);
 		
@@ -180,12 +173,11 @@ static void clean_up(void)
 
 static void* process_events(void *player)
 {
-	pthread_mutex_lock(&mutex);
+	//pthread_mutex_lock(&mutex);
 	static SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{	
-		if(*((Player*)player) == One) printf("One\n");
-		if(*((Player*)player) == Two) printf("Two\n");
+		
 		switch (event.type)
 		{
 			case SDL_QUIT:
@@ -193,25 +185,23 @@ static void* process_events(void *player)
 
 				break;
 			case SDL_KEYDOWN:
-				if (*((Player*)player) == One) handle_keydown(event.key.keysym.sym);
-				else handle_keydown_player2(event.key.keysym.sym);
+				handle_keydown(event.key.keysym.sym);
+				if (*((Player*)player) == Two) handle_keydown_player2(event.key.keysym.sym);
 			
 				key_down_hacks(event.key.keysym.sym);
 				
 				break;
 			case SDL_KEYUP:
-				if (*((Player*)player) == One) handle_keyup(event.key.keysym.sym);
-				else handle_keyup_player2(event.key.keysym.sym);
+				handle_keyup(event.key.keysym.sym);	
+				if (*((Player*)player) == Two) handle_keyup_player2(event.key.keysym.sym);
 
 				break;
 		}
-		if(*((Player*)player) == One) print_keysHeld();
-		if(*((Player*)player) == Two) print_keysHeld_player2();
 		
 	}
 
 	keyevents_finished();
-	pthread_mutex_unlock(&mutex);
+	
 	return player;
 }
 
