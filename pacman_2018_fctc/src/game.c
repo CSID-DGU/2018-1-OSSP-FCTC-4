@@ -15,7 +15,6 @@
 #include <time.h>
 
 static void process_player(Pacman *pacman, Board *board, bool player);
-static void process_fruit(PacmanGame *game);
 static void process_item(PacmanGame *game);
 static void process_ghosts(PacmanGame *game);
 static void process_pellets(PacmanGame *game);
@@ -675,41 +674,104 @@ static void process_item(PacmanGame *game)
 	if(game->mode == MultiState) {
 		pac = &game->pacman_enemy;
 		
-		if (f1->fruitMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
+		if (f1->itemMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
 		{
-			f1->fruitMode = Displayed;
+			f1->itemMode = Displayed;
 			f1->eaten = true;
 			f1->eatenAt = ticks_game();
-			pac->score += fruit_points(f1->fruit);
+			pac->score += item_points(f1->item);
+			
+			if(f1->item==Life)
+				pac->livesLeft += 1;		
+			
+			if(f1->item==Move_Fast)
+				pac->body.velocity = 120;
+
+			if(f1->item==Move_Slow)
+				pac->body.velocity = 60;
+				
+			if(f1->item==Prof)
+			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 		}
 
-		if (f2->fruitMode == Displaying && collides_obj(&pac->body, f2->x, f2->y))
+		if (f2->itemMode == Displaying && collides_obj(&pac->body, f2->x, f2->y))
 		{
-			f2->fruitMode = Displayed;
+			f2->itemMode = Displayed;
 			f2->eaten = true;
 			f2->eatenAt = ticks_game();
-			pac->score += fruit_points(f2->fruit);
+			pac->score += item_points(f2->item);
+			
+			if(f2->item==Life)
+				pac->livesLeft += 1;
+				
+			if(f2->item==Move_Fast) 
+				pac->body.velocity = 120;	
+
+			if(f2->item==Move_Slow)
+				pac->body.velocity = 60;
+
+			if(f2->item==Prof)
+			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 		}
-		if (f3->fruitMode == Displaying && collides_obj(&pac->body, f3->x, f3->y))
+
+		if (f3->itemMode == Displaying && collides_obj(&pac->body, f3->x, f3->y))
 		{
-			f3->fruitMode = Displayed;
+			f3->itemMode = Displayed;
 			f3->eaten = true;
 			f3->eatenAt = ticks_game();
-			pac->score += fruit_points(f3->fruit);
+			pac->score += item_points(f3->item);
+			
+			if(f3->item==Life)
+				pac->livesLeft += 1;
+				
+			if(f3->item==Move_Fast) 
+				pac->body.velocity = 120;
+
+			if(f3->item==Move_Slow)
+				pac->body.velocity = 60;
+
+			if(f3->item==Prof)
+			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 		}
-		if (f4->fruitMode == Displaying && collides_obj(&pac->body, f4->x, f4->y))
+		
+		if (f4->itemMode == Displaying && collides_obj(&pac->body, f4->x, f4->y))
 		{
-			f4->fruitMode = Displayed;
+			f4->itemMode = Displayed;
 			f4->eaten = true;
 			f4->eatenAt = ticks_game();
-			pac->score += fruit_points(f4->fruit);
+			pac->score += item_points(f4->item);
+			
+			if(f4->item==Life)
+				pac->livesLeft += 1;
+				
+			if(f4->item==Move_Fast) 
+				pac->body.velocity = 120;
+
+			if(f4->item==Move_Slow)
+				pac->body.velocity = 60;
+			
+			if(f4->item==Prof)
+			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 		}
-		if (f5->fruitMode == Displaying && collides_obj(&pac->body, f5->x, f5->y))
+		
+		if (f5->itemMode == Displaying && collides_obj(&pac->body, f5->x, f5->y))
 		{
-			f5->fruitMode = Displayed;
+			f5->itemMode = Displayed;
 			f5->eaten = true;
 			f5->eatenAt = ticks_game();
-			pac->score += fruit_points(f5->fruit);
+			pac->score += item_points(f5->item);
+			
+			if(f5->item==Life)
+				pac->livesLeft += 1;
+				
+			if(f5->item==Move_Fast) 
+				pac->body.velocity = 120;
+		
+			if(f5->item==Move_Slow)
+				pac->body.velocity = 60;
+
+			if(f5->item==Prof)
+			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 		}
 	}
 
