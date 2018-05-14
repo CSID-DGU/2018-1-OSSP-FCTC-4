@@ -524,7 +524,9 @@ static void process_item(PacmanGame *game)
 	unsigned int f5dt = ticks_game() - f5->startedAt;
 
 	Pacman *pac = &game->pacman;
-
+	
+	Ghost *gho = &game->ghosts;
+	
 	if (f1->itemMode == Displaying)
 	{
 		if (f1dt > f1->displayTime) f1->itemMode = Displayed;
@@ -558,11 +560,14 @@ static void process_item(PacmanGame *game)
 		if(f1->item==Life)
 			pac->livesLeft += 1;		
 		
-		if(f1->item==Move_Fast) 
+		if(f1->item==Move_Fast)
 			pac->body.velocity = 120;
 
 		if(f1->item==Move_Slow)
 			pac->body.velocity = 60;
+			
+		if(f1->item==Prof)
+			gho->body.velocity = 1;
 	}
 
 	if (f2->itemMode == Displaying && collides_obj(&pac->body, f2->x, f2->y))
@@ -580,7 +585,11 @@ static void process_item(PacmanGame *game)
 
 		if(f2->item==Move_Slow)
 			pac->body.velocity = 60;
+
+		if(f2->item==Prof)
+			gho->body.velocity = 1;
 	}
+
 	if (f3->itemMode == Displaying && collides_obj(&pac->body, f3->x, f3->y))
 	{
 		f3->itemMode = Displayed;
@@ -596,6 +605,9 @@ static void process_item(PacmanGame *game)
 
 		if(f3->item==Move_Slow)
 			pac->body.velocity = 60;
+
+		if(f3->item==Prof)
+			gho->body.velocity = 1;
 	}
 	if (f4->itemMode == Displaying && collides_obj(&pac->body, f4->x, f4->y))
 	{
@@ -612,6 +624,9 @@ static void process_item(PacmanGame *game)
 
 		if(f4->item==Move_Slow)
 			pac->body.velocity = 60;
+		
+		if(f4->item==Prof)
+			gho->body.velocity = 1;	
 	}
 	if (f5->itemMode == Displaying && collides_obj(&pac->body, f5->x, f5->y))
 	{
@@ -628,6 +643,9 @@ static void process_item(PacmanGame *game)
 	
 		if(f5->item==Move_Slow)
 			pac->body.velocity = 60;
+
+		if(f5->item==Prof)
+			gho->body.velocity = 1;
 	}
 
 }

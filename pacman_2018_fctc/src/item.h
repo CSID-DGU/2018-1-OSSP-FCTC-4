@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include "board.h"
 
-#define NUM_ITEM 5
+#define NUM_ITEM 6
 
 typedef enum
 {
@@ -11,7 +11,8 @@ typedef enum
 	Move_Slow,
 	Move_USD,
 	Misile,
-	Life
+	Life,
+	Prof
 } Item;
 
 //Different modes a fruit can be in while in-game

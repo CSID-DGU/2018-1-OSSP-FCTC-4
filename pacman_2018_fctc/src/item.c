@@ -17,13 +17,12 @@ int item_points(Item item)
 		case Move_USD:      return 500;
 		case Misile:      	return 500;
 		case Life:			return 500;
+		case Prof:			return 1000000;
 	}
 
 	printf("invalid fruit\naborting\n");
 	exit(1);
 }
-
-
 
 Item item_for_level(int level)
 {
@@ -38,16 +37,9 @@ Item item_for_level(int level)
 	{
 		int ran = 0;
 		
-		ran = rand()%5;
-			
-		switch (ran)
-		{
-			case 0:     return Move_Fast;
-			case 1:		return Move_Slow;
-			case 2:		return Move_USD;	
-			case 3:     return Misile;
-			case 4:		return Life;
-		}
+		ran = rand()%122;
+		
+return Move_Fast;
 	}
 }
 
