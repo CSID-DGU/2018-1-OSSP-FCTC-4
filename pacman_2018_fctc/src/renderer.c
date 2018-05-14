@@ -162,6 +162,15 @@ void draw_common_highscore(int highscore)
 	draw_text_coord(get_screen(), scoreStr, 16 - int_length(highscore), 1);
 }
 
+void draw_stage(int curLvl){
+	set_text_color(WhiteText);
+	draw_text_coord(get_screen(), "STAGE", 21, 0);
+
+	char levelStr[10];
+	sprintf(levelStr, "%01i", curLvl);
+	draw_text_coord(get_screen(), levelStr, 26, 0);
+}
+
 void draw_credits(int numCredits)
 {
 	if (numCredits < 0)
