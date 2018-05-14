@@ -1,8 +1,6 @@
 #include "main.h"
 
 #include <stdbool.h>
-
-
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 
@@ -20,6 +18,7 @@
 
 #include <pthread.h>
 pthread_t threads[2];
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 //Initializes all resources.
 static void resource_init(void);
@@ -63,7 +62,7 @@ int main(void)
 	main_loop();
 
 	clean_up();
-
+	pthread_mutex_destroy(&mutex);
 	return 0;
 }
 
@@ -181,13 +180,12 @@ static void clean_up(void)
 
 static void* process_events(void *player)
 {
+	pthread_mutex_lock(&mutex);
 	static SDL_Event event;
-	
 	while (SDL_PollEvent(&event))
-	{
-
-		//if(key_who_player() && key_is_player(event.key.keysym.sym) ) continue;
-		//if(key_who_player2() && key_is_player2(event.key.keysym.sym)) continue;
+	{	
+		if(*((Player*)player) == One) printf("One\n");
+		if(*((Player*)player) == Two) printf("Two\n");
 		switch (event.type)
 		{
 			case SDL_QUIT:
@@ -195,18 +193,25 @@ static void* process_events(void *player)
 
 				break;
 			case SDL_KEYDOWN:
-				handle_keydown(event.key.keysym.sym);
+				if (*((Player*)player) == One) handle_keydown(event.key.keysym.sym);
+				else handle_keydown_player2(event.key.keysym.sym);
+			
 				key_down_hacks(event.key.keysym.sym);
-
+				
 				break;
 			case SDL_KEYUP:
-				handle_keyup(event.key.keysym.sym);
+				if (*((Player*)player) == One) handle_keyup(event.key.keysym.sym);
+				else handle_keyup_player2(event.key.keysym.sym);
 
 				break;
 		}
+		if(*((Player*)player) == One) print_keysHeld();
+		if(*((Player*)player) == Two) print_keysHeld_player2();
+		
 	}
 
 	keyevents_finished();
+	pthread_mutex_unlock(&mutex);
 	return player;
 }
 
@@ -235,28 +240,17 @@ static void key_down_hacks(int keycode)
 	{
 		numCredits++;
 	}
-	/*
-	if (state == Menu && (keycode == SDLK_UP || keycode == SDLK_DOWN) )
-	{
-		menuSystem.mode++;
-		if(menuSystem.mode >2) menuSystem.mode = 0;
-		if(menuSystem.mode == SoloState) menuSystem.mode = MultiState;
-		else menuSystem.mode = SoloState;
-	}
-	*/
+	
 	if (state == Menu && keycode == SDLK_DOWN) 
 	{
-		
 		menuSystem.mode++;
 		if(menuSystem.mode > 2) menuSystem.mode = 0;
-		printf("menu %d\n",menuSystem.mode);
 	}
 	
 	if (state == Menu && keycode == SDLK_UP)
 	{
 		menuSystem.mode--;
 		if(menuSystem.mode == -1) menuSystem.mode = 2;
-		printf("menu %d\n",menuSystem.mode);
 	}
 	
 	if (keycode == SDLK_9)
