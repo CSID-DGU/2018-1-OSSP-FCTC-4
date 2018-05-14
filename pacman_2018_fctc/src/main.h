@@ -13,5 +13,12 @@ typedef enum
 	Intermission
 } ProgramState;
 
+typedef enum
+{
+	SoloState,
+	MultiState,
+	RemoteState
+} ModeState;
+
 //Returns the number of credits the user currently has.
 int num_credits(void);

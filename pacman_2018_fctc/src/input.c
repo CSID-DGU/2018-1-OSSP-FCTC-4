@@ -9,6 +9,7 @@ static void check_keycode(int keycode);
 static int frame_for_direction(Direction dir);
 
 static bool keysHeld[MAX_KEYS] = {false};
+static bool keysHeld_player2[MAX_KEYS] = {false};
 
 static unsigned int keysPressedFrame[MAX_KEYS] = {0};
 static unsigned int keysReleasedFrame[MAX_KEYS] = {0};
@@ -27,6 +28,8 @@ void handle_keydown(int keycode)
 	if (!keysHeld[keycode]) keysPressedFrame[keycode] = curKeyFrame;
 
 	keysHeld[keycode] = true;
+	printf("UP: %d / DOWN: %d / LEFT: %d / RIGHT: %d\n",keysHeld[SDLK_UP],keysHeld[SDLK_DOWN],keysHeld[SDLK_LEFT],keysHeld[SDLK_RIGHT]);
+	printf("w: %d / s: %d / a: %d / d: %d\n",keysHeld[SDLK_w],keysHeld[SDLK_s],keysHeld[SDLK_a],keysHeld[SDLK_d]);
 }
 
 void handle_keyup(int keycode)
@@ -52,6 +55,34 @@ bool dir_key_held(Direction direction)
 	exit(1);
 }
 
+bool key_who_player(void)
+{
+	if(keysHeld[SDLK_UP] || keysHeld[SDLK_DOWN] || keysHeld[SDLK_LEFT] || keysHeld[SDLK_RIGHT]) return true;
+	
+	return false;
+}
+
+bool key_who_player2(void)
+{
+	if(keysHeld[SDLK_w] || keysHeld[SDLK_s] || keysHeld[SDLK_a] || keysHeld[SDLK_d]) return true;
+	
+	return false;
+}
+
+bool key_is_player(int keycode)
+{
+	if(keycode == SDLK_w || keycode == SDLK_s || keycode == SDLK_a || keycode == SDLK_d) return true;
+	
+	return false;
+}
+
+bool key_is_player2(int keycode)
+{
+	if(keycode == SDLK_UP || keycode == SDLK_DOWN || keycode == SDLK_LEFT || keycode == SDLK_RIGHT) return true;
+	
+	return false;
+}
+
 bool dir_pressed_now(Direction *dir)
 {
 	int highestPushed = 0;
@@ -61,9 +92,9 @@ bool dir_pressed_now(Direction *dir)
 	for (int i = 3; i >= 0; i--)
 	{
 		if (!dir_key_held(dirs[i])) continue;
-
+		
 		int x = frame_for_direction(dirs[i]);
-
+		
 		if (x > highestPushed)
 		{
 			*dir = dirs[i];
@@ -99,7 +130,7 @@ bool key_released(int keycode)
 #define min(a, b) max((b), (a))
 
 static int frame_for_direction(Direction dir)
-{
+{	
 	switch (dir)
 	{
 		case Up:    return max(keysPressedFrame[SDLK_UP]   , keysPressedFrame[SDLK_w]);
