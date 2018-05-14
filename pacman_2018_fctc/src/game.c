@@ -524,6 +524,13 @@ static void process_item(PacmanGame *game)
 	unsigned int f5dt = ticks_game() - f5->startedAt;
 
 	Pacman *pac = &game->pacman;
+	printf("remain time : %d\n", pac->itemRemainTime);
+	printf("velocity : %d\n", pac->body.velocity);
+	if(pac->itemRemainTime != 0) pac->itemRemainTime--;
+	else {
+		pac->body.velocity = 80;
+		pac->itemRemainTime = 0;
+	}
 	
 	Ghost *gho = &game->ghosts;
 	
@@ -560,12 +567,14 @@ static void process_item(PacmanGame *game)
 		if(f1->item==Life)
 			pac->livesLeft += 1;		
 		
-		if(f1->item==Move_Fast)
+		if(f1->item==Move_Fast) {
 			pac->body.velocity = 120;
-
-		if(f1->item==Move_Slow)
+			pac->itemRemainTime = 100;
+		}
+		if(f1->item==Move_Slow){
 			pac->body.velocity = 60;
-			
+			pac->itemRemainTime = 100;
+		}
 		if(f1->item==Prof)
 			gho->body.velocity = 1;
 	}
@@ -580,12 +589,14 @@ static void process_item(PacmanGame *game)
 		if(f2->item==Life)
 			pac->livesLeft += 1;
 			
-		if(f2->item==Move_Fast) 
-			pac->body.velocity = 120;	
-
-		if(f2->item==Move_Slow)
+		if(f2->item==Move_Fast) {
+			pac->body.velocity = 120;
+			pac->itemRemainTime = 100;
+		}
+		if(f2->item==Move_Slow){
 			pac->body.velocity = 60;
-
+			pac->itemRemainTime = 100;
+		}
 		if(f2->item==Prof)
 			gho->body.velocity = 1;
 	}
@@ -600,12 +611,14 @@ static void process_item(PacmanGame *game)
 		if(f3->item==Life)
 			pac->livesLeft += 1;
 			
-		if(f3->item==Move_Fast) 
+		if(f3->item==Move_Fast) {
 			pac->body.velocity = 120;
-
-		if(f3->item==Move_Slow)
+			pac->itemRemainTime = 100;
+		}
+		if(f3->item==Move_Slow){
 			pac->body.velocity = 60;
-
+			pac->itemRemainTime = 100;
+		}
 		if(f3->item==Prof)
 			gho->body.velocity = 1;
 	}
@@ -619,12 +632,14 @@ static void process_item(PacmanGame *game)
 		if(f4->item==Life)
 			pac->livesLeft += 1;
 			
-		if(f4->item==Move_Fast) 
+		if(f4->item==Move_Fast) {
 			pac->body.velocity = 120;
-
-		if(f4->item==Move_Slow)
+			pac->itemRemainTime = 100;
+		}
+		if(f4->item==Move_Slow){
 			pac->body.velocity = 60;
-		
+			pac->itemRemainTime = 100;
+		}
 		if(f4->item==Prof)
 			gho->body.velocity = 1;	
 	}
@@ -638,12 +653,14 @@ static void process_item(PacmanGame *game)
 		if(f5->item==Life)
 			pac->livesLeft += 1;
 			
-		if(f5->item==Move_Fast) 
+		if(f5->item==Move_Fast) {
 			pac->body.velocity = 120;
-	
-		if(f5->item==Move_Slow)
+			pac->itemRemainTime = 100;
+		}
+		if(f5->item==Move_Slow){
 			pac->body.velocity = 60;
-
+			pac->itemRemainTime = 100;
+		}
 		if(f5->item==Prof)
 			gho->body.velocity = 1;
 	}
