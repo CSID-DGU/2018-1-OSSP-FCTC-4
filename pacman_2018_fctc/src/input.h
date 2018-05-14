@@ -20,6 +20,11 @@ void handle_keyup(int keycode);
 //A direction can be bound to multiple keypressed, making this function input-method agnostic.
 bool dir_key_held(Direction direction);
 
+bool key_who_player(void);
+bool key_who_player2(void);
+
+bool key_is_player(int keycode);
+bool key_is_player2(int keycode);
 //This function sets the input direction to the last direction that was pressed and is still currently pressed.
 //If no direction is pressed, the input direction is not assigned to.
 //If multiple directions were pressed at the same time-instance, this function prioritises Up, Left, Down, Right.

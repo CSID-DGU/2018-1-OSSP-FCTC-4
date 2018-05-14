@@ -37,31 +37,31 @@ void draw_image_coord_offset(SDL_Surface *surface, int x, int y, int xOffset, in
 
 void draw_vanity_ghostline(GhostDisplayRow *row, int y, bool drawDescription, bool drawName)
 {
-	draw_image_coord(ghost_image(row->type, Right, 0), 4, y);
+	draw_image_coord(ghost_image(row->type, Right, 0), 2, y);
 
 	if (drawDescription)
 	{
 		set_text_color(row->color);
-		draw_text_coord(get_screen(), row->description, 7, y);
+		draw_text_coord(get_screen(), row->description, 5, y);
 	}
 
 	if (drawName)
 	{
-		draw_text_coord(get_screen(), row->name, 18, y);
+		draw_text_coord(get_screen(), row->name, 16, y);
 	}
 }
 
 void draw_vanity_charnickname(void)
 {
 	set_text_color(WhiteText);
-	draw_text_coord(get_screen(), "CHARACTER / NICKNAME", 7, 5);
+	draw_text_coord(get_screen(), "CHARACTER / NICKNAME", 5, 10);
 }
 
 void draw_vanity_corporate_info(void)
 {
 	set_text_color(PinkText);
-	draw_text_coord(get_screen(), "@      MIDWAY MFG.CO.", 4, 31);
-	draw_numtext_coord(get_screen(), "  1980", 4, 31);
+	draw_text_coord(get_screen(), "@      MIDWAY MFG.CO.", 4, 32);
+	draw_numtext_coord(get_screen(), "  1980", 4, 32);
 }
 
 void draw_vanity_pellet_info(bool flashing)
@@ -71,13 +71,13 @@ void draw_vanity_pellet_info(bool flashing)
 
 	set_text_color(WhiteText);
 
-	draw_image_coord(small_pellet_image(), 10, 24);
-	draw_numtext_coord(get_screen(), "10", 12, 24);
-	draw_image_coord(pts_white_image(), 15, 24);
-
-	draw_image_coord(large_pellet_image(), 10, 26);
-	draw_numtext_coord(get_screen(), "50", 12, 26);
+	draw_image_coord(small_pellet_image(), 10, 26);
+	draw_numtext_coord(get_screen(), "10", 12, 26);
 	draw_image_coord(pts_white_image(), 15, 26);
+
+	draw_image_coord(large_pellet_image(), 10, 28);
+	draw_numtext_coord(get_screen(), "50", 12, 28);
+	draw_image_coord(pts_white_image(), 15, 28);
 }
 
 void draw_vanity_animation(int dt)
@@ -146,7 +146,7 @@ void draw_common_twoup(bool flashing, int score)
 
 	char scoreStr[256];
 	sprintf(scoreStr, "%01i", score);
-	draw_text_coord(get_screen(), scoreStr, 6 - int_length(score), 1);
+	draw_text_coord(get_screen(), scoreStr, 25 - int_length(score), 1);
 }
 
 void draw_common_highscore(int highscore)
@@ -162,6 +162,7 @@ void draw_common_highscore(int highscore)
 	draw_text_coord(get_screen(), scoreStr, 16 - int_length(highscore), 1);
 }
 
+
 void draw_stage(int curLvl){
 	set_text_color(WhiteText);
 	draw_text_coord(get_screen(), "STAGE", 21, 0);
@@ -169,6 +170,32 @@ void draw_stage(int curLvl){
 	char levelStr[10];
 	sprintf(levelStr, "%01i", curLvl);
 	draw_text_coord(get_screen(), levelStr, 26, 0);
+}
+void draw_common_indicator(int mode)
+{
+	set_text_color(WhiteText);
+	if(mode == 0) draw_text_coord(get_screen(), "@", 6, 3);
+	else if(mode == 1) draw_text_coord(get_screen(), "@", 6, 5);
+	else draw_text_coord(get_screen(), "@", 6, 7);
+}
+
+void draw_common_solo(void)
+{
+	set_text_color(WhiteText);
+	draw_text_coord(get_screen(), "1 PLAY", 9, 3);
+}
+
+void draw_common_twoplay(void)
+{
+	set_text_color(WhiteText);
+	draw_text_coord(get_screen(), "2 PLAY", 9, 5);
+}
+
+void draw_common_multi(void)
+{
+	set_text_color(WhiteText);
+	draw_text_coord(get_screen(), "MULTI PLAY", 9, 7);
+
 }
 
 void draw_credits(int numCredits)
@@ -201,7 +228,8 @@ void draw_game_playerone_start(void)
 
 void draw_game_playertwo_start(void)
 {
-
+	set_text_color(OrangeText);
+	draw_text_coord(get_screen(), "PLAYER TWO", 9, 16);
 }
 
 void draw_game_ready(void)
@@ -408,6 +436,18 @@ void draw_pacman_lives(int numLives)
 	}
 }
 
+void draw_pacman_lives_player2(int numLives)
+{
+	int x = 18 * 16;
+	int y = 34 * 16;
+
+	for (int i = 0; i < numLives; i++)
+	{
+		apply_surface(x, y, pacman_life_image());
+
+		x += 16 * 2;
+	}
+}
 //
 // Ghost rendering
 //

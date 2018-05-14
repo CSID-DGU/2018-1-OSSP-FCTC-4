@@ -44,7 +44,14 @@ void draw_instrc_corporate_info(void);
 void draw_common_oneup(bool flashing, int score);
 void draw_common_twoup(bool flashing, int score);
 void draw_common_highscore(int highscore);
+
 void draw_stage(int curLvl);
+
+void draw_common_indicator(int mode);
+void draw_common_solo(void);
+void draw_common_twoplay(void);
+void draw_common_multi(void);
+
 void draw_credits(int numCredits);
 
 //
@@ -81,6 +88,7 @@ void draw_pacman(Pacman *pacman);
 void draw_pacman_static(Pacman *pacman);
 void draw_pacman_death(Pacman *pacman, unsigned int timeSinceDeath);
 void draw_pacman_lives(int numLives);
+void draw_pacman_lives_player2(int numLives);
 
 //
 // Ghost rendering

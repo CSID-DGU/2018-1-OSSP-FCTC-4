@@ -1,5 +1,6 @@
 #pragma once
 
+#include "main.h"
 #include "board.h"
 #include "fruit.h"
 #include "ghost.h"
@@ -15,6 +16,12 @@ typedef enum
 	DeathState,
 	GameoverState
 } GameState;
+
+typedef enum
+{
+	One,
+	Two
+} Player;
 
 //what you do in current state
 
@@ -33,12 +40,14 @@ typedef struct
 	GameState gameState;
 	unsigned int ticksSinceModeChange;
 	Pacman pacman;
+	Pacman pacman_enemy;
 	Ghost ghosts[4];
 	Board board;
 	PelletHolder pelletHolder;
 	GameFruit gameFruit1, gameFruit2, gameFruit3, gameFruit4, gameFruit5;
 	int highscore;
 	int currentLevel;
+	ModeState mode;
 } PacmanGame;
 
 //Updates the game 1 tick, or 1/60th of a second.
@@ -51,7 +60,7 @@ void game_render(PacmanGame *game);
 bool is_game_over(PacmanGame *game);
 
 //Call this at start of level 1 to initialize all entities and game objects.
-void gamestart_init(PacmanGame *game);
+void gamestart_init(PacmanGame *game, int mode);
 
 //Call this at the start of each level to reinitialize all entities to a default state.
 void level_init(PacmanGame *game);
