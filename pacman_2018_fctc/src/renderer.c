@@ -165,20 +165,27 @@ void draw_common_highscore(int highscore)
 void draw_common_indicator(int mode)
 {
 	set_text_color(WhiteText);
-	if(mode == 0) draw_text_coord(get_screen(), "O", 6, 4);
-	else draw_text_coord(get_screen(), "X", 6, 6);
+	if(mode == 0) draw_text_coord(get_screen(), "@", 6, 3);
+	else if(mode == 1) draw_text_coord(get_screen(), "@", 6, 5);
+	else draw_text_coord(get_screen(), "@", 6, 7);
 }
 
 void draw_common_solo(void)
 {
 	set_text_color(WhiteText);
-	draw_text_coord(get_screen(), "SOLO PLAY", 9, 4);
+	draw_text_coord(get_screen(), "1 PLAY", 9, 3);
+}
+
+void draw_common_twoplay(void)
+{
+	set_text_color(WhiteText);
+	draw_text_coord(get_screen(), "2 PLAY", 9, 5);
 }
 
 void draw_common_multi(void)
 {
 	set_text_color(WhiteText);
-	draw_text_coord(get_screen(), "MULTI PLAY", 9, 6);
+	draw_text_coord(get_screen(), "MULTI PLAY", 9, 7);
 }
 
 void draw_credits(int numCredits)

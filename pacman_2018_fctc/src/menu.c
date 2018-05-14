@@ -94,6 +94,7 @@ static void draw_mode_choice(MenuSystem *menuSystem)
 {
 	draw_common_indicator(menuSystem->mode);
 	draw_common_solo();
+	draw_common_twoplay();
 	draw_common_multi();
 }
 

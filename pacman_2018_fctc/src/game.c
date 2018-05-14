@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-static void process_player(Pacman *game, Board *board, Player player);
+static void process_player(Pacman *pacman, Board *board, bool player);
 static void process_fruit(PacmanGame *game);
 static void process_ghosts(PacmanGame *game);
 static void process_pellets(PacmanGame *game);
@@ -22,6 +22,8 @@ static void process_pellets(PacmanGame *game);
 static bool check_pacghost_collision(PacmanGame *game);     //return true if pacman collided with any ghosts
 static void enter_state(PacmanGame *game, GameState state); //transitions to/ from a state
 static bool resolve_telesquare(PhysicsBody *body);          //wraps the body around if they've gone tele square
+
+static Player death_player;
 
 void game_tick(PacmanGame *game)
 {
@@ -39,15 +41,15 @@ void game_tick(PacmanGame *game)
 			break;
 		case GamePlayState:
 			// everyone can move and this is the standard 'play' game mode
-			process_player(&game->pacman, &game->board, One);
-			if(game->mode == MultiState) process_player(&game->pacman_enemy, &game->board, Two);
+			process_player(&game->pacman, &game->board, key_who_player());
+			if(game->mode == MultiState) process_player(&game->pacman_enemy, &game->board, key_who_player2());
 			process_ghosts(game);
 
 			process_fruit(game);
 			process_pellets(game);
-
+			
 			if (game->pacman.score > game->highscore) game->highscore = game->pacman.score;
-			else if(game->mode == MultiState && (game->pacman_enemy.score > game->highscore) ) game->highscore = game->pacman_enemy.score;
+			if (game->mode == MultiState && (game->pacman_enemy.score > game->highscore) ) game->highscore = game->pacman_enemy.score;
 
 			break;
 		case WinState:
@@ -84,10 +86,11 @@ void game_tick(PacmanGame *game)
 
 	bool allPelletsEaten = game->pelletHolder.numLeft == 0;
 	bool collidedWithGhost = check_pacghost_collision(game);
+	
 	int lives = game->pacman.livesLeft;
 	int player2_lives = -1;
 	if(game->mode == MultiState) player2_lives = game->pacman_enemy.livesLeft;
-
+	
 	switch (game->gameState)
 	{
 		case GameBeginState:
@@ -97,6 +100,7 @@ void game_tick(PacmanGame *game)
 		case LevelBeginState:
 			if (dt > 1800) enter_state(game, GamePlayState);
 			game->pacman.godMode = false;
+			if(game->mode == MultiState) game->pacman_enemy.godMode = false;
 
 			break;
 		case GamePlayState:
@@ -116,7 +120,7 @@ void game_tick(PacmanGame *game)
 		case DeathState:
 			if (dt > 4000)
 			{
-				if (lives == 0) enter_state(game, GameoverState);
+				if (lives == 0 || player2_lives == 0) enter_state(game, GameoverState);
 				else enter_state(game, LevelBeginState);
 			}
 
@@ -291,7 +295,9 @@ static void enter_state(PacmanGame *game, GameState state)
 			// Player died and is starting a new game, subtract a life
 			if (state == LevelBeginState)
 			{
-				game->pacman.livesLeft--;
+				if(death_player == Two) game->pacman_enemy.livesLeft--;
+				else game->pacman.livesLeft--;
+				
 				pacdeath_init(game);
 			}
 		default: ; //do nothing
@@ -347,7 +353,7 @@ bool can_move(Pacman *pacman, Board *board, Direction dir)
 }
 
 //static void process_player(PacmanGame *game)
-static void process_player(Pacman *pacman, Board *board, Player player)
+static void process_player(Pacman *pacman, Board *board, bool player)
 {
 	if (pacman->missedFrames != 0)
 	{
@@ -362,8 +368,7 @@ static void process_player(Pacman *pacman, Board *board, Player player)
 	bool dirPressed = dir_pressed_now(&newDir);
 	
 	// 눌려진 버튼에따라 움직이게함
-	if(key_who_player() && player == Two) dirPressed = false;
-	else if(!key_who_player() && player == One) dirPressed = false;
+	if(!player) dirPressed = false;
 	
 	if (dirPressed)
 	{
@@ -539,7 +544,7 @@ static void process_fruit(PacmanGame *game)
 	unsigned int f5dt = ticks_game() - f5->startedAt;
 
 	Pacman *pac = &game->pacman;
-
+	
 	if (f1->fruitMode == Displaying)
 	{
 		if (f1dt > f1->displayTime) f1->fruitMode = Displayed;
@@ -562,7 +567,7 @@ static void process_fruit(PacmanGame *game)
 		}
 
 	//check for collisions
-
+	
 	if (f1->fruitMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
 	{
 		f1->fruitMode = Displayed;
@@ -599,6 +604,47 @@ static void process_fruit(PacmanGame *game)
 		f5->eatenAt = ticks_game();
 		pac->score += fruit_points(f5->fruit);
 	}
+	
+	if(game->mode == MultiState) {
+		pac = &game->pacman_enemy;
+		
+		if (f1->fruitMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
+		{
+			f1->fruitMode = Displayed;
+			f1->eaten = true;
+			f1->eatenAt = ticks_game();
+			pac->score += fruit_points(f1->fruit);
+		}
+
+		if (f2->fruitMode == Displaying && collides_obj(&pac->body, f2->x, f2->y))
+		{
+			f2->fruitMode = Displayed;
+			f2->eaten = true;
+			f2->eatenAt = ticks_game();
+			pac->score += fruit_points(f2->fruit);
+		}
+		if (f3->fruitMode == Displaying && collides_obj(&pac->body, f3->x, f3->y))
+		{
+			f3->fruitMode = Displayed;
+			f3->eaten = true;
+			f3->eatenAt = ticks_game();
+			pac->score += fruit_points(f3->fruit);
+		}
+		if (f4->fruitMode == Displaying && collides_obj(&pac->body, f4->x, f4->y))
+		{
+			f4->fruitMode = Displayed;
+			f4->eaten = true;
+			f4->eatenAt = ticks_game();
+			pac->score += fruit_points(f4->fruit);
+		}
+		if (f5->fruitMode == Displaying && collides_obj(&pac->body, f5->x, f5->y))
+		{
+			f5->fruitMode = Displayed;
+			f5->eaten = true;
+			f5->eatenAt = ticks_game();
+			pac->score += fruit_points(f5->fruit);
+		}
+	}
 
 }
 
@@ -627,6 +673,8 @@ static void process_pellets(PacmanGame *game)
 			if(pellet_check(p)) {
 				game->pacman.godMode = true;
 				game->pacman.originDt = ticks_game();
+				game->pacman_enemy.godMode = true;
+				game->pacman_enemy.originDt = ticks_game();
 				for(j = 0; j< 4; j++) {
 					if(game->ghosts[j].isDead == 2)
 						game->ghosts[j].isDead = 0;
@@ -642,8 +690,34 @@ static void process_pellets(PacmanGame *game)
 			//can only ever eat 1 pellet in a frame, so return
 			return;
 		}
-	}
+		if (collides_obj(&game->pacman_enemy.body, p->x, p->y))
+		{
+			holder->numLeft--;
 
+			p->eaten = true;
+			game->pacman_enemy.score += pellet_points(p);
+			if(pellet_check(p)) {
+				game->pacman.godMode = true;
+				game->pacman.originDt = ticks_game();
+				game->pacman_enemy.godMode = true;
+				game->pacman_enemy.originDt = ticks_game();
+				for(j = 0; j< 4; j++) {
+					if(game->ghosts[j].isDead == 2)
+						game->ghosts[j].isDead = 0;
+				}
+			}
+
+			//play eat sound
+
+			//eating a small pellet makes pacman not move for 1 frame
+			//eating a large pellet makes pacman not move for 3 frames
+			game->pacman_enemy.missedFrames = pellet_nop_frames(p);
+
+			//can only ever eat 1 pellet in a frame, so return
+			return;
+		}
+	}
+	
 	//maybe next time, poor pacman
 }
 
@@ -662,13 +736,28 @@ static bool check_pacghost_collision(PacmanGame *game)
 		*/
 
 		if (collides(&game->pacman.body, &g->body)) {
-			if(game->pacman.godMode == false)
+			if(game->pacman.godMode == false){
+				death_player = One;
 				return true;
+			}
 			else {
-				if(g->isDead == 2) {return true;}
+				if(g->isDead == 2) { death_player = One; return true;}
 				g->isDead = 1;
 				death_send(g);
 			}
+		}
+		if(game->mode == MultiState){
+				if (collides(&game->pacman_enemy.body, &g->body)) {
+					if(game->pacman_enemy.godMode == false){
+						death_player = Two;
+						return true;
+					}
+					else {
+						if(g->isDead == 2) { death_player = Two; return true;}
+						g->isDead = 1;
+						death_send(g);
+					}
+				}
 		}
 	}
 
@@ -721,6 +810,7 @@ void level_init(PacmanGame *game)
 void pacdeath_init(PacmanGame *game)
 {
 	pacman_level_init(&game->pacman);
+	if(game->mode == MultiState) pacman_level_init(&game->pacman_enemy);
 	ghosts_init(game->ghosts);
 
 	reset_fruit(&game->gameFruit1, &game->board);
