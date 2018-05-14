@@ -7,12 +7,12 @@
 
 #define DIR "images/"
 
-#define PNT_DIR "pts/"
+#define PNT_DIR "show_item/"
 
 #define MAP_DIR "map/"
 #define PEN_DIR "pen/"
 
-#define FRUIT_DIR "fruit/"
+#define ITEM_DIR "item/"
 
 #define ENTITIES_DIR "entities/"
 
@@ -66,7 +66,7 @@ SDL_Surface *largePellet;
 SDL_Surface *ptsWhiteImage;
 SDL_Surface *ptsPeachImage;
 
-SDL_Surface *fruitPoints[NUM_FRUIT];
+SDL_Surface *itemPoints[NUM_ITEM];
 SDL_Surface *ghostPoints[4];
 
 //
@@ -100,28 +100,26 @@ SDL_Surface *specImages[NUM_SPEC_IMAGES];
 //
 //fruit images
 //
-SDL_Surface *cherryImage;
-SDL_Surface *strawberryImage;
-SDL_Surface *peachImage;
-SDL_Surface *appleImage;
-SDL_Surface *grapesImage;
-SDL_Surface *galaxianImage;
-SDL_Surface *bellImage;
-SDL_Surface *keyImage;
+SDL_Surface *movefastImage;
+SDL_Surface *moveslowImage;
+SDL_Surface *moveusdImage;
+SDL_Surface *misileImage;
+SDL_Surface *lifeImage;
+SDL_Surface *profImage;
 
 void load_board_images(void);
 void load_pacman_images(void);
 void load_ghost_images(void);
 void load_misc_images(void);
 void load_char_images(void);
-void load_fruit_images(void);
+void load_item_images(void);
 
 void dispose_board_images(void);
 void dispose_pacman_images(void);
 void dispose_ghost_images(void);
 void dispose_misc_images(void);
 void dispose_char_images(void);
-void dispose_fruit_images(void);
+void dispose_item_images(void);
 
 void load_images(void)
 {
@@ -130,7 +128,7 @@ void load_images(void)
 	load_ghost_images();
 	load_misc_images();
 	load_char_images();
-	load_fruit_images();
+	load_item_images();
 }
 
 void dispose_images(void)
@@ -139,7 +137,7 @@ void dispose_images(void)
 	dispose_pacman_images();
 	dispose_misc_images();
 	dispose_char_images();
-	dispose_fruit_images();
+	dispose_item_images();
 }
 
 void load_diags(SDL_Surface *images[4], const char *file)
@@ -355,28 +353,24 @@ void dispose_ghost_images(void)
 	SDL_FreeSurface(ghostEyes[3]);
 }
 
-void load_fruit_images(void)
+void load_item_images(void)
 {
-	cherryImage     = load_image(DIR FRUIT_DIR "cherry.png");
-	strawberryImage = load_image(DIR FRUIT_DIR "strawberry.png");
-	peachImage      = load_image(DIR FRUIT_DIR "peach.png");
-	appleImage      = load_image(DIR FRUIT_DIR "apple.png");
-	grapesImage     = load_image(DIR FRUIT_DIR "grapes.png");
-	galaxianImage   = load_image(DIR FRUIT_DIR "galaxian.png");
-	bellImage       = load_image(DIR FRUIT_DIR "bell.png");
-	keyImage        = load_image(DIR FRUIT_DIR "key.png");
+	movefastImage     	= load_image(DIR ITEM_DIR "box.png");
+	moveslowImage 		= load_image(DIR ITEM_DIR "box.png");
+	moveusdImage      	= load_image(DIR ITEM_DIR "box.png");
+	misileImage      	= load_image(DIR ITEM_DIR "box.png");
+	lifeImage 			= load_image(DIR ITEM_DIR "box.png");
+	profImage			= load_image(DIR ITEM_DIR "box.png");
 }
 
-void dispose_fruit_images(void)
+void dispose_item_images(void)
 {
-	SDL_FreeSurface(cherryImage);
-	SDL_FreeSurface(strawberryImage);
-	SDL_FreeSurface(peachImage);
-	SDL_FreeSurface(appleImage);
-	SDL_FreeSurface(grapesImage);
-	SDL_FreeSurface(galaxianImage);
-	SDL_FreeSurface(bellImage);
-	SDL_FreeSurface(keyImage);
+	SDL_FreeSurface(movefastImage);
+	SDL_FreeSurface(moveslowImage);
+	SDL_FreeSurface(moveusdImage);
+	SDL_FreeSurface(misileImage);
+	SDL_FreeSurface(lifeImage);
+	SDL_FreeSurface(profImage);
 }
 
 void load_misc_images(void)
@@ -389,13 +383,13 @@ void load_misc_images(void)
 
 	char dirStr[256];
 
-	const char *fruitPntStr[] = {"100", "300", "500", "700", "1000", "2000", "3000", "5000"};
+	const char *itemPntStr[] = {"Fast", "Slow", "USD", "Missile", "Life", "Prof" };
 	const char *ghostPntStr[] = {"200", "400", "800", "1600"};
 
-	for (int i = 0; i < NUM_FRUIT; i++)
+	for (int i = 0; i < NUM_ITEM; i++)
 	{
-		sprintf(dirStr, "%s%s%s%s", DIR PNT_DIR, "fruit", fruitPntStr[i], ".png");
-		fruitPoints[i] = load_image(dirStr);
+		sprintf(dirStr, "%s%s%s%s", DIR PNT_DIR, "item", itemPntStr[i], ".png");
+		itemPoints[i] = load_image(dirStr);
 	}
 
 	for (int i = 0; i < 4; i++)
@@ -413,9 +407,9 @@ void dispose_misc_images(void)
 	SDL_FreeSurface(ptsWhiteImage);
 	SDL_FreeSurface(ptsPeachImage);
 
-	for (int i = 0; i < NUM_FRUIT; i++)
+	for (int i = 0; i < NUM_ITEM; i++)
 	{
-		SDL_FreeSurface(fruitPoints[i]);
+		SDL_FreeSurface(itemPoints[i]);
 	}
 
 	for (int i = 0; i < 4; i++)
@@ -725,39 +719,35 @@ SDL_Surface* ghost_eye_image(Direction dir)
 	return ghostEyes[dir];
 }
 
-SDL_Surface* get_fruit_image(Fruit fruit)
+SDL_Surface* get_item_image(Item item)
 {
-	switch (fruit)
+	switch (item)
 	{
-		case Cherry:     return cherryImage;
-		case Strawberry: return strawberryImage;
-		case Peach:      return peachImage;
-		case Apple:      return appleImage;
-		case Grapes:     return grapesImage;
-		case Galaxian:   return galaxianImage;
-		case Bell:       return bellImage;
-		case Key:        return keyImage;
+		case Move_Fast:     return movefastImage;
+		case Move_Slow: 	return moveslowImage;
+		case Move_USD:      return moveusdImage;
+		case Misile:      	return misileImage;
+		case Life:			return lifeImage;
+		case Prof:			return profImage;
 	}
 
 	printf("incorrect enum value\naborting\n");
 	exit(1);
 }
 
-SDL_Surface* get_fruit_score_image(Fruit fruit)
+SDL_Surface* get_itemshow_image(Item item)
 {
-	switch (fruit)
+	switch (item)
 	{
-		case Cherry:     return fruitPoints[0];
-		case Strawberry: return fruitPoints[1];
-		case Peach:      return fruitPoints[2];
-		case Apple:      return fruitPoints[3];
-		case Grapes:     return fruitPoints[4];
-		case Galaxian:   return fruitPoints[5];
-		case Bell:       return fruitPoints[6];
-		case Key:        return fruitPoints[7];
+		case Move_Fast:     return itemPoints[0];
+		case Move_Slow: 	return itemPoints[1];
+		case Move_USD:      return itemPoints[2];
+		case Misile:      	return itemPoints[3];
+		case Life:			return itemPoints[4];
+		case Prof:			return itemPoints[5];
 	}
 
-	printf("incorrect fruitscore enum value\naborting\n");
+	printf("incorrect itemimage enum value\naborting\n");
 	exit(1);
 }
 
