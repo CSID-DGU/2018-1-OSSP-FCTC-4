@@ -7,7 +7,7 @@
 
 #include "direction.h"
 #include "main.h"
-#include "fruit.h"
+#include "item.h"
 #include "ghost.h"
 
 #define NUM_CHAR_IMAGES 26
@@ -54,7 +54,7 @@ SDL_Surface** get_char_images(void);
 SDL_Surface** get_num_images(void);
 SDL_Surface** get_spec_images(void);
 
-SDL_Surface* get_fruit_image(Fruit fruit);
+SDL_Surface* get_itemshow_image(Item item);
 
 SDL_Surface* get_ghost_score_image(int i);
-SDL_Surface* get_fruit_score_image(Fruit fruit);
+SDL_Surface* get_item_image(Item item);

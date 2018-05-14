@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 #include "board.h"
-#include "fruit.h"
+#include "item.h"
 #include "ghost.h"
 #include "pacman.h"
 #include "pellet.h"
@@ -67,8 +67,8 @@ void draw_game_gameover(void);
 // Fruit renderering
 //
 
-void draw_fruit_indicators(int currentLevel);
-void draw_fruit_game(int currentLevel, GameFruit *gameFruit);
+void draw_item_indicators(int currentLevel);
+void draw_item_game(int currentLevel, GameItem *gameItem);
 
 //
 // Pellet renderering
@@ -102,7 +102,7 @@ void draw_eyes(Ghost *ghost);
 // Points rendering
 //
 
-void draw_fruit_pts(GameFruit *gameFruit);
+void draw_item_pts(GameItem *gameItem);
 
 //
 // Board rendering
