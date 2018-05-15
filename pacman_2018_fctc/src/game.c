@@ -14,8 +14,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-static void process_player(Pacman *pacman, Board *board, bool player);
 static void process_item(PacmanGame *game);
+static void process_player(Pacman *pacman, Board *board, Player player);
+static void process_fruit(PacmanGame *game);
 static void process_ghosts(PacmanGame *game);
 static void process_pellets(PacmanGame *game);
 
@@ -41,8 +42,8 @@ void game_tick(PacmanGame *game)
 			break;
 		case GamePlayState:
 			// everyone can move and this is the standard 'play' game mode
-			process_player(&game->pacman, &game->board, key_who_player());
-			if(game->mode == MultiState) process_player(&game->pacman_enemy, &game->board, key_who_player2());
+			process_player(&game->pacman, &game->board, One);
+			if(game->mode == MultiState) process_player(&game->pacman_enemy, &game->board, Two);
 			process_ghosts(game);
 
 			process_item(game);
@@ -354,7 +355,7 @@ bool can_move(Pacman *pacman, Board *board, Direction dir)
 	return is_valid_square(board, newX, newY) || is_tele_square(newX, newY);
 }
 
-static void process_player(Pacman *pacman, Board *board, bool player)
+static void process_player(Pacman *pacman, Board *board, Player player)
 {
 	if (pacman->missedFrames != 0)
 	{
@@ -366,10 +367,15 @@ static void process_player(Pacman *pacman, Board *board, bool player)
 	
 	Direction newDir;
 
-	bool dirPressed = dir_pressed_now(&newDir);
-	
+	bool dirPressed;
+	if(player == One) {
+		dirPressed = dir_pressed_now(&newDir);
+	}
+	else {
+		dirPressed = dir_pressed_now_player2(&newDir);
+	}
 	// 눌려진 버튼에따라 움직이게함
-	if(!player) dirPressed = false;
+	//if(!player) dirPressed = false;
 	
 	if (dirPressed)
 	{
