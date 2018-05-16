@@ -200,7 +200,6 @@ void game_render(PacmanGame *game)
 
 
 			draw_pacman(&game->pacman);
-			if(game->mode == MultiState) draw_pacman2(&game->pacman_enemy);
 
 			if(game->pacman.godMode == false) {
 				for (int i = 0; i < 4; i++) {
@@ -231,6 +230,41 @@ void game_render(PacmanGame *game)
 							game->ghosts[i].isDead = 0;
 					}
 				}
+			}
+			
+			if(game->mode == MultiState) {
+					draw_pacman2(&game->pacman_enemy);
+					
+					if(game->pacman_enemy.godMode == false) {
+						for (int i = 0; i < 4; i++) {
+							if(game->ghosts[i].isDead == 1) {
+								draw_eyes(&game->ghosts[i]);
+							} else
+								draw_ghost(&game->ghosts[i]);
+						}
+
+					} else {
+						if(godChange == false) {
+							game->pacman_enemy.originDt = ticks_game();
+							godChange = true;
+						}
+						godDt = ticks_game() - game->pacman_enemy.originDt;
+						for (int i = 0; i < 4; i++) {
+							if(game->ghosts[i].isDead == 1) {
+								draw_eyes(&game->ghosts[i]);
+							} else if(draw_scared_ghost(&game->ghosts[i], godDt)){
+								// nothing
+								if(game->ghosts[i].isDead == 2) {
+									draw_ghost(&game->ghosts[i]);
+								}
+							} else {
+								game->pacman_enemy.godMode = false;
+								godChange = false;
+								if(game->ghosts[i].isDead == 2)
+									game->ghosts[i].isDead = 0;
+							}
+						}
+					}
 			}
 			break;
 		case WinState:
