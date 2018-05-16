@@ -39,7 +39,11 @@ Item item_for_level(int level)
 		
 		ran = rand()%122;
 		
-
+		if(ran <= 30)
+			return Move_Fast;
+		else if(ran > 30 && ran <=45)
+			return Move_Slow;
+		else if(ran > 45 && ran <=60)
 			return Move_USD;
 
 	}
