@@ -150,7 +150,7 @@ void game_render(PacmanGame *game)
 	draw_common_highscore(game->highscore);
 
 	draw_pacman_lives(game->pacman.livesLeft);
-	if(game->mode == MultiState) draw_pacman_lives_player2(game->pacman_enemy.livesLeft);
+	if(game->mode == MultiState) draw_pacman2_lives(game->pacman_enemy.livesLeft);
 
 	draw_small_pellets(&game->pelletHolder);
 	draw_item_indicators(game->currentLevel);
@@ -173,7 +173,7 @@ void game_render(PacmanGame *game)
 
 			//we also draw pacman and ghosts (they are idle currently though)
 			draw_pacman_static(&game->pacman);
-			if(game->mode == MultiState) draw_pacman_static(&game->pacman_enemy);
+			if(game->mode == MultiState) draw_pacman2_static(&game->pacman_enemy);
 			
 			for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
 
@@ -200,7 +200,7 @@ void game_render(PacmanGame *game)
 
 
 			draw_pacman(&game->pacman);
-			if(game->mode == MultiState) draw_pacman(&game->pacman_enemy);
+			if(game->mode == MultiState) draw_pacman2(&game->pacman_enemy);
 
 			if(game->pacman.godMode == false) {
 				for (int i = 0; i < 4; i++) {
@@ -235,7 +235,7 @@ void game_render(PacmanGame *game)
 			break;
 		case WinState:
 			draw_pacman_static(&game->pacman);
-			if(game->mode == MultiState) draw_pacman_static(&game->pacman_enemy);
+			if(game->mode == MultiState) draw_pacman2_static(&game->pacman_enemy);
 
 			if (dt < 2000)
 			{
@@ -257,7 +257,7 @@ void game_render(PacmanGame *game)
 
 				//TODO: this actually draws the last frame pacman was on when he died
 				draw_pacman_static(&game->pacman);
-				if(game->mode == MultiState) draw_pacman_static(&game->pacman_enemy);
+				if(game->mode == MultiState) draw_pacman2_static(&game->pacman_enemy);
 
 				for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
 			}
@@ -265,7 +265,7 @@ void game_render(PacmanGame *game)
 			{
 				//draw the death animation
 				draw_pacman_death(&game->pacman, dt - 1000);
-				if(game->mode == MultiState) draw_pacman_death(&game->pacman_enemy, dt - 1000);
+				if(game->mode == MultiState) draw_pacman2_death(&game->pacman_enemy, dt - 1000);
 			}
 
 			draw_large_pellets(&game->pelletHolder, true);
