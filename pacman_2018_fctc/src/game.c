@@ -150,7 +150,7 @@ void game_render(PacmanGame *game)
 	draw_common_highscore(game->highscore);
 
 	draw_pacman_lives(game->pacman.livesLeft);
-	if(game->mode == MultiState) draw_pacman_lives_player2(game->pacman_enemy.livesLeft);
+	if(game->mode == MultiState) draw_pacman2_lives(game->pacman_enemy.livesLeft);
 
 	draw_small_pellets(&game->pelletHolder);
 	draw_item_indicators(game->currentLevel);
@@ -173,7 +173,7 @@ void game_render(PacmanGame *game)
 
 			//we also draw pacman and ghosts (they are idle currently though)
 			draw_pacman_static(&game->pacman);
-			if(game->mode == MultiState) draw_pacman_static(&game->pacman_enemy);
+			if(game->mode == MultiState) draw_pacman2_static(&game->pacman_enemy);
 			
 			for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
 
@@ -200,7 +200,6 @@ void game_render(PacmanGame *game)
 
 
 			draw_pacman(&game->pacman);
-			if(game->mode == MultiState) draw_pacman(&game->pacman_enemy);
 
 			if(game->pacman.godMode == false) {
 				for (int i = 0; i < 4; i++) {
@@ -232,10 +231,45 @@ void game_render(PacmanGame *game)
 					}
 				}
 			}
+			
+			if(game->mode == MultiState) {
+					draw_pacman2(&game->pacman_enemy);
+					
+					if(game->pacman_enemy.godMode == false) {
+						for (int i = 0; i < 4; i++) {
+							if(game->ghosts[i].isDead == 1) {
+								draw_eyes(&game->ghosts[i]);
+							} else
+								draw_ghost(&game->ghosts[i]);
+						}
+
+					} else {
+						if(godChange == false) {
+							game->pacman_enemy.originDt = ticks_game();
+							godChange = true;
+						}
+						godDt = ticks_game() - game->pacman_enemy.originDt;
+						for (int i = 0; i < 4; i++) {
+							if(game->ghosts[i].isDead == 1) {
+								draw_eyes(&game->ghosts[i]);
+							} else if(draw_scared_ghost(&game->ghosts[i], godDt)){
+								// nothing
+								if(game->ghosts[i].isDead == 2) {
+									draw_ghost(&game->ghosts[i]);
+								}
+							} else {
+								game->pacman_enemy.godMode = false;
+								godChange = false;
+								if(game->ghosts[i].isDead == 2)
+									game->ghosts[i].isDead = 0;
+							}
+						}
+					}
+			}
 			break;
 		case WinState:
 			draw_pacman_static(&game->pacman);
-			if(game->mode == MultiState) draw_pacman_static(&game->pacman_enemy);
+			if(game->mode == MultiState) draw_pacman2_static(&game->pacman_enemy);
 
 			if (dt < 2000)
 			{
@@ -257,7 +291,7 @@ void game_render(PacmanGame *game)
 
 				//TODO: this actually draws the last frame pacman was on when he died
 				draw_pacman_static(&game->pacman);
-				if(game->mode == MultiState) draw_pacman_static(&game->pacman_enemy);
+				if(game->mode == MultiState) draw_pacman2_static(&game->pacman_enemy);
 
 				for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
 			}
@@ -265,7 +299,7 @@ void game_render(PacmanGame *game)
 			{
 				//draw the death animation
 				draw_pacman_death(&game->pacman, dt - 1000);
-				if(game->mode == MultiState) draw_pacman_death(&game->pacman_enemy, dt - 1000);
+				if(game->mode == MultiState) draw_pacman2_death(&game->pacman_enemy, dt - 1000);
 			}
 
 			draw_large_pellets(&game->pelletHolder, true);
@@ -552,6 +586,13 @@ static void process_item(PacmanGame *game)
 	unsigned int f5dt = ticks_game() - f5->startedAt;
 
 	Pacman *pac = &game->pacman;
+	printf("remain time : %d\n", pac->itemRemainTime);
+	printf("velocity : %d\n", pac->body.velocity);
+	if(pac->itemRemainTime != 0) pac->itemRemainTime--;
+	else {
+		pac->body.velocity = 80;
+		pac->itemRemainTime = 0;
+	}
 	
 	if (f1->itemMode == Displaying)
 	{
@@ -587,12 +628,14 @@ static void process_item(PacmanGame *game)
 		if(f1->item==Life)
 			pac->livesLeft += 1;		
 		
-		if(f1->item==Move_Fast)
+		if(f1->item==Move_Fast) {
 			pac->body.velocity = 120;
-
-		if(f1->item==Move_Slow)
+			pac->itemRemainTime = 120;
+		}
+		if(f1->item==Move_Slow){
 			pac->body.velocity = 60;
-			
+			pac->itemRemainTime = 120;
+		}
 		if(f1->item==Prof)
 		for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 	}
@@ -607,12 +650,14 @@ static void process_item(PacmanGame *game)
 		if(f2->item==Life)
 			pac->livesLeft += 1;
 			
-		if(f2->item==Move_Fast) 
-			pac->body.velocity = 120;	
-
-		if(f2->item==Move_Slow)
+		if(f2->item==Move_Fast) {
+			pac->body.velocity = 120;
+			pac->itemRemainTime = 120;
+		}
+		if(f2->item==Move_Slow){
 			pac->body.velocity = 60;
-
+			pac->itemRemainTime = 120;
+		}
 		if(f2->item==Prof)
 		for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 	}
@@ -627,12 +672,14 @@ static void process_item(PacmanGame *game)
 		if(f3->item==Life)
 			pac->livesLeft += 1;
 			
-		if(f3->item==Move_Fast) 
+		if(f3->item==Move_Fast) {
 			pac->body.velocity = 120;
-
-		if(f3->item==Move_Slow)
+			pac->itemRemainTime = 120;
+		}
+		if(f3->item==Move_Slow){
 			pac->body.velocity = 60;
-
+			pac->itemRemainTime = 120;
+		}
 		if(f3->item==Prof)
 		for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 	}
@@ -647,12 +694,14 @@ static void process_item(PacmanGame *game)
 		if(f4->item==Life)
 			pac->livesLeft += 1;
 			
-		if(f4->item==Move_Fast) 
+		if(f4->item==Move_Fast) {
 			pac->body.velocity = 120;
-
-		if(f4->item==Move_Slow)
+			pac->itemRemainTime = 120;
+		}
+		if(f4->item==Move_Slow){
 			pac->body.velocity = 60;
-		
+			pac->itemRemainTime = 120;
+		}
 		if(f4->item==Prof)
 		for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 	}
@@ -667,12 +716,14 @@ static void process_item(PacmanGame *game)
 		if(f5->item==Life)
 			pac->livesLeft += 1;
 			
-		if(f5->item==Move_Fast) 
+		if(f5->item==Move_Fast) {
 			pac->body.velocity = 120;
-	
-		if(f5->item==Move_Slow)
+			pac->itemRemainTime = 120;
+		}
+		if(f5->item==Move_Slow){
 			pac->body.velocity = 60;
-
+			pac->itemRemainTime = 120;
+		}
 		if(f5->item==Prof)
 		for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 	}

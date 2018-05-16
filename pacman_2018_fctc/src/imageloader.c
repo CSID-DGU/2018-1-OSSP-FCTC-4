@@ -27,6 +27,7 @@
 #define SCARED_DIR "scared/"
 
 #define PAC_DIR "pacman/"
+#define PAC2_DIR "pacman_player2/"
 #define PAC_DEATH_DIR "death/"
 
 #define CHAR_DIR "realchar/"
@@ -73,11 +74,22 @@ SDL_Surface *ghostPoints[4];
 //pacman sprites
 //
 SDL_Surface *pacman;
-SDL_Surface *pacman2;
+SDL_Surface *pacman_boost;
 SDL_Surface *aniPacman[4][3];
 SDL_Surface *aniPacmanBoost[4][3];
 SDL_Surface *deathPacman[11];
 SDL_Surface *pacmanLifeIcon;
+
+//
+//pacman sprites
+//
+
+SDL_Surface *pacman2;
+SDL_Surface *pacman2_boost;
+SDL_Surface *aniPacman2[4][3];
+SDL_Surface *aniPacmanBoost2[4][3];
+SDL_Surface *deathPacman2[11];
+SDL_Surface *pacmanLifeIcon2;
 
 //
 //ghost sprites
@@ -109,6 +121,7 @@ SDL_Surface *profImage;
 
 void load_board_images(void);
 void load_pacman_images(void);
+void load_pacman_player2_images(void);
 void load_ghost_images(void);
 void load_misc_images(void);
 void load_char_images(void);
@@ -116,6 +129,7 @@ void load_item_images(void);
 
 void dispose_board_images(void);
 void dispose_pacman_images(void);
+void dispose_pacman_player2_images(void);
 void dispose_ghost_images(void);
 void dispose_misc_images(void);
 void dispose_char_images(void);
@@ -125,6 +139,7 @@ void load_images(void)
 {
 	load_board_images();
 	load_pacman_images();
+	load_pacman_player2_images();
 	load_ghost_images();
 	load_misc_images();
 	load_char_images();
@@ -135,6 +150,7 @@ void dispose_images(void)
 {
 	dispose_board_images();
 	dispose_pacman_images();
+	dispose_pacman_player2_images();
 	dispose_misc_images();
 	dispose_char_images();
 	dispose_item_images();
@@ -197,7 +213,7 @@ void dispose_board_images(void)
 void load_pacman_images(void)
 {
 	pacman = load_image(DIR ENTITIES_DIR PAC_DIR "pacman.png");
-	pacman2 = load_image(DIR ENTITIES_DIR PAC_DIR "pacman2.png");
+	pacman_boost = load_image(DIR ENTITIES_DIR PAC_DIR "pacman_boost.png");
 
 	pacmanLifeIcon = load_image(DIR ENTITIES_DIR PAC_DIR "pac_life_icon.png");
 
@@ -245,10 +261,60 @@ void load_pacman_images(void)
 	}
 }
 
+void load_pacman_player2_images(void)
+{
+	pacman2 = load_image(DIR ENTITIES_DIR PAC2_DIR "pacman_2.png");
+	pacman2_boost = load_image(DIR ENTITIES_DIR PAC2_DIR "pacman2_boost.png");
+
+	pacmanLifeIcon2 = load_image(DIR ENTITIES_DIR PAC2_DIR "pac_life_icon_2.png");
+
+	aniPacman2[0][0] = load_image(DIR ENTITIES_DIR PAC2_DIR "l0_2.png");
+	aniPacman2[0][1] = load_image(DIR ENTITIES_DIR PAC2_DIR "l1_2.png");
+	aniPacman2[0][2] = aniPacman2[0][0];
+
+	aniPacman2[1][0] = load_image(DIR ENTITIES_DIR PAC2_DIR "u0_2.png");
+	aniPacman2[1][1] = load_image(DIR ENTITIES_DIR PAC2_DIR "u1_2.png");
+	aniPacman2[1][2] = aniPacman2[1][0];
+
+	aniPacman2[2][0] = load_image(DIR ENTITIES_DIR PAC2_DIR "r0_2.png");
+	aniPacman2[2][1] = load_image(DIR ENTITIES_DIR PAC2_DIR "r1_2.png");
+	aniPacman2[2][2] = aniPacman2[2][0];
+
+	aniPacman2[3][0] = load_image(DIR ENTITIES_DIR PAC2_DIR "d0_2.png");
+	aniPacman2[3][1] = load_image(DIR ENTITIES_DIR PAC2_DIR "d1_2.png");
+	aniPacman2[3][2] = aniPacman2[3][0];
+
+	//Boost
+	aniPacmanBoost2[0][0] = load_image(DIR ENTITIES_DIR PAC2_DIR "l02_2.png");
+	aniPacmanBoost2[0][1] = load_image(DIR ENTITIES_DIR PAC2_DIR "l12_2.png");
+	aniPacmanBoost2[0][2] = aniPacmanBoost2[0][0];
+
+	aniPacmanBoost2[1][0] = load_image(DIR ENTITIES_DIR PAC2_DIR "u02_2.png");
+	aniPacmanBoost2[1][1] = load_image(DIR ENTITIES_DIR PAC2_DIR "u12_2.png");
+	aniPacmanBoost2[1][2] = aniPacmanBoost2[1][0];
+
+	aniPacmanBoost2[2][0] = load_image(DIR ENTITIES_DIR PAC2_DIR "r02_2.png");
+	aniPacmanBoost2[2][1] = load_image(DIR ENTITIES_DIR PAC2_DIR "r12_2.png");
+	aniPacmanBoost2[2][2] = aniPacmanBoost2[2][0];
+
+	aniPacmanBoost2[3][0] = load_image(DIR ENTITIES_DIR PAC2_DIR "d02_2.png");
+	aniPacmanBoost2[3][1] = load_image(DIR ENTITIES_DIR PAC2_DIR "d12_2.png");
+	aniPacmanBoost2[3][2] = aniPacmanBoost2[3][0];
+
+
+	char dirStr[256];
+
+	for (int i = 0; i < 11; i++)
+	{
+		sprintf(dirStr, "%s%s%d%s", DIR ENTITIES_DIR PAC2_DIR PAC_DEATH_DIR, "death", i, "_2.png");
+
+		deathPacman2[i] = load_image(dirStr);
+	}
+}
+
 void dispose_pacman_images(void)
 {
 	SDL_FreeSurface(pacman);
-	SDL_FreeSurface(pacman2);
 
 	SDL_FreeSurface(pacmanLifeIcon);
 
@@ -281,6 +347,44 @@ void dispose_pacman_images(void)
 	for (int i = 0; i < 11; i++)
 	{
 		SDL_FreeSurface(deathPacman[i]);
+	}
+}
+
+void dispose_pacman_player2_images(void)
+{
+	SDL_FreeSurface(pacman2);
+
+	SDL_FreeSurface(pacmanLifeIcon2);
+
+	SDL_FreeSurface(aniPacman2[0][0]);
+	SDL_FreeSurface(aniPacman2[0][1]);
+
+	SDL_FreeSurface(aniPacman2[1][0]);
+	SDL_FreeSurface(aniPacman2[1][1]);
+
+	SDL_FreeSurface(aniPacman2[2][0]);
+	SDL_FreeSurface(aniPacman2[2][1]);
+
+	SDL_FreeSurface(aniPacman2[3][0]);
+	SDL_FreeSurface(aniPacman2[3][1]);
+
+	//Boost
+
+	SDL_FreeSurface(aniPacmanBoost2[0][0]);
+	SDL_FreeSurface(aniPacmanBoost2[0][1]);
+
+	SDL_FreeSurface(aniPacmanBoost2[1][0]);
+	SDL_FreeSurface(aniPacmanBoost2[1][1]);
+
+	SDL_FreeSurface(aniPacmanBoost2[2][0]);
+	SDL_FreeSurface(aniPacmanBoost2[2][1]);
+
+	SDL_FreeSurface(aniPacmanBoost2[3][0]);
+	SDL_FreeSurface(aniPacmanBoost2[3][1]);
+
+	for (int i = 0; i < 11; i++)
+	{
+		SDL_FreeSurface(deathPacman2[i]);
 	}
 }
 
@@ -645,7 +749,7 @@ SDL_Surface *pacman_ani_boost_image(Direction dir, int frame)
 		exit(1);
 	}
 
-	if (frame == 0) return pacman2;
+	if (frame == 0) return pacman_boost;
 
 	switch(dir)
 	{
@@ -667,6 +771,67 @@ SDL_Surface* pacman_death_image(int i)
 SDL_Surface* pacman_life_image(void)
 {
 	return pacmanLifeIcon;
+}
+
+SDL_Surface* pacman2_image(void)
+{
+	return pacman2;
+}
+
+SDL_Surface *pacman2_ani_image(Direction dir, int frame)
+{
+	if (frame < 0 || frame > 4)
+	{
+		printf("invalid pacman frame: %d\n", frame);
+		printf("aborting\n");
+		exit(1);
+	}
+
+	if (frame == 0) return pacman2;
+
+	switch(dir)
+	{
+		case Left:  return aniPacman2[0][frame - 1];
+		case Up:    return aniPacman2[1][frame - 1];
+		case Right: return aniPacman2[2][frame - 1];
+		case Down:  return aniPacman2[3][frame - 1];
+	}
+
+	printf("incorrect enum value\naborting\n");
+	exit(1);
+}
+
+SDL_Surface *pacman2_ani_boost_image(Direction dir, int frame)
+{
+	if (frame < 0 || frame > 4)
+	{
+		printf("invalid pacman frame: %d\n", frame);
+		printf("aborting\n");
+		exit(1);
+	}
+
+	if (frame == 0) return pacman2_boost;
+
+	switch(dir)
+	{
+		case Left:  return aniPacmanBoost2[0][frame - 1];
+		case Up:    return aniPacmanBoost2[1][frame - 1];
+		case Right: return aniPacmanBoost2[2][frame - 1];
+		case Down:  return aniPacmanBoost2[3][frame - 1];
+	}
+
+	printf("incorrect enum value\naborting\n");
+	exit(1);
+}
+
+SDL_Surface* pacman2_death_image(int i)
+{
+	return deathPacman2[i];
+}
+
+SDL_Surface* pacman2_life_image(void)
+{
+	return pacmanLifeIcon2;
 }
 
 SDL_Surface* ghost_image(GhostType type, Direction dir, int frame)

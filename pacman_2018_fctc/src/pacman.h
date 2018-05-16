@@ -31,6 +31,7 @@ typedef struct
 	unsigned originDt;
 	Direction lastAttemptedMoveDirection;
 	MovementType movementType;
+	int itemRemainTime;
 } Pacman;
 
 

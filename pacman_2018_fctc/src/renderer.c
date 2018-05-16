@@ -436,14 +436,105 @@ void draw_pacman_lives(int numLives)
 	}
 }
 
-void draw_pacman_lives_player2(int numLives)
+//
+//
+// Pacman player2 renderering
+//
+//
+
+void draw_pacman2(Pacman *pacman)
+{
+	int frame;
+
+	Direction aniDir;
+
+	if (pacman->movementType == Stuck)
+	{
+		//if left/ down, he needs full open frame
+		//if up/ right, he uses semi-open frame
+		aniDir = pacman->lastAttemptedMoveDirection;
+		if (aniDir == Left || aniDir == Down)
+		{
+			frame = 2;
+		}
+		else
+		{
+			frame = 1;
+		}
+	}
+	else
+	{
+		aniDir = pacman->body.curDir;
+		frame = animation_get_frame(50, 4);
+	}
+
+	int xOffset = pacman->body.xOffset - 4;
+	int yOffset = offset + pacman->body.yOffset - 4;
+
+	if(!pacman->boostOn) {
+		draw_image_coord_offset(pacman2_ani_image(aniDir, frame), pacman->body.x, pacman->body.y, xOffset, yOffset);
+	} else {
+		draw_image_coord_offset(pacman2_ani_boost_image(aniDir, frame), pacman->body.x, pacman->body.y, xOffset, yOffset);
+	}
+}
+
+void draw_pacman2_static(Pacman *pacman)
+{
+	int xOffset = pacman->body.xOffset - 4;
+	int yOffset = offset + pacman->body.yOffset - 6;
+
+	draw_image_coord_offset(pacman2_image(), pacman->body.x, pacman->body.y, xOffset, yOffset);
+}
+
+void draw_pacman2_death(Pacman *pacman, unsigned int dt)
+{
+	//hangs on first image for 200ms
+	//cycles through rest of images at constant rate
+	//hangs on "plop" image for a while
+
+	unsigned int hang1 = 200;
+	unsigned int perFrame = 140;
+	unsigned int hang2 = 200;
+
+	int numFrames = 11;
+
+	SDL_Surface *image;
+
+	if (dt < hang1)
+	{
+		image = pacman2_death_image(0);
+	}
+	else if (dt < (hang1 + numFrames * perFrame))
+	{
+		int i = animation_get_frame_dt(dt - hang1, perFrame, numFrames);
+
+		image = pacman2_death_image(i);
+	}
+	else if (dt < (hang1 + numFrames * perFrame + hang2))
+	{
+		//draw last frame
+		image = pacman2_death_image(10);
+	}
+	else
+	{
+		//draw nothing
+		return;
+	}
+
+	int xOffset = pacman->body.xOffset - 4;
+	int yOffset = offset + pacman->body.yOffset - 6;
+
+	draw_image_coord_offset(image, pacman->body.x, pacman->body.y, xOffset, yOffset);
+}
+
+void draw_pacman2_lives(int numLives)
 {
 	int x = 18 * 16;
 	int y = 35 * 16;
 
 	for (int i = 0; i < numLives; i++)
 	{
-		apply_surface(x, y, pacman_life_image());
+		apply_surface(x, y, pacman2_life_image());
 
 		x += 16 * 2;
 	}
