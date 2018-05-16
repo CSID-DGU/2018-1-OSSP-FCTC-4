@@ -39,18 +39,9 @@ Item item_for_level(int level)
 		
 		ran = rand()%122;
 		
-		if(ran <= 30)
-			return Move_Fast;
-		else if(ran > 30 && ran <=45)
-			return Move_Slow;
-		else if(ran > 45 && ran <=60)
+
 			return Move_USD;
-		else if(ran > 60 && ran <=90)
-			return Misile;
-		else if(ran > 90 && ran <=120)
-			return Life;
-		else
-			return Prof;
+
 	}
 }
 
