@@ -4,7 +4,7 @@
 
 #include <SDL/SDL.h>
 
-#define NUM_PELLETS 244
+#define NUM_PELLETS 294
 
 //The different pellet types.
 typedef enum
