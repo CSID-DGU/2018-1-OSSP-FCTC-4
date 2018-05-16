@@ -74,6 +74,7 @@ SDL_Surface *ghostPoints[4];
 //pacman sprites
 //
 SDL_Surface *pacman;
+SDL_Surface *pacman_boost;
 SDL_Surface *aniPacman[4][3];
 SDL_Surface *aniPacmanBoost[4][3];
 SDL_Surface *deathPacman[11];
@@ -84,6 +85,7 @@ SDL_Surface *pacmanLifeIcon;
 //
 
 SDL_Surface *pacman2;
+SDL_Surface *pacman2_boost;
 SDL_Surface *aniPacman2[4][3];
 SDL_Surface *aniPacmanBoost2[4][3];
 SDL_Surface *deathPacman2[11];
@@ -211,6 +213,7 @@ void dispose_board_images(void)
 void load_pacman_images(void)
 {
 	pacman = load_image(DIR ENTITIES_DIR PAC_DIR "pacman.png");
+	pacman_boost = load_image(DIR ENTITIES_DIR PAC_DIR "pacman_boost.png");
 
 	pacmanLifeIcon = load_image(DIR ENTITIES_DIR PAC_DIR "pac_life_icon.png");
 
@@ -261,6 +264,7 @@ void load_pacman_images(void)
 void load_pacman_player2_images(void)
 {
 	pacman2 = load_image(DIR ENTITIES_DIR PAC2_DIR "pacman_2.png");
+	pacman2_boost = load_image(DIR ENTITIES_DIR PAC2_DIR "pacman2_boost.png");
 
 	pacmanLifeIcon2 = load_image(DIR ENTITIES_DIR PAC2_DIR "pac_life_icon_2.png");
 
@@ -745,7 +749,7 @@ SDL_Surface *pacman_ani_boost_image(Direction dir, int frame)
 		exit(1);
 	}
 
-	if (frame == 0) return pacman2;
+	if (frame == 0) return pacman_boost;
 
 	switch(dir)
 	{
@@ -806,7 +810,7 @@ SDL_Surface *pacman2_ani_boost_image(Direction dir, int frame)
 		exit(1);
 	}
 
-	if (frame == 0) return pacman2;
+	if (frame == 0) return pacman2_boost;
 
 	switch(dir)
 	{

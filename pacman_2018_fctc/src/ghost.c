@@ -191,8 +191,27 @@ void execute_red_logic(int curLvl, Ghost *redGhost, Pacman *pacman)
 			break;
 		case 2: 
 			// Red's AI is to set his target position to pacmans
-			redGhost->targetX = pacman->body.x;
-			redGhost->targetY = pacman->body.y;
+			tempX = pacman->body.x;
+			tempY = pacman->body.y;
+			redGhost->body.velocity = 85;
+			break;
+		case 3:
+			// Red's AI is to set his target position to pacmans
+			tempX = pacman->body.x;
+			tempY = pacman->body.y;
+			redGhost->body.velocity = 85;
+			break;
+		case 4:
+			// Red's AI is to set his target position to pacmans
+			tempX = pacman->body.x;
+			tempY = pacman->body.y;
+			redGhost->body.velocity = 90;
+			break;
+		case 5:
+			// Red's AI is to set his target position to pacmans
+			tempX = pacman->body.x;
+			tempY = pacman->body.y;
+			redGhost->body.velocity = 95;
 			break;
 	}
 	redGhost->targetX = tempX;
@@ -220,11 +239,28 @@ void execute_pink_logic(int curLvl, Ghost *pinkGhost, Pacman *pacman)
 		case 2:
 			//use dir_xy_buggy to get 4 up AND 4 left, as per bug in original game
 			dir_xy_buggy(pacman->body.curDir, &targetOffsetX, &targetOffsetY);
-
 			targetOffsetX *= 4;
 			targetOffsetY *= 4;
 			tempX = pacman->body.x + targetOffsetX;
 			tempY = pacman->body.y + targetOffsetY;
+			break;
+		case 3:
+			// Pink's AI is to set his target position to pacmans
+			tempX = pacman->body.x;
+			tempY = pacman->body.y;
+			pinkGhost->body.velocity = 85;
+			break;
+		case 4:
+			// Pink's AI is to set his target position to pacmans
+			tempX = pacman->body.x;
+			tempY = pacman->body.y;
+			pinkGhost->body.velocity = 90;
+			break;
+		case 5:
+			// Pink's AI is to set his target position to pacmans
+			tempX = pacman->body.x;
+			tempY = pacman->body.y;
+			pinkGhost->body.velocity = 95;
 			break;
 	}
 
@@ -245,6 +281,7 @@ void execute_orange_logic(int curLvl, Ghost *orangeGhost, Pacman *pacman)
 			break;
 
 		case 2:
+		case 3:
 			// Orange's logic is in two parts:
 			// If Pacmans distance is 8 or more squares away, his target is pacman
 			// If Pacman is less than 8 squares, his target is his home
@@ -273,6 +310,18 @@ void execute_orange_logic(int curLvl, Ghost *orangeGhost, Pacman *pacman)
 				send_to_home(orangeGhost, orangeGhost->ghostType);
 			}
 			break;
+		case 4:
+			// Orange's AI is to set his target position to pacmans
+			tempX = pacman->body.x;
+			tempY = pacman->body.y;
+			orangeGhost->body.velocity = 90;
+			break;
+		case 5:
+			// Orange's AI is to set his target position to pacmans
+			tempX = pacman->body.x;
+			tempY = pacman->body.y;
+			orangeGhost->body.velocity = 95;
+			break;
 	}
 	orangeGhost->targetX = tempX;
 	orangeGhost->targetY = tempY;
@@ -291,6 +340,7 @@ void execute_blue_logic(int curLvl, Ghost *blueGhost, Ghost *redGhost, Pacman *p
 			tempY = rand() % 8 + 23;
 			break;
 		case 2:
+		case 3:
 			offsetX = 0;
 			offsetY = 0;
 
@@ -309,6 +359,18 @@ void execute_blue_logic(int curLvl, Ghost *blueGhost, Ghost *redGhost, Pacman *p
 			tempX = 2 * tx - rx;
 			tempY = 2 * ty - ry;
 
+			break;
+		case 4:
+			// Blue's AI is to set his target position to pacmans
+			tempX = pacman->body.x;
+			tempY = pacman->body.y;
+			blueGhost->body.velocity = 90;
+			break;
+		case 5:
+			// Blue's AI is to set his target position to pacmans
+			tempX = pacman->body.x;
+			tempY = pacman->body.y;
+			blueGhost->body.velocity = 95;
 			break;
 	}
 	blueGhost->targetX = tempX;
