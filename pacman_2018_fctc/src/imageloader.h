@@ -42,6 +42,12 @@ SDL_Surface* pacman_ani_boost_image(Direction dir, int frame);
 SDL_Surface* pacman_death_image(int i);
 SDL_Surface* pacman_life_image(void);
 
+SDL_Surface* pacman2_image(void);
+SDL_Surface* pacman2_ani_image(Direction dir, int frame);
+SDL_Surface* pacman2_ani_boost_image(Direction dir, int frame);
+SDL_Surface* pacman2_death_image(int i);
+SDL_Surface* pacman2_life_image(void);
+
 SDL_Surface* ghost_image(GhostType type, Direction dir, int frame);
 SDL_Surface* scared_ghost_image(int frame);
 SDL_Surface* ghost_eye_image(Direction dir);

@@ -88,7 +88,15 @@ void draw_pacman(Pacman *pacman);
 void draw_pacman_static(Pacman *pacman);
 void draw_pacman_death(Pacman *pacman, unsigned int timeSinceDeath);
 void draw_pacman_lives(int numLives);
-void draw_pacman_lives_player2(int numLives);
+
+//
+// Pacman2 renderering
+//
+
+void draw_pacman2(Pacman *pacman);
+void draw_pacman2_static(Pacman *pacman);
+void draw_pacman2_death(Pacman *pacman, unsigned int timeSinceDeath);
+void draw_pacman2_lives(int numLives);
 
 //
 // Ghost rendering
