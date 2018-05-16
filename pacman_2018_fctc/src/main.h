@@ -1,9 +1,10 @@
 #pragma once
 
 //28 across, 36 down, 16 pixels each square.
-#define SCREEN_TITLE "Tphakumahn"
+//28 across, 40 down, 16 pixels each square.
+#define SCREEN_TITLE "Tphakumahn - ver.2018FCTC"
 #define SCREEN_WIDTH 448
-#define SCREEN_HEIGHT 576
+#define SCREEN_HEIGHT 640 //origin : 576
 
 //Defines the main states the program can be in.
 typedef enum

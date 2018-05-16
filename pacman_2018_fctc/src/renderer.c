@@ -15,8 +15,8 @@ void draw_image_coord_offset(SDL_Surface *surface, int x, int y, int xOffset, in
 
 //Offset the board is off from the top of the screen
 //Needed because some items are stored in board (x,y) coords and need to be rendered at an offset
-#define Y_OFFSET 3
-static int offset = 3 * 16;
+#define Y_OFFSET 4
+static int offset = 4 * 16;
 
 void draw_image_coord(SDL_Surface *surface, int x, int y)
 {
@@ -126,50 +126,50 @@ void draw_instrc_corporate_info(void)
 void draw_common_oneup(bool flashing, int score)
 {
 	set_text_color(WhiteText);
-	draw_numtext_coord(get_screen(), "1", 3, 0);
-	draw_text_coord(get_screen(), "UP", 4, 0);
+	draw_numtext_coord(get_screen(), "1", 3, 1);
+	draw_text_coord(get_screen(), "UP", 4, 1);
 
 	if (flashing && animation_get_frame(265, 2)) return;
 
 	char scoreStr[256];
 	sprintf(scoreStr, "%01i", score);
-	draw_text_coord(get_screen(), scoreStr, 6 - int_length(score), 1);
+	draw_text_coord(get_screen(), scoreStr, 6 - int_length(score), 2);
 }
 
 void draw_common_twoup(bool flashing, int score)
 {
 	set_text_color(WhiteText);
-	draw_numtext_coord(get_screen(), "2", 22, 0);
-	draw_text_coord(get_screen(), "UP", 23, 0);
+	draw_numtext_coord(get_screen(), "2", 22, 1);
+	draw_text_coord(get_screen(), "UP", 23, 1);
 
 	if (flashing && animation_get_frame(265, 2)) return;
 
 	char scoreStr[256];
 	sprintf(scoreStr, "%01i", score);
-	draw_text_coord(get_screen(), scoreStr, 25 - int_length(score), 1);
+	draw_text_coord(get_screen(), scoreStr, 25 - int_length(score), 2);
 }
 
 void draw_common_highscore(int highscore)
 {
 	set_text_color(WhiteText);
-	draw_text_coord(get_screen(), "HIGH SCORE", 9, 0);
+	draw_text_coord(get_screen(), "HIGH SCORE", 9, 1);
 
 	//game doesn't render highscore if it is 0 for some reason. Emulate this behaviour
 	if (highscore == 0) return;
 
 	char scoreStr[256];
 	sprintf(scoreStr, "%01i", highscore);
-	draw_text_coord(get_screen(), scoreStr, 16 - int_length(highscore), 1);
+	draw_text_coord(get_screen(), scoreStr, 16 - int_length(highscore), 2);
 }
 
 
 void draw_stage(int curLvl){
 	set_text_color(WhiteText);
-	draw_text_coord(get_screen(), "STAGE", 21, 0);
+	draw_text_coord(get_screen(), "STAGE", 11, 0);
 
 	char levelStr[10];
 	sprintf(levelStr, "%01i", curLvl);
-	draw_text_coord(get_screen(), levelStr, 26, 0);
+	draw_text_coord(get_screen(), levelStr, 16, 0);
 }
 void draw_common_indicator(int mode)
 {
@@ -223,25 +223,25 @@ void draw_credits(int numCredits)
 void draw_game_playerone_start(void)
 {
 	set_text_color(CyanText);
-	draw_text_coord(get_screen(), "PLAYER ONE", 9, 14);
+	draw_text_coord(get_screen(), "PLAYER ONE", 9, 15);
 }
 
 void draw_game_playertwo_start(void)
 {
 	set_text_color(OrangeText);
-	draw_text_coord(get_screen(), "PLAYER TWO", 9, 16);
+	draw_text_coord(get_screen(), "PLAYER TWO", 9, 17);
 }
 
 void draw_game_ready(void)
 {
 	set_text_color(YellowText);
-	draw_text_coord(get_screen(), "READY!", 11, 20);
+	draw_text_coord(get_screen(), "READY!", 11, 21);
 }
 
 void draw_game_gameover(void)
 {
 	set_text_color(RedText);
-	draw_text_coord(get_screen(), "GAME  OVER", 9, 20);
+	draw_text_coord(get_screen(), "GAME  OVER", 9, 21);
 }
 
 //
@@ -259,7 +259,7 @@ void draw_item_indicators(int currentLevel)
 	}
 
 	int x = 26 * 16;
-	int y = 34 * 16;
+	int y = 36 * 16;
 
 	int index = currentLevel > 7 ? 7 : currentLevel;
 
@@ -279,7 +279,7 @@ void draw_item_game(int currentLevel, GameItem *gameItem)
 	SDL_Surface *image = get_item_image(item);
 
 	//TODO: maybe this offset isn't the same for all fruit. Investigate
-	draw_image_coord_offset(image, gameItem->x, gameItem->y + 2, -5, 8);
+	draw_image_coord_offset(image, gameItem->x, gameItem->y + 3, -5, 8);
 }
 
 //
@@ -426,7 +426,7 @@ void draw_pacman_death(Pacman *pacman, unsigned int dt)
 void draw_pacman_lives(int numLives)
 {
 	int x = 2 * 16;
-	int y = 34 * 16;
+	int y = 35 * 16;
 
 	for (int i = 0; i < numLives; i++)
 	{
@@ -439,7 +439,7 @@ void draw_pacman_lives(int numLives)
 void draw_pacman_lives_player2(int numLives)
 {
 	int x = 18 * 16;
-	int y = 34 * 16;
+	int y = 35 * 16;
 
 	for (int i = 0; i < numLives; i++)
 	{
