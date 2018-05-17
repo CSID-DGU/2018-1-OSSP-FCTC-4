@@ -32,6 +32,7 @@ typedef struct
 	Direction lastAttemptedMoveDirection;
 	MovementType movementType;
 	int itemRemainTime;
+	int usd;
 } Pacman;
 
 

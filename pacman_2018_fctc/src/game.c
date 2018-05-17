@@ -380,8 +380,11 @@ bool can_move(Pacman *pacman, Board *board, Direction dir)
 	//pacman is at 0/0 and moving in the requested direction depends on if there is a valid tile there
 	int x = 0;
 	int y = 0;
-
-	dir_xy(dir, &x, &y);
+	
+	if(pacman->usd == 1)
+		dir_xy_usd(dir, &x, &y);
+	else
+		dir_xy(dir, &x, &y);	
 
 	int newX = pacman->body.x + x;
 	int newY = pacman->body.y + y;
@@ -455,9 +458,16 @@ static void process_player(Pacman *pacman, Board *board, Player player)
 	int nextDirX = 0;
 	int nextDirY = 0;
 
-	dir_xy(pacman->body.curDir, &curDirX, &curDirY);
-	dir_xy(pacman->body.nextDir, &nextDirX, &nextDirY);
-
+	if(pacman->usd==1){
+		dir_xy_usd(pacman->body.curDir, &curDirX, &curDirY);
+		dir_xy_usd(pacman->body.nextDir, &nextDirX, &nextDirY);
+	}
+	
+	else{
+		dir_xy(pacman->body.curDir, &curDirX, &curDirY);
+		dir_xy(pacman->body.nextDir, &nextDirX, &nextDirY);
+	}
+	
 	int newCurX = pacman->body.x + curDirX;
 	int newCurY = pacman->body.y + curDirY;
 	int newNextX = pacman->body.x + nextDirX;
@@ -586,12 +596,12 @@ static void process_item(PacmanGame *game)
 	unsigned int f5dt = ticks_game() - f5->startedAt;
 
 	Pacman *pac = &game->pacman;
-	printf("remain time : %d\n", pac->itemRemainTime);
-	printf("velocity : %d\n", pac->body.velocity);
+	
 	if(pac->itemRemainTime != 0) pac->itemRemainTime--;
 	else {
 		pac->body.velocity = 80;
 		pac->itemRemainTime = 0;
+		pac->usd = 0;
 	}
 	
 	if (f1->itemMode == Displaying)
@@ -630,14 +640,21 @@ static void process_item(PacmanGame *game)
 		
 		if(f1->item==Move_Fast) {
 			pac->body.velocity = 120;
-			pac->itemRemainTime = 120;
+			pac->itemRemainTime = 150;
 		}
+		
 		if(f1->item==Move_Slow){
 			pac->body.velocity = 60;
-			pac->itemRemainTime = 120;
+			pac->itemRemainTime = 150;
 		}
+		
 		if(f1->item==Prof)
-		for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+		
+		if(f1->item==Move_USD) {
+			pac->usd = 1;
+			pac->itemRemainTime = 150;
+		}
 	}
 
 	if (f2->itemMode == Displaying && collides_obj(&pac->body, f2->x, f2->y))
@@ -652,14 +669,21 @@ static void process_item(PacmanGame *game)
 			
 		if(f2->item==Move_Fast) {
 			pac->body.velocity = 120;
-			pac->itemRemainTime = 120;
+			pac->itemRemainTime = 150;
 		}
+		
 		if(f2->item==Move_Slow){
 			pac->body.velocity = 60;
-			pac->itemRemainTime = 120;
+			pac->itemRemainTime = 150;
 		}
+		
 		if(f2->item==Prof)
-		for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+		
+		if(f2->item==Move_USD) {
+			pac->usd = 1;
+			pac->itemRemainTime = 150;
+		}		
 	}
 
 	if (f3->itemMode == Displaying && collides_obj(&pac->body, f3->x, f3->y))
@@ -674,14 +698,21 @@ static void process_item(PacmanGame *game)
 			
 		if(f3->item==Move_Fast) {
 			pac->body.velocity = 120;
-			pac->itemRemainTime = 120;
+			pac->itemRemainTime = 150;
 		}
+		
 		if(f3->item==Move_Slow){
 			pac->body.velocity = 60;
-			pac->itemRemainTime = 120;
+			pac->itemRemainTime = 150;
 		}
+		
 		if(f3->item==Prof)
-		for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+		
+		if(f3->item==Move_USD) {
+			pac->usd = 1;
+			pac->itemRemainTime = 150;
+		}			
 	}
 	
 	if (f4->itemMode == Displaying && collides_obj(&pac->body, f4->x, f4->y))
@@ -696,14 +727,21 @@ static void process_item(PacmanGame *game)
 			
 		if(f4->item==Move_Fast) {
 			pac->body.velocity = 120;
-			pac->itemRemainTime = 120;
+			pac->itemRemainTime = 150;
 		}
+		
 		if(f4->item==Move_Slow){
 			pac->body.velocity = 60;
-			pac->itemRemainTime = 120;
+			pac->itemRemainTime = 150;
 		}
+		
 		if(f4->item==Prof)
-		for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+		
+		if(f4->item==Move_USD) {
+			pac->usd = 1;
+			pac->itemRemainTime = 150;
+		}			
 	}
 	
 	if (f5->itemMode == Displaying && collides_obj(&pac->body, f5->x, f5->y))
@@ -718,14 +756,21 @@ static void process_item(PacmanGame *game)
 			
 		if(f5->item==Move_Fast) {
 			pac->body.velocity = 120;
-			pac->itemRemainTime = 120;
+			pac->itemRemainTime = 150;
 		}
+		
 		if(f5->item==Move_Slow){
 			pac->body.velocity = 60;
-			pac->itemRemainTime = 120;
+			pac->itemRemainTime = 150;
 		}
+		
 		if(f5->item==Prof)
-		for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+	
+		if(f5->item==Move_USD) {
+			pac->usd = 1;
+			pac->itemRemainTime = 150;
+		}	
 	}
 	
 	if(game->mode == MultiState) {
@@ -749,6 +794,11 @@ static void process_item(PacmanGame *game)
 				
 			if(f1->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+
+			if(f1->item==Move_USD) {
+				pac->usd = 1;
+				pac->itemRemainTime = 150;
+			}			
 		}
 
 		if (f2->itemMode == Displaying && collides_obj(&pac->body, f2->x, f2->y))
@@ -769,6 +819,11 @@ static void process_item(PacmanGame *game)
 
 			if(f2->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+
+			if(f2->item==Move_USD) {
+				pac->usd = 1;
+				pac->itemRemainTime = 150;
+			}			
 		}
 
 		if (f3->itemMode == Displaying && collides_obj(&pac->body, f3->x, f3->y))
@@ -789,6 +844,11 @@ static void process_item(PacmanGame *game)
 
 			if(f3->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+		
+			if(f3->item==Move_USD) {
+				pac->usd = 1;
+				pac->itemRemainTime = 150;
+			}			
 		}
 		
 		if (f4->itemMode == Displaying && collides_obj(&pac->body, f4->x, f4->y))
@@ -809,6 +869,11 @@ static void process_item(PacmanGame *game)
 			
 			if(f4->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+			
+			if(f4->item==Move_USD) {
+				pac->usd = 1;
+				pac->itemRemainTime = 150;
+			}			
 		}
 		
 		if (f5->itemMode == Displaying && collides_obj(&pac->body, f5->x, f5->y))
@@ -829,6 +894,11 @@ static void process_item(PacmanGame *game)
 
 			if(f5->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+			
+			if(f5->item==Move_USD) {
+				pac->usd = 1;
+				pac->itemRemainTime = 150;
+			}			
 		}
 	}
 
