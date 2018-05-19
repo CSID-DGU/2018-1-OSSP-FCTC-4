@@ -38,7 +38,7 @@ static void internal_tick(void);
 static void internal_render(void);
 
 //Processess and deals with all SDL events.
-static void* process_events(void *a);
+static void process_events(Player player);
 
 //Performs specific actions on various keypresses. Used for testing.
 static void key_down_hacks(int keycode);
@@ -66,11 +66,10 @@ static void main_loop(void)
 {
 	while (gameRunning && !key_held(SDLK_ESCAPE))
 	{
-		Player p1 = One, p2 = Two;
 		if(state == Game && pacmanGame.mode == MultiState) {
-			process_events(&p2);
+			process_events(Two);
 		}
-		else process_events(&p1);
+		else process_events(One);
 		
 		internal_tick();
 		internal_render();
@@ -171,9 +170,8 @@ static void clean_up(void)
 	SDL_Quit();
 }
 
-static void* process_events(void *player)
+static void process_events(Player player)
 {
-	//pthread_mutex_lock(&mutex);
 	static SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{	
@@ -186,14 +184,14 @@ static void* process_events(void *player)
 				break;
 			case SDL_KEYDOWN:
 				handle_keydown(event.key.keysym.sym);
-				if (*((Player*)player) == Two) handle_keydown_player2(event.key.keysym.sym);
+				if (player == Two) handle_keydown_player2(event.key.keysym.sym);
 			
 				key_down_hacks(event.key.keysym.sym);
 				
 				break;
 			case SDL_KEYUP:
 				handle_keyup(event.key.keysym.sym);	
-				if (*((Player*)player) == Two) handle_keyup_player2(event.key.keysym.sym);
+				if (player == Two) handle_keyup_player2(event.key.keysym.sym);
 
 				break;
 		}
