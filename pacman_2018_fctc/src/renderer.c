@@ -57,6 +57,12 @@ void draw_vanity_charnickname(void)
 	draw_text_coord(get_screen(), "CHARACTER / NICKNAME", 5, 10);
 }
 
+void draw_vanity_text(const char *text, int x, int y)
+{
+	set_text_color(WhiteText);
+	draw_text_coord(get_screen(), text, x, y);
+}
+
 void draw_vanity_corporate_info(void)
 {
 	set_text_color(PinkText);
@@ -171,31 +177,13 @@ void draw_stage(int curLvl){
 	sprintf(levelStr, "%01i", curLvl);
 	draw_text_coord(get_screen(), levelStr, 26, 0);
 }
-void draw_common_indicator(int mode)
+
+void draw_common_indicator(int mode, int x, int y)
 {
 	set_text_color(WhiteText);
-	if(mode == 0) draw_text_coord(get_screen(), "@", 6, 3);
-	else if(mode == 1) draw_text_coord(get_screen(), "@", 6, 5);
-	else draw_text_coord(get_screen(), "@", 6, 7);
-}
-
-void draw_common_solo(void)
-{
-	set_text_color(WhiteText);
-	draw_text_coord(get_screen(), "1 PLAY", 9, 3);
-}
-
-void draw_common_twoplay(void)
-{
-	set_text_color(WhiteText);
-	draw_text_coord(get_screen(), "2 PLAY", 9, 5);
-}
-
-void draw_common_multi(void)
-{
-	set_text_color(WhiteText);
-	draw_text_coord(get_screen(), "MULTI PLAY", 9, 7);
-
+	if(mode == 0) draw_text_coord(get_screen(), "@", x, y+3);
+	else if(mode == 1) draw_text_coord(get_screen(), "@", x, y+5);
+	else draw_text_coord(get_screen(), "@", x, y+7);
 }
 
 void draw_credits(int numCredits)

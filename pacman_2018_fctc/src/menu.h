@@ -5,12 +5,17 @@
 typedef enum
 {
 	Nothing,
-	GoToGame
+	GoToGame,
+	ReadyConnect,
+	ServerWait,
+	ConnectClient
 } MenuAction;
 
 //Defines the menu system.
 typedef struct
 {
+	char* severIP;
+	RemoteRole role;
 	ModeState mode;
 	MenuAction action;
 	unsigned int ticksSinceModeChange;
@@ -18,8 +23,10 @@ typedef struct
 
 //Performs a single tick on the menu system.
 void menu_tick(MenuSystem *menuSystem);
+void remote_tick(MenuSystem *menuSystem);
 
 //Renders the menu system in its current state.
 void menu_render(MenuSystem *menuSystem);
+void remote_render(MenuSystem *menuSystem);
 
 void menu_init(MenuSystem *menuSystem);

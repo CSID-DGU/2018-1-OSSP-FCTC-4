@@ -84,11 +84,13 @@ static void internal_tick(void)
 	{
 		case Menu:
 			menu_tick(&menuSystem);
-
 			if (menuSystem.action == GoToGame)
 			{
 				state = Game;
 				startgame_init();
+			}
+			else if(menuSystem.action == ReadyConnect){
+				state = Remote;
 			}
 
 			break;
@@ -98,9 +100,13 @@ static void internal_tick(void)
 			if (is_game_over(&pacmanGame))
 			{
 				menu_init(&menuSystem);
-				state = Menu;
+				state = Remote;
 			}
 
+			break;
+		case Remote:
+			remote_tick(&menuSystem);
+			
 			break;
 		case Intermission:
 			intermission_tick();
@@ -120,6 +126,9 @@ static void internal_render(void)
 		case Game:
 			game_render(&pacmanGame);
 			break;
+		case Remote:
+			remote_render(&menuSystem);
+			break;
 		case Intermission:
 			intermission_render();
 			break;
@@ -136,9 +145,6 @@ static void game_init(void)
 	//set to be in menu
 	state = Menu;
 	
-	//set to be in solo play
-	menuSystem.mode = SoloState;
-
 	//init the framerate manager
 	fps_init(60);
 
@@ -175,7 +181,6 @@ static void process_events(Player player)
 	static SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{	
-		
 		switch (event.type)
 		{
 			case SDL_QUIT:
@@ -239,16 +244,41 @@ static void key_down_hacks(int keycode)
 		numCredits++;
 	}
 	
-	if (state == Menu && keycode == SDLK_DOWN) 
-	{
-		menuSystem.mode++;
-		if(menuSystem.mode > 2) menuSystem.mode = 0;
+	if(state == Menu){
+		if (keycode == SDLK_DOWN) 
+		{
+			menuSystem.mode++;
+			if(menuSystem.mode > 2) menuSystem.mode = 0;
+		}
+		
+		if (keycode == SDLK_UP)
+		{
+			menuSystem.mode--;
+			if(menuSystem.mode == -1) menuSystem.mode = 2;
+		}
+	}
+	else if(state == Remote){
+		
+		if (keycode == SDLK_DOWN) 
+		{
+			if(menuSystem.role == None) menuSystem.role = Server;
+			menuSystem.role++;
+			if(menuSystem.role > 2) menuSystem.role = 1;
+		}
+		
+		if (keycode == SDLK_UP)
+		{
+			if(menuSystem.role == None) menuSystem.role = Server;
+			menuSystem.role--;
+			if(menuSystem.role == 0) menuSystem.role = 2;
+		}
 	}
 	
-	if (state == Menu && keycode == SDLK_UP)
-	{
-		menuSystem.mode--;
-		if(menuSystem.mode == -1) menuSystem.mode = 2;
+	if(menuSystem.action == ConnectClient) {
+		int len = strlen(menuSystem.severIP);
+		
+		if ( (keycode == SDLK_BACKSPACE) && (len > 0) ) menuSystem.severIP[len-1] = NULL;
+		if ( len < 20 && ( (keycode >= SDLK_0 && keycode <= SDLK_9) || keycode == SDLK_PERIOD) ) menuSystem.severIP[len] = keycode;
 	}
 	
 	if (keycode == SDLK_9)

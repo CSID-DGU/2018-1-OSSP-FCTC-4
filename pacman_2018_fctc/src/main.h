@@ -10,6 +10,7 @@ typedef enum
 {
 	Menu,
 	Game,
+	Remote,
 	Intermission
 } ProgramState;
 
@@ -19,6 +20,13 @@ typedef enum
 	MultiState,
 	RemoteState
 } ModeState;
+
+typedef enum
+{
+	None,
+	Server,
+	Client
+} RemoteRole;
 
 //Returns the number of credits the user currently has.
 int num_credits(void);
