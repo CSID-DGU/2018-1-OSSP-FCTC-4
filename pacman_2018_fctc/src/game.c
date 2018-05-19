@@ -153,7 +153,6 @@ void game_render(PacmanGame *game)
 	if(game->mode == MultiState) draw_pacman2_lives(game->pacman_enemy.livesLeft);
 
 	draw_small_pellets(&game->pelletHolder);
-	draw_item_indicators(game->currentLevel);
 
 	//in gameover state big pellets don't render
 	//in gamebegin + levelbegin big pellets don't flash

@@ -250,27 +250,7 @@ void draw_game_gameover(void)
 //
 //
 
-void draw_item_indicators(int currentLevel)
-{
-	if (currentLevel < 1)
-	{
-		printf("invalid level number for drawing fruit: %d\naborting\n", currentLevel);
-		exit(1);
-	}
 
-	int x = 26 * 16;
-	int y = 36 * 16;
-
-	int index = currentLevel > 7 ? 7 : currentLevel;
-
-	for (int i = index; i > 0; i--)
-	{
-		Item item = item_for_level(currentLevel - (index - i));
-		SDL_Surface *image = get_item_image(item);
-
-		apply_surface(x - i * 16 * 2, y, image);
-	}
-}
 
 //Draws the fruit in the middle of the level.
 void draw_item_game(int currentLevel, GameItem *gameItem)
