@@ -25,6 +25,7 @@ typedef struct
 //
 
 void draw_vanity_charnickname(void);
+void draw_vanity_text(const char *text, int x, int y);
 void draw_vanity_ghostline(GhostDisplayRow *row, int y, bool description, bool name);
 void draw_vanity_corporate_info(void);
 void draw_vanity_pellet_info(bool flashing);
@@ -47,10 +48,7 @@ void draw_common_highscore(int highscore);
 
 void draw_stage(int curLvl);
 
-void draw_common_indicator(int mode);
-void draw_common_solo(void);
-void draw_common_twoplay(void);
-void draw_common_multi(void);
+void draw_common_indicator(int mode, int x, int y);
 
 void draw_credits(int numCredits);
 
