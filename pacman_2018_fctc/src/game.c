@@ -601,6 +601,7 @@ static void process_item(PacmanGame *game)
 		pac->body.velocity = 80;
 		pac->itemRemainTime = 0;
 		pac->usd = 0;
+		pac->protect = 0;
 	}
 	
 	if (f1->itemMode == Displaying)
@@ -654,6 +655,11 @@ static void process_item(PacmanGame *game)
 			pac->usd = 1;
 			pac->itemRemainTime = 150;
 		}
+		
+		if(f1->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}
 	}
 
 	if (f2->itemMode == Displaying && collides_obj(&pac->body, f2->x, f2->y))
@@ -681,6 +687,11 @@ static void process_item(PacmanGame *game)
 		
 		if(f2->item==Move_USD) {
 			pac->usd = 1;
+			pac->itemRemainTime = 150;
+		}		
+		
+		if(f2->item==Ghost_mode) {
+			pac->protect = 1;
 			pac->itemRemainTime = 150;
 		}		
 	}
@@ -711,7 +722,12 @@ static void process_item(PacmanGame *game)
 		if(f3->item==Move_USD) {
 			pac->usd = 1;
 			pac->itemRemainTime = 150;
-		}			
+		}	
+		
+		if(f3->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}				
 	}
 	
 	if (f4->itemMode == Displaying && collides_obj(&pac->body, f4->x, f4->y))
@@ -740,7 +756,12 @@ static void process_item(PacmanGame *game)
 		if(f4->item==Move_USD) {
 			pac->usd = 1;
 			pac->itemRemainTime = 150;
-		}			
+		}
+		
+		if(f4->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}					
 	}
 	
 	if (f5->itemMode == Displaying && collides_obj(&pac->body, f5->x, f5->y))
@@ -769,11 +790,24 @@ static void process_item(PacmanGame *game)
 		if(f5->item==Move_USD) {
 			pac->usd = 1;
 			pac->itemRemainTime = 150;
-		}	
+		}
+		
+		if(f5->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}			
 	}
 	
-	if(game->mode == MultiState) {
-		pac = &game->pacman_enemy;
+		if(game->mode == MultiState) {
+			pac = &game->pacman_enemy;
+		
+		if(pac->itemRemainTime != 0) pac->itemRemainTime--;
+		else {
+			pac->body.velocity = 80;
+			pac->itemRemainTime = 0;
+			pac->usd = 0;
+			pac->protect = 0;
+		}		
 		
 		if (f1->itemMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
 		{
@@ -785,11 +819,15 @@ static void process_item(PacmanGame *game)
 			if(f1->item==Life)
 				pac->livesLeft += 1;		
 			
-			if(f1->item==Move_Fast)
+			if(f1->item==Move_Fast) {
 				pac->body.velocity = 120;
-
-			if(f1->item==Move_Slow)
+				pac->itemRemainTime = 150;			
+			}
+			
+			if(f1->item==Move_Slow) {
 				pac->body.velocity = 60;
+				pac->itemRemainTime = 150;			
+			}	
 				
 			if(f1->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
@@ -797,7 +835,12 @@ static void process_item(PacmanGame *game)
 			if(f1->item==Move_USD) {
 				pac->usd = 1;
 				pac->itemRemainTime = 150;
-			}			
+			}
+			
+			if(f1->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}
 		}
 
 		if (f2->itemMode == Displaying && collides_obj(&pac->body, f2->x, f2->y))
@@ -810,11 +853,15 @@ static void process_item(PacmanGame *game)
 			if(f2->item==Life)
 				pac->livesLeft += 1;
 				
-			if(f2->item==Move_Fast) 
+			if(f2->item==Move_Fast) {
 				pac->body.velocity = 120;	
-
-			if(f2->item==Move_Slow)
+				pac->itemRemainTime = 150;			
+			}
+			
+			if(f2->item==Move_Slow) {
 				pac->body.velocity = 60;
+				pac->itemRemainTime = 150;			
+			}
 
 			if(f2->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
@@ -822,7 +869,12 @@ static void process_item(PacmanGame *game)
 			if(f2->item==Move_USD) {
 				pac->usd = 1;
 				pac->itemRemainTime = 150;
-			}			
+			}
+			
+			if(f2->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}					
 		}
 
 		if (f3->itemMode == Displaying && collides_obj(&pac->body, f3->x, f3->y))
@@ -835,19 +887,28 @@ static void process_item(PacmanGame *game)
 			if(f3->item==Life)
 				pac->livesLeft += 1;
 				
-			if(f3->item==Move_Fast) 
+			if(f3->item==Move_Fast) {
 				pac->body.velocity = 120;
+				pac->itemRemainTime = 150;			
+			}
 
-			if(f3->item==Move_Slow)
+			if(f3->item==Move_Slow) {
 				pac->body.velocity = 60;
-
+				pac->itemRemainTime = 150;			
+			}
+			
 			if(f3->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 		
 			if(f3->item==Move_USD) {
 				pac->usd = 1;
 				pac->itemRemainTime = 150;
-			}			
+			}
+			
+			if(f3->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}					
 		}
 		
 		if (f4->itemMode == Displaying && collides_obj(&pac->body, f4->x, f4->y))
@@ -860,11 +921,15 @@ static void process_item(PacmanGame *game)
 			if(f4->item==Life)
 				pac->livesLeft += 1;
 				
-			if(f4->item==Move_Fast) 
+			if(f4->item==Move_Fast) {
 				pac->body.velocity = 120;
-
-			if(f4->item==Move_Slow)
+				pac->itemRemainTime = 150;			
+			}
+			
+			if(f4->item==Move_Slow) {
 				pac->body.velocity = 60;
+				pac->itemRemainTime = 150;			
+			}
 			
 			if(f4->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
@@ -872,7 +937,12 @@ static void process_item(PacmanGame *game)
 			if(f4->item==Move_USD) {
 				pac->usd = 1;
 				pac->itemRemainTime = 150;
-			}			
+			}	
+			
+			if(f4->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}				
 		}
 		
 		if (f5->itemMode == Displaying && collides_obj(&pac->body, f5->x, f5->y))
@@ -885,11 +955,15 @@ static void process_item(PacmanGame *game)
 			if(f5->item==Life)
 				pac->livesLeft += 1;
 				
-			if(f5->item==Move_Fast) 
+			if(f5->item==Move_Fast) {
 				pac->body.velocity = 120;
-		
-			if(f5->item==Move_Slow)
+				pac->itemRemainTime = 150;			
+			}
+			
+			if(f5->item==Move_Slow) {
 				pac->body.velocity = 60;
+				pac->itemRemainTime = 150;			
+			}
 
 			if(f5->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
@@ -897,7 +971,12 @@ static void process_item(PacmanGame *game)
 			if(f5->item==Move_USD) {
 				pac->usd = 1;
 				pac->itemRemainTime = 150;
-			}			
+			}
+			
+			if(f5->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}					
 		}
 	}
 
@@ -982,6 +1061,7 @@ static bool check_pacghost_collision(PacmanGame *game)
 	for (int i = 0; i < 4; i++)
 	{
 		Ghost *g = &game->ghosts[i];
+		Pacman *pac = &game->pacman;
 		
 		/*
 		switch(g->ghostType) {
@@ -991,7 +1071,8 @@ static bool check_pacghost_collision(PacmanGame *game)
 		case Pinky  : printf("pink : %d \n", g->isDead); break;
 		}
 		*/
-
+		
+		if(pac->protect == 0) {
 		if (collides(&game->pacman.body, &g->body)) {
 			if(game->pacman.godMode == false){
 				death_player = One;
@@ -1003,6 +1084,8 @@ static bool check_pacghost_collision(PacmanGame *game)
 				death_send(g);
 			}
 		}
+		}
+		
 		if(game->mode == MultiState){
 				if (collides(&game->pacman_enemy.body, &g->body)) {
 					if(game->pacman_enemy.godMode == false){

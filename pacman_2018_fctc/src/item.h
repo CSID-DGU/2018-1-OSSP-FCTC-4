@@ -10,7 +10,7 @@ typedef enum
 	Move_Fast,
 	Move_Slow,
 	Move_USD,
-	Misile,
+	Ghost_mode,
 	Life,
 	Prof
 } Item;

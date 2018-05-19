@@ -251,7 +251,6 @@ void draw_game_gameover(void)
 //
 
 
-
 //Draws the fruit in the middle of the level.
 void draw_item_game(int currentLevel, GameItem *gameItem)
 {
