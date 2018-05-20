@@ -15,7 +15,7 @@ int item_points(Item item)
 		case Move_Fast:     return 500;
 		case Move_Slow: 	return 500;
 		case Move_USD:      return 500;
-		case Misile:      	return 500;
+		case Ghost_mode:    return 500;
 		case Life:			return 500;
 		case Prof:			return 1000000;
 	}
@@ -46,7 +46,7 @@ Item item_for_level(int level)
 		else if(ran > 45 && ran <=60)
 			return Move_USD;
 		else if(ran > 60 && ran <=90)
-			return Misile;
+			return Ghost_mode;
 		else if(ran > 90 && ran <=120)
 			return Life;
 		else

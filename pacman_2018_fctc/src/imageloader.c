@@ -115,7 +115,7 @@ SDL_Surface *specImages[NUM_SPEC_IMAGES];
 SDL_Surface *movefastImage;
 SDL_Surface *moveslowImage;
 SDL_Surface *moveusdImage;
-SDL_Surface *misileImage;
+SDL_Surface *ghostmodeImage;
 SDL_Surface *lifeImage;
 SDL_Surface *profImage;
 
@@ -462,7 +462,7 @@ void load_item_images(void)
 	movefastImage     	= load_image(DIR ITEM_DIR "box.png");
 	moveslowImage 		= load_image(DIR ITEM_DIR "box.png");
 	moveusdImage      	= load_image(DIR ITEM_DIR "box.png");
-	misileImage      	= load_image(DIR ITEM_DIR "box.png");
+	ghostmodeImage      = load_image(DIR ITEM_DIR "box.png");
 	lifeImage 			= load_image(DIR ITEM_DIR "box.png");
 	profImage			= load_image(DIR ITEM_DIR "box.png");
 }
@@ -472,7 +472,7 @@ void dispose_item_images(void)
 	SDL_FreeSurface(movefastImage);
 	SDL_FreeSurface(moveslowImage);
 	SDL_FreeSurface(moveusdImage);
-	SDL_FreeSurface(misileImage);
+	SDL_FreeSurface(ghostmodeImage);
 	SDL_FreeSurface(lifeImage);
 	SDL_FreeSurface(profImage);
 }
@@ -487,7 +487,7 @@ void load_misc_images(void)
 
 	char dirStr[256];
 
-	const char *itemPntStr[] = {"Fast", "Slow", "USD", "Missile", "Life", "Prof" };
+	const char *itemPntStr[] = {"Fast", "Slow", "USD", "Ghostmode", "Life", "Prof" };
 	const char *ghostPntStr[] = {"200", "400", "800", "1600"};
 
 	for (int i = 0; i < NUM_ITEM; i++)
@@ -891,7 +891,7 @@ SDL_Surface* get_item_image(Item item)
 		case Move_Fast:     return movefastImage;
 		case Move_Slow: 	return moveslowImage;
 		case Move_USD:      return moveusdImage;
-		case Misile:      	return misileImage;
+		case Ghost_mode:    return ghostmodeImage;
 		case Life:			return lifeImage;
 		case Prof:			return profImage;
 	}
@@ -907,7 +907,7 @@ SDL_Surface* get_itemshow_image(Item item)
 		case Move_Fast:     return itemPoints[0];
 		case Move_Slow: 	return itemPoints[1];
 		case Move_USD:      return itemPoints[2];
-		case Misile:      	return itemPoints[3];
+		case Ghost_mode:    return itemPoints[3];
 		case Life:			return itemPoints[4];
 		case Prof:			return itemPoints[5];
 	}

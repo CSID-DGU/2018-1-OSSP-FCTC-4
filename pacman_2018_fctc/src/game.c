@@ -153,7 +153,6 @@ void game_render(PacmanGame *game)
 	if(game->mode == MultiState) draw_pacman2_lives(game->pacman_enemy.livesLeft);
 
 	draw_small_pellets(&game->pelletHolder);
-	draw_item_indicators(game->currentLevel);
 
 	//in gameover state big pellets don't render
 	//in gamebegin + levelbegin big pellets don't flash
@@ -380,8 +379,11 @@ bool can_move(Pacman *pacman, Board *board, Direction dir)
 	//pacman is at 0/0 and moving in the requested direction depends on if there is a valid tile there
 	int x = 0;
 	int y = 0;
-
-	dir_xy(dir, &x, &y);
+	
+	if(pacman->usd == 1)
+		dir_xy_usd(dir, &x, &y);
+	else
+		dir_xy(dir, &x, &y);	
 
 	int newX = pacman->body.x + x;
 	int newY = pacman->body.y + y;
@@ -455,9 +457,16 @@ static void process_player(Pacman *pacman, Board *board, Player player)
 	int nextDirX = 0;
 	int nextDirY = 0;
 
-	dir_xy(pacman->body.curDir, &curDirX, &curDirY);
-	dir_xy(pacman->body.nextDir, &nextDirX, &nextDirY);
-
+	if(pacman->usd==1){
+		dir_xy_usd(pacman->body.curDir, &curDirX, &curDirY);
+		dir_xy_usd(pacman->body.nextDir, &nextDirX, &nextDirY);
+	}
+	
+	else{
+		dir_xy(pacman->body.curDir, &curDirX, &curDirY);
+		dir_xy(pacman->body.nextDir, &nextDirX, &nextDirY);
+	}
+	
 	int newCurX = pacman->body.x + curDirX;
 	int newCurY = pacman->body.y + curDirY;
 	int newNextX = pacman->body.x + nextDirX;
@@ -586,12 +595,13 @@ static void process_item(PacmanGame *game)
 	unsigned int f5dt = ticks_game() - f5->startedAt;
 
 	Pacman *pac = &game->pacman;
-	printf("remain time : %d\n", pac->itemRemainTime);
-	printf("velocity : %d\n", pac->body.velocity);
+	
 	if(pac->itemRemainTime != 0) pac->itemRemainTime--;
 	else {
 		pac->body.velocity = 80;
 		pac->itemRemainTime = 0;
+		pac->usd = 0;
+		pac->protect = 0;
 	}
 	
 	if (f1->itemMode == Displaying)
@@ -618,145 +628,207 @@ static void process_item(PacmanGame *game)
 	//check for collisions
 
 
-if (f1->itemMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
-        {
-                f1->itemMode = Displayed;
-                f1->eaten = true;
-                f1->eatenAt = ticks_game();
-                pac->score += item_points(f1->item);
 
-                if(f1->item==Life){
-                        pac->livesLeft += 1;
-                        play_sound(BonusSound);
-                }
-                if(f1->item==Move_Fast) {
+	if (f1->itemMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
+	{
+		f1->itemMode = Displayed;
+		f1->eaten = true;
+		f1->eatenAt = ticks_game();
+		pac->score += item_points(f1->item);
+		
+		if(f1->item==Life) {
+			pac->livesLeft += 1;		
+            play_sound(BonusSound);
+		}
+		
+		if(f1->item==Move_Fast) {
+			pac->body.velocity = 120;
+			pac->itemRemainTime = 150;
+            play_sound(BoosterSound);			
+		}
+		
+		if(f1->item==Move_Slow){
+			pac->body.velocity = 60;
+			pac->itemRemainTime = 150;
+            play_sound(Munch_Bsound);			
+		}
+		
+		if(f1->item==Prof)
+			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+		
+		if(f1->item==Move_USD) {
+			pac->usd = 1;
+			pac->itemRemainTime = 150;
+		}
+		
+		if(f1->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}
+	}
 
-                        pac->body.velocity = 120;
-                        pac->itemRemainTime = 120;
-                        play_sound(BoosterSound);
-                }
-                if(f1->item==Move_Slow){
-                        pac->body.velocity = 60;
-                        pac->itemRemainTime = 120;
-                        play_sound(Munch_Bsound);
-                }
-                if(f1->item==Prof)
-                for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
-        }
+	if (f2->itemMode == Displaying && collides_obj(&pac->body, f2->x, f2->y))
+	{
+		f2->itemMode = Displayed;
+		f2->eaten = true;
+		f2->eatenAt = ticks_game();
+		pac->score += item_points(f2->item);
+		
+		if(f2->item==Life) {
+			pac->livesLeft += 1;
+            play_sound(BonusSound);				
+		}
+		
+		if(f2->item==Move_Fast) {
+			pac->body.velocity = 120;
+			pac->itemRemainTime = 150;
+            play_sound(BoosterSound);	
+		}
+		
+		if(f2->item==Move_Slow){
+			pac->body.velocity = 60;
+			pac->itemRemainTime = 150;
+            play_sound(Munch_Bsound);			
+		}
+		
+		if(f2->item==Prof)
+			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+		
+		if(f2->item==Move_USD) {
+			pac->usd = 1;
+			pac->itemRemainTime = 150;
+		}		
+		
+		if(f2->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}		
+	}
 
-
-        if (f2->itemMode == Displaying && collides_obj(&pac->body, f2->x, f2->y))
-        {
-                f2->itemMode = Displayed;
-                f2->eaten = true;
-                f2->eatenAt = ticks_game();
-                pac->score += item_points(f2->item);
-
-                if(f2->item==Life){
-                        pac->livesLeft += 1;
-                        play_sound(BonusSound);
-                }
-
-                if(f2->item==Move_Fast) {
-                        pac->body.velocity = 120;
-                        pac->itemRemainTime = 120;
-                        play_sound(BoosterSound);
-
-                }
-                if(f2->item==Move_Slow){
-                        pac->body.velocity = 60;
-                        pac->itemRemainTime = 120;
-                        play_sound(Munch_Bsound);
-                }
-
-                if(f2->item==Prof)
-                for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
-        }
-
-
-  if (f3->itemMode == Displaying && collides_obj(&pac->body, f3->x, f3->y))
-        {
-                f3->itemMode = Displayed;
-                f3->eaten = true;
-                f3->eatenAt = ticks_game();
-                pac->score += item_points(f3->item);
-
-                if(f3->item==Life){
-                        pac->livesLeft += 1;
-                        play_sound(BonusSound);
-                }
-
-                if(f3->item==Move_Fast) {
-                        pac->body.velocity = 120;
-                        pac->itemRemainTime = 120;
-                        play_sound(BoosterSound);
-
-                }
-                if(f3->item==Move_Slow){
-                        pac->body.velocity = 60;
-                        pac->itemRemainTime = 120;
-                        play_sound(Munch_Bsound);
-                }
-                if(f3->item==Prof)
-                for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
-        }
-
-        if (f4->itemMode == Displaying && collides_obj(&pac->body, f4->x, f4->y))
-        {
-                f4->itemMode = Displayed;
-                f4->eaten = true;
-                f4->eatenAt = ticks_game();
-                pac->score += item_points(f4->item);
-
-                if(f4->item==Life){
-                        pac->livesLeft += 1;
-                        play_sound(BonusSound);
-                }
-                if(f4->item==Move_Fast) {
-                        pac->body.velocity = 120;
-                        pac->itemRemainTime = 120;
-                        play_sound(BoosterSound);
-
-                }
-                if(f4->item==Move_Slow){
-                        pac->body.velocity = 60;
-                        pac->itemRemainTime = 120;
-                        play_sound(Munch_Bsound);
-
-                }
- 		 if(f4->item==Prof)
-                for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
-        }
-
-
-        if (f5->itemMode == Displaying && collides_obj(&pac->body, f5->x, f5->y))
-        {
-                f5->itemMode = Displayed;
-                f5->eaten = true;
-                f5->eatenAt = ticks_game();
-                pac->score += item_points(f5->item);
-
-                if(f5->item==Life){
-                        pac->livesLeft += 1;
-                        play_sound(BonusSound);
-                }
-                if(f5->item==Move_Fast) {
-                        pac->body.velocity = 120;
-                        pac->itemRemainTime = 120;
-                        play_sound(BoosterSound);
-
-                }
-                if(f5->item==Move_Slow){
-                        pac->body.velocity = 60;
-                        pac->itemRemainTime = 120;
-                        play_sound(Munch_Bsound);
-                }
-                if(f5->item==Prof)
-                for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
-        }
-
-	if(game->mode == MultiState) {
-		pac = &game->pacman_enemy;
+	if (f3->itemMode == Displaying && collides_obj(&pac->body, f3->x, f3->y))
+	{
+		f3->itemMode = Displayed;
+		f3->eaten = true;
+		f3->eatenAt = ticks_game();
+		pac->score += item_points(f3->item);
+		
+		if(f3->item==Life) {
+			pac->livesLeft += 1;
+            play_sound(BonusSound);			
+		}
+		
+		if(f3->item==Move_Fast) {
+			pac->body.velocity = 120;
+			pac->itemRemainTime = 150;
+            play_sound(BoosterSound);			
+		}
+		
+		if(f3->item==Move_Slow){
+			pac->body.velocity = 60;
+			pac->itemRemainTime = 150;
+            play_sound(Munch_Bsound);
+		}
+		
+		if(f3->item==Prof)
+			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+		
+		if(f3->item==Move_USD) {
+			pac->usd = 1;
+			pac->itemRemainTime = 150;
+		}	
+		
+		if(f3->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}				
+	}
+	
+	if (f4->itemMode == Displaying && collides_obj(&pac->body, f4->x, f4->y))
+	{
+		f4->itemMode = Displayed;
+		f4->eaten = true;
+		f4->eatenAt = ticks_game();
+		pac->score += item_points(f4->item);
+		
+		if(f4->item==Life) {
+			pac->livesLeft += 1;
+            play_sound(BonusSound);			
+		}
+			
+		if(f4->item==Move_Fast) {
+			pac->body.velocity = 120;
+			pac->itemRemainTime = 150;
+            play_sound(BoosterSound);			
+		}
+		
+		if(f4->item==Move_Slow){
+			pac->body.velocity = 60;
+			pac->itemRemainTime = 150;
+            play_sound(Munch_Bsound);
+		}
+		
+		if(f4->item==Prof)
+			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+		
+		if(f4->item==Move_USD) {
+			pac->usd = 1;
+			pac->itemRemainTime = 150;
+		}
+		
+		if(f4->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}					
+	}
+	
+	if (f5->itemMode == Displaying && collides_obj(&pac->body, f5->x, f5->y))
+	{
+		f5->itemMode = Displayed;
+		f5->eaten = true;
+		f5->eatenAt = ticks_game();
+		pac->score += item_points(f5->item);
+		
+		if(f5->item==Life) {
+			pac->livesLeft += 1;
+            play_sound(BonusSound);			
+		}
+			
+		if(f5->item==Move_Fast) {
+			pac->body.velocity = 120;
+			pac->itemRemainTime = 150;
+            play_sound(BoosterSound);			
+		}
+		
+		if(f5->item==Move_Slow){
+			pac->body.velocity = 60;
+			pac->itemRemainTime = 150;
+            play_sound(Munch_Bsound);
+		}
+		
+		if(f5->item==Prof)
+			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+	
+		if(f5->item==Move_USD) {
+			pac->usd = 1;
+			pac->itemRemainTime = 150;
+		}
+		
+		if(f5->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}			
+	}
+	
+		if(game->mode == MultiState) {
+			pac = &game->pacman_enemy;
+		
+		if(pac->itemRemainTime != 0) pac->itemRemainTime--;
+		else {
+			pac->body.velocity = 80;
+			pac->itemRemainTime = 0;
+			pac->usd = 0;
+			pac->protect = 0;
+		}		
 		
 		if (f1->itemMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
 		{
@@ -768,13 +840,28 @@ if (f1->itemMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
 			if(f1->item==Life)
 				pac->livesLeft += 1;
 			
-			if(f1->item==Move_Fast)
+			if(f1->item==Move_Fast) {
 				pac->body.velocity = 120;
-			if(f1->item==Move_Slow)
+				pac->itemRemainTime = 150;			
+			}
+			
+			if(f1->item==Move_Slow) {
 				pac->body.velocity = 60;
+				pac->itemRemainTime = 150;			
+			}	
 				
 			if(f1->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+
+			if(f1->item==Move_USD) {
+				pac->usd = 1;
+				pac->itemRemainTime = 150;
+			}
+			
+			if(f1->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}
 		}
 
 		if (f2->itemMode == Displaying && collides_obj(&pac->body, f2->x, f2->y))
@@ -787,14 +874,28 @@ if (f1->itemMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
 			if(f2->item==Life)
 				pac->livesLeft += 1;
 				
-			if(f2->item==Move_Fast) 
+			if(f2->item==Move_Fast) {
 				pac->body.velocity = 120;	
-
-			if(f2->item==Move_Slow)
+				pac->itemRemainTime = 150;			
+			}
+			
+			if(f2->item==Move_Slow) {
 				pac->body.velocity = 60;
+				pac->itemRemainTime = 150;			
+			}
 
 			if(f2->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+
+			if(f2->item==Move_USD) {
+				pac->usd = 1;
+				pac->itemRemainTime = 150;
+			}
+			
+			if(f2->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}					
 		}
 
 		if (f3->itemMode == Displaying && collides_obj(&pac->body, f3->x, f3->y))
@@ -807,14 +908,28 @@ if (f1->itemMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
 			if(f3->item==Life)
 				pac->livesLeft += 1;
 				
-			if(f3->item==Move_Fast) 
+			if(f3->item==Move_Fast) {
 				pac->body.velocity = 120;
+				pac->itemRemainTime = 150;			
+			}
 
-			if(f3->item==Move_Slow)
+			if(f3->item==Move_Slow) {
 				pac->body.velocity = 60;
-
+				pac->itemRemainTime = 150;			
+			}
+			
 			if(f3->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+		
+			if(f3->item==Move_USD) {
+				pac->usd = 1;
+				pac->itemRemainTime = 150;
+			}
+			
+			if(f3->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}					
 		}
 		
 		if (f4->itemMode == Displaying && collides_obj(&pac->body, f4->x, f4->y))
@@ -827,14 +942,28 @@ if (f1->itemMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
 			if(f4->item==Life)
 				pac->livesLeft += 1;
 				
-			if(f4->item==Move_Fast) 
+			if(f4->item==Move_Fast) {
 				pac->body.velocity = 120;
-
-			if(f4->item==Move_Slow)
+				pac->itemRemainTime = 150;			
+			}
+			
+			if(f4->item==Move_Slow) {
 				pac->body.velocity = 60;
+				pac->itemRemainTime = 150;			
+			}
 			
 			if(f4->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+			
+			if(f4->item==Move_USD) {
+				pac->usd = 1;
+				pac->itemRemainTime = 150;
+			}	
+			
+			if(f4->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}				
 		}
 		
 		if (f5->itemMode == Displaying && collides_obj(&pac->body, f5->x, f5->y))
@@ -847,14 +976,28 @@ if (f1->itemMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
 			if(f5->item==Life)
 				pac->livesLeft += 1;
 				
-			if(f5->item==Move_Fast) 
+			if(f5->item==Move_Fast) {
 				pac->body.velocity = 120;
-		
-			if(f5->item==Move_Slow)
+				pac->itemRemainTime = 150;			
+			}
+			
+			if(f5->item==Move_Slow) {
 				pac->body.velocity = 60;
+				pac->itemRemainTime = 150;			
+			}
 
 			if(f5->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+			
+			if(f5->item==Move_USD) {
+				pac->usd = 1;
+				pac->itemRemainTime = 150;
+			}
+			
+			if(f5->item==Ghost_mode) {
+			pac->protect = 1;
+			pac->itemRemainTime = 150;
+		}					
 		}
 	}
 
@@ -939,6 +1082,7 @@ static bool check_pacghost_collision(PacmanGame *game)
 	for (int i = 0; i < 4; i++)
 	{
 		Ghost *g = &game->ghosts[i];
+		Pacman *pac = &game->pacman;
 		
 		/*
 		switch(g->ghostType) {
@@ -948,7 +1092,8 @@ static bool check_pacghost_collision(PacmanGame *game)
 		case Pinky  : printf("pink : %d \n", g->isDead); break;
 		}
 		*/
-
+		
+		if(pac->protect == 0) {
 		if (collides(&game->pacman.body, &g->body)) {
 			if(game->pacman.godMode == false){
 				play_sound(DieSound);
@@ -962,6 +1107,8 @@ static bool check_pacghost_collision(PacmanGame *game)
 				death_send(g);
 			}
 		}
+		}
+		
 		if(game->mode == MultiState){
 				if (collides(&game->pacman_enemy.body, &g->body)) {
 					if(game->pacman_enemy.godMode == false){
