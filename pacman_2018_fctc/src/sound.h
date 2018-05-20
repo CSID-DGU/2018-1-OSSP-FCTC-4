@@ -8,9 +8,17 @@
 //The different sound effects we can use.
 typedef enum
 {
-	LevelStartSound,
-	WakawakaSound,
-	PacmanDeathSound
+        LevelStartSound,
+        SmallSound,
+        LargeSound,
+        SirenSound,
+        FruitSound,
+        Munch_Asound,
+        Munch_Bsound,
+        BoosterSound,
+        BonusSound,
+        DieSound,
+        PacmanDeathSound
 } SoundEffect;
 
 //Initializes and loads all sounds. Must be called before playing any sounds.

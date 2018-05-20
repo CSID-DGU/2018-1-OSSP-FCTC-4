@@ -628,6 +628,7 @@ static void process_item(PacmanGame *game)
 	//check for collisions
 
 
+
 	if (f1->itemMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
 	{
 		f1->itemMode = Displayed;
@@ -817,7 +818,7 @@ static void process_item(PacmanGame *game)
 			pac->score += item_points(f1->item);
 			
 			if(f1->item==Life)
-				pac->livesLeft += 1;		
+				pac->livesLeft += 1;
 			
 			if(f1->item==Move_Fast) {
 				pac->body.velocity = 120;
@@ -1017,7 +1018,7 @@ static void process_pellets(PacmanGame *game)
 			}
 
 			//play eat sound
-
+			play_sound(SmallSound);
 			//eating a small pellet makes pacman not move for 1 frame
 			//eating a large pellet makes pacman not move for 3 frames
 			game->pacman.missedFrames = pellet_nop_frames(p);
@@ -1075,11 +1076,13 @@ static bool check_pacghost_collision(PacmanGame *game)
 		if(pac->protect == 0) {
 		if (collides(&game->pacman.body, &g->body)) {
 			if(game->pacman.godMode == false){
+				play_sound(DieSound);
 				death_player = One;
 				return true;
 			}
 			else {
 				if(g->isDead == 2) { death_player = One; return true;}
+				play_sound(SirenSound);
 				g->isDead = 1;
 				death_send(g);
 			}
