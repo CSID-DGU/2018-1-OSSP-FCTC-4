@@ -636,17 +636,21 @@ static void process_item(PacmanGame *game)
 		f1->eatenAt = ticks_game();
 		pac->score += item_points(f1->item);
 		
-		if(f1->item==Life)
+		if(f1->item==Life) {
 			pac->livesLeft += 1;		
+            play_sound(BonusSound);
+		}
 		
 		if(f1->item==Move_Fast) {
 			pac->body.velocity = 120;
 			pac->itemRemainTime = 150;
+            play_sound(BoosterSound);			
 		}
 		
 		if(f1->item==Move_Slow){
 			pac->body.velocity = 60;
 			pac->itemRemainTime = 150;
+            play_sound(Munch_Bsound);			
 		}
 		
 		if(f1->item==Prof)
@@ -670,17 +674,21 @@ static void process_item(PacmanGame *game)
 		f2->eatenAt = ticks_game();
 		pac->score += item_points(f2->item);
 		
-		if(f2->item==Life)
+		if(f2->item==Life) {
 			pac->livesLeft += 1;
-			
+            play_sound(BonusSound);				
+		}
+		
 		if(f2->item==Move_Fast) {
 			pac->body.velocity = 120;
 			pac->itemRemainTime = 150;
+            play_sound(BoosterSound);	
 		}
 		
 		if(f2->item==Move_Slow){
 			pac->body.velocity = 60;
 			pac->itemRemainTime = 150;
+            play_sound(Munch_Bsound);			
 		}
 		
 		if(f2->item==Prof)
@@ -704,17 +712,21 @@ static void process_item(PacmanGame *game)
 		f3->eatenAt = ticks_game();
 		pac->score += item_points(f3->item);
 		
-		if(f3->item==Life)
+		if(f3->item==Life) {
 			pac->livesLeft += 1;
-			
+            play_sound(BonusSound);			
+		}
+		
 		if(f3->item==Move_Fast) {
 			pac->body.velocity = 120;
 			pac->itemRemainTime = 150;
+            play_sound(BoosterSound);			
 		}
 		
 		if(f3->item==Move_Slow){
 			pac->body.velocity = 60;
 			pac->itemRemainTime = 150;
+            play_sound(Munch_Bsound);
 		}
 		
 		if(f3->item==Prof)
@@ -738,17 +750,21 @@ static void process_item(PacmanGame *game)
 		f4->eatenAt = ticks_game();
 		pac->score += item_points(f4->item);
 		
-		if(f4->item==Life)
+		if(f4->item==Life) {
 			pac->livesLeft += 1;
+            play_sound(BonusSound);			
+		}
 			
 		if(f4->item==Move_Fast) {
 			pac->body.velocity = 120;
 			pac->itemRemainTime = 150;
+            play_sound(BoosterSound);			
 		}
 		
 		if(f4->item==Move_Slow){
 			pac->body.velocity = 60;
 			pac->itemRemainTime = 150;
+            play_sound(Munch_Bsound);
 		}
 		
 		if(f4->item==Prof)
@@ -772,17 +788,21 @@ static void process_item(PacmanGame *game)
 		f5->eatenAt = ticks_game();
 		pac->score += item_points(f5->item);
 		
-		if(f5->item==Life)
+		if(f5->item==Life) {
 			pac->livesLeft += 1;
+            play_sound(BonusSound);			
+		}
 			
 		if(f5->item==Move_Fast) {
 			pac->body.velocity = 120;
 			pac->itemRemainTime = 150;
+            play_sound(BoosterSound);			
 		}
 		
 		if(f5->item==Move_Slow){
 			pac->body.velocity = 60;
 			pac->itemRemainTime = 150;
+            play_sound(Munch_Bsound);
 		}
 		
 		if(f5->item==Prof)
