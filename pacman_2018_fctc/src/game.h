@@ -48,6 +48,7 @@ typedef struct
 	int highscore;
 	int currentLevel;
 	ModeState mode;
+	RemoteRole role;
 } PacmanGame;
 
 //Updates the game 1 tick, or 1/60th of a second.

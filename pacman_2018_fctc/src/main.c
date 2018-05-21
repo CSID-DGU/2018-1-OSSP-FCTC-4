@@ -73,8 +73,15 @@ static void main_loop(void)
 		if(state == Game && pacmanGame.mode == MultiState) {
 			process_events(Two);
 		}
+		else if(state == Game && pacmanGame.mode == RemoteState) {
+			process_events(Two);
+		}
 		else process_events(One);
-		
+		/*
+		bool* tmp;
+		tmp = player2_key_state();
+		printf("%d\n",tmp[SDLK_UP]);
+		*/
 		internal_tick();
 		internal_render();
 
@@ -110,10 +117,13 @@ static void internal_tick(void)
 				 * 
 				 */
 				if(menuSystem.role == Server) {
+					
 					game_tick(&pacmanGame);
+					
 				}
 				else if(menuSystem.role == Client) {
 					
+					game_tick(&pacmanGame);
 				}
 			}
 			else game_tick(&pacmanGame);
@@ -121,16 +131,22 @@ static void internal_tick(void)
 			if (is_game_over(&pacmanGame))
 			{
 				menu_init(&menuSystem);
-				state = Remote;
+				state = Menu;
 			}
 
 			break;
 		case Remote:
 			if (menuSystem.action == ServerWait) {
 				// listen client
-				if(connect_server(&socket_info) == -1) printf("err");
+				if(connect_server(&socket_info) == -1) printf("Wait...\n");
+				else menuSystem.action = GoToGame;
 			}
+			
 			remote_tick(&menuSystem, &socket_info);
+			if (menuSystem.action == GoToGame) {
+				state = Game;
+				startgame_init();
+			}
 			
 			break;
 		case Intermission:
@@ -178,6 +194,8 @@ static void game_init(void)
 
 static void startgame_init(void)
 {
+	if(menuSystem.role == Server) pacmanGame.role = Server;
+	else if(menuSystem.role == Client) pacmanGame.role = Client;
 	gamestart_init(&pacmanGame, menuSystem.mode);
 }
 
@@ -213,16 +231,24 @@ static void process_events(Player player)
 
 				break;
 			case SDL_KEYDOWN:
-				handle_keydown(event.key.keysym.sym);
-				if (player == Two) handle_keydown_player2(event.key.keysym.sym);
+				if(pacmanGame.role == Server) handle_keydown(event.key.keysym.sym);
+				else if (pacmanGame.role == Client) handle_keydown_player2(event.key.keysym.sym);
+				else {
+					handle_keydown(event.key.keysym.sym);
+					if (player == Two) handle_keydown_player2(event.key.keysym.sym);
+				}				
 			
 				key_down_hacks(event.key.keysym.sym);
 				
 				break;
 			case SDL_KEYUP:
-				handle_keyup(event.key.keysym.sym);	
-				if (player == Two) handle_keyup_player2(event.key.keysym.sym);
-
+				if(pacmanGame.role == Server) handle_keyup(event.key.keysym.sym);	
+				else if (pacmanGame.role == Client) handle_keyup_player2(event.key.keysym.sym);
+				else {
+					handle_keyup(event.key.keysym.sym);	
+					if (player == Two) handle_keyup_player2(event.key.keysym.sym);
+				}
+				
 				break;
 		}
 		
@@ -240,9 +266,9 @@ static void key_down_hacks(int keycode)
 	static bool rateSwitch = false;
 
 	//TODO: remove this hack and try make it work with the physics body
-	if (keycode == SDLK_SPACE) fps_sethz((rateSwitch = !rateSwitch) ? 200 : 60);
+	if (keycode == SDLK_SPACE && state != Remote) fps_sethz((rateSwitch = !rateSwitch) ? 200 : 60);
 
-	if (keycode == SDLK_m) {
+	if (keycode == SDLK_m && state != Remote) {
 		if(!pacmanGame.pacman.boostOn) {
 			pacmanGame.pacman.body.velocity = 100;
 			pacmanGame.pacman.boostOn = true;
@@ -252,7 +278,7 @@ static void key_down_hacks(int keycode)
 		}
 	}
 	
-	if (keycode == SDLK_b) {
+	if (keycode == SDLK_b && state != Remote) {
 		if(!pacmanGame.pacman_enemy.boostOn) {
 			pacmanGame.pacman_enemy.body.velocity = 100;
 			pacmanGame.pacman_enemy.boostOn = true;
@@ -305,14 +331,14 @@ static void key_down_hacks(int keycode)
 		if ( len < 20 && ( (keycode >= SDLK_0 && keycode <= SDLK_9) || keycode == SDLK_PERIOD) ) menuSystem.severIP[len] = keycode;
 	}
 	
-	if (keycode == SDLK_9)
+	if (keycode == SDLK_9 && state != Remote)
 	{
 		printf("plus\n");
 		for (int i = 0; i < 4; i++) pacmanGame.ghosts[i].body.velocity += 5;
 
 		printf("ghost speed: %d\n", pacmanGame.ghosts[0].body.velocity);
 	}
-	else if (keycode == SDLK_0)
+	else if (keycode == SDLK_0 && state != Remote)
 	{
 		printf("minus\n");
 		for (int i = 0; i < 4; i++) pacmanGame.ghosts[i].body.velocity -= 5;

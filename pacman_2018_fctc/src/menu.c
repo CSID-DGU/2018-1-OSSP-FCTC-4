@@ -57,13 +57,11 @@ void menu_tick(MenuSystem *menuSystem)
 void remote_tick(MenuSystem *menuSystem, Socket_value *socket_info)
 {
 	bool startNew = key_held(SDLK_KP_ENTER) || key_held(SDLK_RETURN);
-	//for(int i=0; i<20; i++) printf("%d: %c\n",i,menuSystem->severIP[i]);
+	
 	if (startNew) {
 		if(menuSystem->action == ReadyConnect){
 			if(menuSystem->role == Server) {
 				menuSystem->action = ServerWait;
-				
-				// server socket 초기화 
 				init_server(socket_info);
 			}
 			else if(menuSystem->role == Client) {
@@ -75,6 +73,8 @@ void remote_tick(MenuSystem *menuSystem, Socket_value *socket_info)
 			// client가 server와 연결시도
 			if(connect_client(socket_info, menuSystem->severIP) == -1)
 				for(int i=0; i<20; i++) menuSystem->severIP[i] = NULL;
+			else
+				menuSystem->action = GoToGame;
 		}
 		
 		handle_keyup(SDLK_KP_ENTER);
@@ -135,10 +135,10 @@ static void draw_remote_server_screen(MenuSystem *menuSystem)
 
 	draw_player_info();
 	
-	draw_vanity_text("WAITING", 9, 17);
-	if (dt%1900 > 400) draw_vanity_text(".", 18, 17);
-	if (dt%1900 > 900) draw_vanity_text(".", 19, 17);
-	if (dt%1900 > 1400) draw_vanity_text(".", 20, 17);
+	draw_vanity_text("WAIT TO CONNECT", 9, 17);
+	//if (dt%1900 > 400) draw_vanity_text(".", 18, 17);
+	//if (dt%1900 > 900) draw_vanity_text(".", 19, 17);
+	//if (dt%1900 > 1400) draw_vanity_text(".", 20, 17);
 }
 
 static void draw_remote_client_connect_screen(MenuSystem *menuSystem)
