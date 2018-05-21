@@ -52,6 +52,27 @@ int connect_server(Socket_value *socket_info) {
 	return 0;
 }
 
+int send_server(Socket_value *socket_info) {
+	sprintf( buff_snd, "%d : %s", strlen( buff_rcv), buff_rcv);
+	send( client_socket, buff_snd, strlen( buff_snd)+1, 0);
+	return 0;
+}
+
+int recv_server(Socket_value *socket_info, void buff_rcv) {
+	recv(socket_info->client_fd, buff_rcv, strlen(buff_rcv), 0);
+	printf("receive: %s\n", buff_rcv);
+	return 0;
+}
+
+int send_client(Socket_value *socket_info, void data) {
+	write(socket_info->client_fd, data, msg_size);
+	return 0;
+}
+
+int recv_client(Socket_value *socket_info) {
+	return 0;
+}
+
 int connect_client(Socket_value *socket_info, char *severIP){
 	if((socket_info->client_fd = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
 		printf("can't create socket\n");
