@@ -4,6 +4,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 
+#include "socket.h"
 #include "board.h"
 #include "boardloader.h"
 #include "fps.h"
@@ -46,6 +47,9 @@ static void key_down_hacks(int keycode);
 static ProgramState state;
 static MenuSystem menuSystem;
 static PacmanGame pacmanGame;
+
+// Socket value
+static Socket_value socket_info;
 
 static bool gameRunning = true;
 static int numCredits = 0;
@@ -95,8 +99,25 @@ static void internal_tick(void)
 
 			break;
 		case Game:
-			game_tick(&pacmanGame);
-
+			if(pacmanGame.mode == RemoteState) {
+				/*
+				 * 
+				 * 서버가 game_tick으로 pacmanGame에 정보저장하고 
+				 * 이때, 클라이언트쪽의 팩맨 정보를 받아서 pacman_enemy의 정보로 저장
+				 * 이 정보를 클라이언트로 보내는데 클라이언트는 서버의 pacmanGame의 정보중에서
+				 * pacman의 정보를 클라이언트의 pacmanGame의 pacman_enemy에 저장
+				 * 나머지 펠렛이나 아이템 고스트의 위치에 관한 모든 정보를 저장
+				 * 
+				 */
+				if(menuSystem.role == Server) {
+					game_tick(&pacmanGame);
+				}
+				else if(menuSystem.role == Client) {
+					
+				}
+			}
+			else game_tick(&pacmanGame);
+			
 			if (is_game_over(&pacmanGame))
 			{
 				menu_init(&menuSystem);
@@ -105,7 +126,11 @@ static void internal_tick(void)
 
 			break;
 		case Remote:
-			remote_tick(&menuSystem);
+			if (menuSystem.action == ServerWait) {
+				// listen client
+				if(connect_server(&socket_info) == -1) printf("err");
+			}
+			remote_tick(&menuSystem, &socket_info);
 			
 			break;
 		case Intermission:
@@ -205,7 +230,6 @@ static void process_events(Player player)
 
 	keyevents_finished();
 	
-	return player;
 }
 
 static void key_down_hacks(int keycode)

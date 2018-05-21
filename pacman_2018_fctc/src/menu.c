@@ -54,17 +54,34 @@ void menu_tick(MenuSystem *menuSystem)
 	
 }
 
-void remote_tick(MenuSystem *menuSystem)
+void remote_tick(MenuSystem *menuSystem, Socket_value *socket_info)
 {
 	bool startNew = key_held(SDLK_KP_ENTER) || key_held(SDLK_RETURN);
-
-	if (startNew)
-	{
-		if(menuSystem->role == Server) menuSystem->action = ServerWait;
-		else if(menuSystem->role == Client) menuSystem->action = ConnectClient;
+	//for(int i=0; i<20; i++) printf("%d: %c\n",i,menuSystem->severIP[i]);
+	if (startNew) {
+		if(menuSystem->action == ReadyConnect){
+			if(menuSystem->role == Server) {
+				menuSystem->action = ServerWait;
+				
+				// server socket 초기화 
+				init_server(socket_info);
+			}
+			else if(menuSystem->role == Client) {
+				menuSystem->action = ConnectClient;
+			}
+		}
+		else if(menuSystem->action == ConnectClient){
+			// client socket 초기화
+			// client가 server와 연결시도
+			if(connect_client(socket_info, menuSystem->severIP) == -1)
+				for(int i=0; i<20; i++) menuSystem->severIP[i] = NULL;
+		}
+		
+		handle_keyup(SDLK_KP_ENTER);
+		handle_keyup(SDLK_RETURN);
 	}
 	
-	//if(menuSystem->role == None) menuSystem->role = Server;
+	
 }
 
 void menu_render(MenuSystem *menuSystem)
@@ -74,8 +91,7 @@ void menu_render(MenuSystem *menuSystem)
 }
 
 void remote_render(MenuSystem *menuSystem)
-{
-	
+{	
 	if (menuSystem->action == ServerWait) draw_remote_server_screen(menuSystem);
 	else if (menuSystem->action == ConnectClient) draw_remote_client_connect_screen(menuSystem);
 	else if (menuSystem->action == ReadyConnect) draw_remote_choice_screen(menuSystem);

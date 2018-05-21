@@ -1,6 +1,7 @@
 #pragma once
 
 #include "main.h"
+#include "socket.h"
 //Defines what action we should take at a particular time while on the menu.
 typedef enum
 {
@@ -23,7 +24,7 @@ typedef struct
 
 //Performs a single tick on the menu system.
 void menu_tick(MenuSystem *menuSystem);
-void remote_tick(MenuSystem *menuSystem);
+void remote_tick(MenuSystem *menuSystem, Socket_value *socket_info);
 
 //Renders the menu system in its current state.
 void menu_render(MenuSystem *menuSystem);
