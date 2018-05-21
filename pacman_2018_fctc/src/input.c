@@ -20,6 +20,10 @@ static unsigned int keysReleasedFrame_player2[MAX_KEYS] = {0};
 
 static unsigned int curKeyFrame = 1;
 
+bool* player2_key_state(void) {
+		return keysHeld;
+}
+
 void keyevents_finished(void)
 {
 	curKeyFrame++;

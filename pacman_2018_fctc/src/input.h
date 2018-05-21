@@ -6,6 +6,8 @@
 #include "direction.h"
 
 #define MAX_KEYS 323
+
+bool* player2_key_state(void);
 //Call at the end of each round of keypresses. If this isn't called key_pressed() and key_released() will not work.
 void keyevents_finished(void);
 

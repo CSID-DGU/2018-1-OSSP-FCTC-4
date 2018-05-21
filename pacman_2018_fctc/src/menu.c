@@ -15,6 +15,9 @@
 #define GHOST_BETWEEN 2000
 
 static void draw_vanity_screen(MenuSystem *menuSystem);
+static void draw_remote_choice_screen(MenuSystem *menuSystem);
+static void draw_remote_server_screen(MenuSystem *menuSystem);
+static void draw_remote_client_connect_screen(MenuSystem *menuSystem);
 static void draw_info_screen(MenuSystem *menuSystem);
 
 static void draw_ghost_line(GhostDisplayRow *row, int y, unsigned int dt);
@@ -30,8 +33,13 @@ static GhostDisplayRow enemyRows[4] = {
 
 void menu_init(MenuSystem *menuSystem)
 {
+	//set to be in solo play
+	menuSystem->mode = SoloState;
+	menuSystem->role = Nothing;
 	menuSystem->action = Nothing;
 	menuSystem->ticksSinceModeChange = SDL_GetTicks();
+	menuSystem->severIP = (char*)malloc(sizeof(char)*20);
+	for(int i=0; i<20; i++) menuSystem->severIP[i] = NULL;
 }
 
 void menu_tick(MenuSystem *menuSystem)
@@ -40,14 +48,53 @@ void menu_tick(MenuSystem *menuSystem)
 
 	if (startNew)
 	{
-		menuSystem->action = GoToGame;
+		if(menuSystem->mode == RemoteState) menuSystem->action = ReadyConnect;
+		else menuSystem->action = GoToGame;
 	}
+	
+}
+
+void remote_tick(MenuSystem *menuSystem, Socket_value *socket_info)
+{
+	bool startNew = key_held(SDLK_KP_ENTER) || key_held(SDLK_RETURN);
+	
+	if (startNew) {
+		if(menuSystem->action == ReadyConnect){
+			if(menuSystem->role == Server) {
+				menuSystem->action = ServerWait;
+				init_server(socket_info);
+			}
+			else if(menuSystem->role == Client) {
+				menuSystem->action = ConnectClient;
+			}
+		}
+		else if(menuSystem->action == ConnectClient){
+			// client socket 초기화
+			// client가 server와 연결시도
+			if(connect_client(socket_info, menuSystem->severIP) == -1)
+				for(int i=0; i<20; i++) menuSystem->severIP[i] = NULL;
+			else
+				menuSystem->action = GoToGame;
+		}
+		
+		handle_keyup(SDLK_KP_ENTER);
+		handle_keyup(SDLK_RETURN);
+	}
+	
+	
 }
 
 void menu_render(MenuSystem *menuSystem)
 {
 	if (num_credits() == 0) draw_vanity_screen(menuSystem);
 	else draw_info_screen(menuSystem);
+}
+
+void remote_render(MenuSystem *menuSystem)
+{	
+	if (menuSystem->action == ServerWait) draw_remote_server_screen(menuSystem);
+	else if (menuSystem->action == ConnectClient) draw_remote_client_connect_screen(menuSystem);
+	else if (menuSystem->action == ReadyConnect) draw_remote_choice_screen(menuSystem);
 }
 
 static void draw_vanity_screen(MenuSystem *menuSystem)
@@ -72,6 +119,39 @@ static void draw_vanity_screen(MenuSystem *menuSystem)
 	if (dt > 11500) draw_vanity_animation(dt - 11500);
 }
 
+static void draw_remote_choice_screen(MenuSystem *menuSystem)
+{
+	draw_player_info();
+	
+	if(menuSystem->role == None) draw_common_indicator(Server, 4, 10);
+	else draw_common_indicator(menuSystem->role, 4, 10);
+	draw_vanity_text("CONNECT SERVER", 7, 15);
+	draw_vanity_text("CONNECT CLIENT", 7, 17);
+}
+
+static void draw_remote_server_screen(MenuSystem *menuSystem)
+{
+	unsigned int dt = SDL_GetTicks() - menuSystem->ticksSinceModeChange;
+
+	draw_player_info();
+	
+	draw_vanity_text("WAIT TO CONNECT", 9, 17);
+	//if (dt%1900 > 400) draw_vanity_text(".", 18, 17);
+	//if (dt%1900 > 900) draw_vanity_text(".", 19, 17);
+	//if (dt%1900 > 1400) draw_vanity_text(".", 20, 17);
+}
+
+static void draw_remote_client_connect_screen(MenuSystem *menuSystem)
+{
+	unsigned int dt = SDL_GetTicks() - menuSystem->ticksSinceModeChange;
+
+	draw_player_info();
+	
+	draw_vanity_text("WRITE SERVER IP", 6, 15);
+	if (dt%800 > 400) draw_vanity_text("- ", 4, 17);
+	draw_vanity_text(menuSystem->severIP, 6, 17);
+}
+
 static void draw_info_screen(MenuSystem *menuSystem)
 {
 	draw_player_info();
@@ -92,10 +172,10 @@ static void draw_player_info(void)
 
 static void draw_mode_choice(MenuSystem *menuSystem)
 {
-	draw_common_indicator(menuSystem->mode);
-	draw_common_solo();
-	draw_common_twoplay();
-	draw_common_multi();
+	draw_common_indicator(menuSystem->mode, 6, 0);
+	draw_vanity_text("PLAY ONE", 9, 3);
+	draw_vanity_text("PLAY TWO", 9, 5);
+	draw_vanity_text("PLAY MULTI", 9, 7);
 }
 
 static void draw_ghost_line(GhostDisplayRow *row,  int y, unsigned int dt)
