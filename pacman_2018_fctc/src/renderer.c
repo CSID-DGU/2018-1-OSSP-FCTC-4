@@ -334,10 +334,10 @@ void draw_pacman(Pacman *pacman)
 	int xOffset = pacman->body.xOffset - 4;
 	int yOffset = offset + pacman->body.yOffset - 4;
 
-	if(!pacman->boostOn) {
+	if(!pacman->itemOn) {
 		draw_image_coord_offset(pacman_ani_image(aniDir, frame), pacman->body.x, pacman->body.y, xOffset, yOffset);
 	} else {
-		draw_image_coord_offset(pacman_ani_boost_image(aniDir, frame), pacman->body.x, pacman->body.y, xOffset, yOffset);
+		draw_image_coord_offset(pacman_ani_item_image(aniDir, frame), pacman->body.x, pacman->body.y, xOffset, yOffset);
 	}
 }
 
@@ -438,10 +438,10 @@ void draw_pacman2(Pacman *pacman)
 	int xOffset = pacman->body.xOffset - 4;
 	int yOffset = offset + pacman->body.yOffset - 4;
 
-	if(!pacman->boostOn) {
+	if(!pacman->itemOn) {
 		draw_image_coord_offset(pacman2_ani_image(aniDir, frame), pacman->body.x, pacman->body.y, xOffset, yOffset);
 	} else {
-		draw_image_coord_offset(pacman2_ani_boost_image(aniDir, frame), pacman->body.x, pacman->body.y, xOffset, yOffset);
+		draw_image_coord_offset(pacman2_ani_item_image(aniDir, frame), pacman->body.x, pacman->body.y, xOffset, yOffset);
 	}
 }
 

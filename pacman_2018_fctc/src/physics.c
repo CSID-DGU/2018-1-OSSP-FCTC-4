@@ -160,11 +160,7 @@ bool move_pacman(PhysicsBody *body, bool canMoveCur, bool canMoveNext)
 	int xDir = 0;
 	int yDir = 0;
 	
-	if(pacman->usd == 1)
-		dir_xy_usd(body->curDir, &xDir, &yDir);
-
-	else
-		dir_xy(body->curDir, &xDir, &yDir);
+	dir_xy(body->curDir, &xDir, &yDir);
 	
 	//we have double pixels so multiply by 2
 	int BASE_VALUE = 75 * 2;
@@ -253,9 +249,7 @@ bool move_pacman(PhysicsBody *body, bool canMoveCur, bool canMoveNext)
 
 		body->curDir = newDir;
 
-	if(pacman->usd == 1)
-		dir_xy_usd(newDir, &xDir, &yDir);
-	else
+
 		dir_xy(newDir, &xDir, &yDir);
 
 		body->xOffset = overOffset / MULT_VALUE * xDir;

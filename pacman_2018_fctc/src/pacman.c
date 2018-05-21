@@ -7,10 +7,10 @@ void pacman_init(Pacman *pacman)
 	pacman->score = 0;
 	pacman->livesLeft = 3;
 	pacman->itemRemainTime = 0;
-	pacman->usd = 0;
+
 	pacman->missedFrames = 0;
 	pacman->godMode = false;
-	pacman->boostOn = false;
+	pacman->itemOn = false;
 }
 
 void pacman_level_init(Pacman *pacman)
