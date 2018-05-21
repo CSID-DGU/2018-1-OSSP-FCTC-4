@@ -20,7 +20,8 @@ static unsigned int keysReleasedFrame_player2[MAX_KEYS] = {0};
 
 static unsigned int curKeyFrame = 1;
 
-bool* player2_keysHeld_state(void){
+bool* player2_keysHeld_state(bool *enemy_key){
+	for(int i=0; i<MAX_KEYS; i++) enemy_key[i] = keysHeld_player2[i];
 	return keysHeld_player2;
 }
 

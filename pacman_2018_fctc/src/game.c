@@ -141,6 +141,7 @@ void game_tick(PacmanGame *game)
 
 void game_render(PacmanGame *game)
 {
+
 	unsigned dt = ticks_game() - game->ticksSinceModeChange;
 	static unsigned godDt = 0;
 	static bool godChange = false;
@@ -151,11 +152,12 @@ void game_render(PacmanGame *game)
 	if(game->mode != SoloState) draw_common_twoup(true, game->pacman_enemy.score);
 	
 	draw_common_highscore(game->highscore);
-
+	
 	draw_pacman_lives(game->pacman.livesLeft);
 	if(game->mode != SoloState) draw_pacman2_lives(game->pacman_enemy.livesLeft);
-
+	//printf("1\n");
 	draw_small_pellets(&game->pelletHolder);
+	//printf("2\n");
 	draw_item_indicators(game->currentLevel);
 
 	//in gameover state big pellets don't render

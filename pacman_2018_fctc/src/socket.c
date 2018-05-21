@@ -53,7 +53,7 @@ int connect_server(Socket_value *socket_info) {
 }
 
 int send_server(Socket_value *socket_info) {
-
+	return 0;
 }
 
 int recv_server(Socket_value *socket_info) {

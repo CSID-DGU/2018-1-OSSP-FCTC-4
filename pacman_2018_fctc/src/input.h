@@ -7,7 +7,7 @@
 
 #define MAX_KEYS 323
 
-bool* player2_keysHeld_state(void);
+bool* player2_keysHeld_state(bool *enemy_key);
 unsigned int* player2_keyPressed_state(void);
 
 void print_enemy_key(void);
