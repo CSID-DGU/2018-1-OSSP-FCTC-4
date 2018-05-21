@@ -12,34 +12,56 @@ static bool muted;
 static Mix_Music *music;
 //static Mix_Chunk *effects[NUM_EFFECTS];
 
+
 static Mix_Chunk *levelStart;
+static Mix_Chunk *smallEatSound;
+static Mix_Chunk *largeEatSound;
+static Mix_Chunk *sirenSound;
+static Mix_Chunk *fruitEatSound;
+static Mix_Chunk *munch_aSound;
+static Mix_Chunk *munch_bSound;
+static Mix_Chunk *boosterSound;
+static Mix_Chunk *bonusSound;
+static Mix_Chunk *dieSound;
+static Mix_Chunk *deathSound;
 static int levelStartChanel;
 
 void load_sounds(void)
 {
-	//22050 is sound frequency
-	//MIX_DEFAULT_FORMAT is the sound format
-	//2 is number of channels to use, we use 2 for stereo sound
-	//4096 is the sample size
-	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1)
-	{
-		printf("Error creating sound effects.\n");
-		printf("Aborting.\n");
-		exit(1);
-	}
+        //22050 is sound frequency
+        //MIX_DEFAULT_FORMAT is the sound format
+        //2 is number of channels to use, we use 2 for stereo sound
+        //4096 is the sample size
+        if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1)
+        {
+                printf("Error creating sound effects.\n");
+                printf("Aborting.\n");
+                exit(1);
+        }
 
-	//now load the sounds and effects we're using
-	//music = Mix_LoadMUS(MUSIC_FILE);
+        //now load the sounds and effects we're using
+        //music = Mix_LoadMUS(MUSIC_FILE);
 
-	//for (int i = 0; i < NUM_EFFECTS; i++)
-	//{
-		//effects[i] = Mix_LoadWAV(EFFECT_FILES[i]);
-	//}
+        //for (int i = 0; i < NUM_EFFECTS; i++)
+        //{
+                //effects[i] = Mix_LoadWAV(EFFECT_FILES[i]);
+        //}
 
-	levelStart = Mix_LoadWAV("sound/pacintro.wav");
+        levelStart = Mix_LoadWAV("sound/pacintro.wav");
 
-	set_sound_volume(0.5);
-	set_sound_muted(false);
+        smallEatSound = Mix_LoadWAV("sound/ghost_eat.wav");
+        largeEatSound = Mix_LoadWAV("sound/large_pellet.wav");
+        sirenSound = Mix_LoadWAV("sound/siren.wav");
+        fruitEatSound = Mix_LoadWAV("sound/fruit.wav");
+        munch_aSound = Mix_LoadWAV("sound/munch_a.wav");
+        munch_bSound = Mix_LoadWAV("sound/munch_b.wav");
+        boosterSound = Mix_LoadWAV("sound/booster.wav");
+        bonusSound = Mix_LoadWAV("sound/bonus.wav");
+        dieSound = Mix_LoadWAV("sound/die.wav");
+        deathSound = Mix_LoadWAV("sound/death.wav");
+
+        set_sound_volume(0.5);
+        set_sound_muted(false);
 }
 
 void dispose_sounds(void)
@@ -84,19 +106,33 @@ bool is_sound_muted(void)
 	return muted;
 }
 
+
+
+
+
+
 void play_sound(SoundEffect effectName)
 {
-	Mix_Chunk *chunk;
-	int *channel;
+        Mix_Chunk *chunk;
+        int *channel;
 
-	switch (effectName)
-	{
-		case LevelStartSound:  chunk = levelStart; channel = &levelStartChanel; break;
-		case WakawakaSound:    chunk = levelStart; channel = &levelStartChanel; break;
-		case PacmanDeathSound: chunk = levelStart; channel = &levelStartChanel; break;
-	}
+        switch (effectName)
+        {
+                case LevelStartSound:  chunk = levelStart; channel = &levelStartChanel; break;
+                case SmallSound:    chunk = smallEatSound; channel = &levelStartChanel; break;
+                case LargeSound:    chunk = largeEatSound; channel = &levelStartChanel; break;
+                case SirenSound:       chunk = sirenSound; channel = &levelStartChanel; break;
+                case FruitSound:    chunk = fruitEatSound; channel = &levelStartChanel; break;
+                case Munch_Asound:  chunk = munch_aSound;  channel = &levelStartChanel; break;
+                case Munch_Bsound: chunk = munch_bSound;   channel = &levelStartChanel; break;
+                case BoosterSound:  chunk = boosterSound;  channel = &levelStartChanel; break;
+                case BonusSound:  chunk = bonusSound;  channel = &levelStartChanel; break;
+                case DieSound:  chunk = dieSound;  channel = &levelStartChanel; break;
 
-	*channel = Mix_PlayChannel(-1, chunk, 0);
+                case PacmanDeathSound: chunk = deathSound; channel = &levelStartChanel; break;
+        }
+
+        *channel = Mix_PlayChannel(-1, chunk, 0);
 }
 
 void play_music(void)
@@ -106,18 +142,27 @@ void play_music(void)
 
 void stop_sound(SoundEffect effectName)
 {
-	int channel;
+        int channel;
 
-	switch (effectName)
-	{
-		case LevelStartSound:  channel = levelStartChanel; break;
-		case WakawakaSound:    channel = levelStartChanel; break;
-		case PacmanDeathSound: channel = levelStartChanel; break;
-		default: printf("badsound\naborting\n"); exit(1); //TODO: fix this up
-	}
+        switch (effectName)
+        {
+                case LevelStartSound:  channel = levelStartChanel; break;
+                case SmallSound:    channel = levelStartChanel; break;
+                case LargeSound:        channel = levelStartChanel; break;
+                case SirenSound:        channel = levelStartChanel; break;
+                case FruitSound:       channel = &levelStartChanel; break;
+                case Munch_Asound:    channel = &levelStartChanel; break;
+                case Munch_Bsound:    channel = &levelStartChanel; break;
+                case BoosterSound:    channel = &levelStartChanel; break;
+                case BonusSound:    channel = &levelStartChanel; break;
+                case DieSound:    channel = &levelStartChanel; break;
 
-	Mix_HaltChannel(channel);
+                case PacmanDeathSound: channel = levelStartChanel; break;
+                default: printf("badsound\naborting\n"); exit(1); //TODO: fix this up
+        }
+        Mix_HaltChannel(channel);
 }
+
 
 void stop_music(void)
 {
