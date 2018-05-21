@@ -1,5 +1,4 @@
 #include "game.h"
-
 #include "animation.h"
 #include "board.h"
 #include "fps.h"
