@@ -117,12 +117,17 @@ static void internal_tick(void)
 				 * 
 				 */
 				if(menuSystem.role == Server) {
-					
+					bool* tmp;
+					recv(socket_info.client_fd, tmp, MAX_KEYS, 0);
+					printf("receive: %s\n", tmp);
 					game_tick(&pacmanGame);
 					
 				}
 				else if(menuSystem.role == Client) {
+					bool* tmp = player2_key_state();
+					printf("%d\n",tmp[SDLK_UP]);
 					
+					send(socket_info.client_fd, tmp, MAX_KEYS, 0);
 					game_tick(&pacmanGame);
 				}
 			}
