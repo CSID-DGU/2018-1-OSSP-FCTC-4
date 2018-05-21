@@ -20,8 +20,28 @@ static unsigned int keysReleasedFrame_player2[MAX_KEYS] = {0};
 
 static unsigned int curKeyFrame = 1;
 
-bool* player2_key_state(void) {
-		return keysHeld;
+bool* player2_keysHeld_state(void){
+	return keysHeld_player2;
+}
+
+unsigned int* player2_keyPressed_state(void){
+	
+	return keysPressedFrame_player2;
+}
+
+void store_enemy_keysHeld(bool* enemy_key) {
+	for(int i=0; i<MAX_KEYS; i++) keysHeld_player2[i] = enemy_key[i];
+}
+
+void store_enemy_keyPressed(unsigned int* enemy_key) {
+	for(int i=0; i<MAX_KEYS; i++) keysPressedFrame_player2[i] = enemy_key[i];
+}
+
+void print_enemy_key(void) {
+	printf("Held1: %d %d %d %d\n", keysHeld_player2[SDLK_UP], keysHeld_player2[SDLK_DOWN], keysHeld_player2[SDLK_LEFT], keysHeld_player2[SDLK_DOWN]);
+	printf("Held2: %d %d %d %d\n", keysHeld_player2[SDLK_w], keysHeld_player2[SDLK_s], keysHeld_player2[SDLK_a], keysHeld_player2[SDLK_d]);
+	printf("Rele1: %d %d %d %d\n", keysPressedFrame_player2[SDLK_UP], keysPressedFrame_player2[SDLK_DOWN], keysPressedFrame_player2[SDLK_LEFT], keysPressedFrame_player2[SDLK_DOWN]);
+	printf("Rele2: %d %d %d %d\n", keysPressedFrame_player2[SDLK_w], keysPressedFrame_player2[SDLK_s], keysPressedFrame_player2[SDLK_a], keysPressedFrame_player2[SDLK_d]);
 }
 
 void keyevents_finished(void)
@@ -145,6 +165,7 @@ bool dir_pressed_now(Direction *dir)
 
 bool dir_pressed_now_player2(Direction *dir)
 {
+	
 	int highestPushed = 0;
 
 	Direction dirs[4] = {Up, Left, Down, Right};

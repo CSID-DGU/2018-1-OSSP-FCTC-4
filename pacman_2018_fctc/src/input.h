@@ -7,7 +7,12 @@
 
 #define MAX_KEYS 323
 
-bool* player2_key_state(void);
+bool* player2_keysHeld_state(void);
+unsigned int* player2_keyPressed_state(void);
+
+void print_enemy_key(void);
+void store_enemy_keysHeld(bool* enemy_key);
+void store_enemy_keyPressed(unsigned int* enemy_key);
 //Call at the end of each round of keypresses. If this isn't called key_pressed() and key_released() will not work.
 void keyevents_finished(void);
 

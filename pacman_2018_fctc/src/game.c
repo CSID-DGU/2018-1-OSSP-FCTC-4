@@ -16,7 +16,7 @@
 
 static void process_item(PacmanGame *game);
 static void process_player(Pacman *pacman, Board *board, Player player);
-static void process_fruit(PacmanGame *game);
+//static void process_fruit(PacmanGame *game);
 static void process_ghosts(PacmanGame *game);
 static void process_pellets(PacmanGame *game);
 
@@ -42,12 +42,9 @@ void game_tick(PacmanGame *game)
 			break;
 		case GamePlayState:
 			// everyone can move and this is the standard 'play' game mode
-			if(game->mode == SoloState) process_player(&game->pacman, &game->board, One);
-			if(game->mode == MultiState) process_player(&game->pacman_enemy, &game->board, Two);
-			if(game->mode == RemoteState) {
-				process_player(&game->pacman, &game->board, One);
-				process_player(&game->pacman_enemy, &game->board, Two);
-			}
+			process_player(&game->pacman, &game->board, One);
+			if(game->mode != SoloState) process_player(&game->pacman_enemy, &game->board, Two);
+			
 			//if(game->mode == RemoteState && game->mode == Server) process_player(&game->pacman_enemy, &game->board, One);
 			//if(game->mode == RemoteState && game->mode == Client) process_player(&game->pacman_enemy, &game->board, Two);
 			process_ghosts(game);
@@ -96,7 +93,7 @@ void game_tick(PacmanGame *game)
 	
 	int lives = game->pacman.livesLeft;
 	int player2_lives = -1;
-	if(game->mode == MultiState) player2_lives = game->pacman_enemy.livesLeft;
+	if(game->mode != SoloState) player2_lives = game->pacman_enemy.livesLeft;
 	
 	switch (game->gameState)
 	{
@@ -107,7 +104,7 @@ void game_tick(PacmanGame *game)
 		case LevelBeginState:
 			if (dt > 1800) enter_state(game, GamePlayState);
 			game->pacman.godMode = false;
-			if(game->mode == MultiState) game->pacman_enemy.godMode = false;
+			if(game->mode != SoloState) game->pacman_enemy.godMode = false;
 
 			break;
 		case GamePlayState:
@@ -325,8 +322,8 @@ static void enter_state(PacmanGame *game, GameState state)
 	switch (game->gameState)
 	{
 		case GameBeginState:
-			if(game->mode == SoloState) game->pacman.livesLeft--;
-			else game->pacman_enemy.livesLeft--;
+			game->pacman.livesLeft--;
+			if(game->mode != SoloState) game->pacman_enemy.livesLeft--;
 
 			break;
 		case WinState:
@@ -1004,7 +1001,7 @@ void level_init(PacmanGame *game)
 void pacdeath_init(PacmanGame *game)
 {
 	pacman_level_init(&game->pacman);
-	if(game->mode == MultiState) pacman_level_init(&game->pacman_enemy);
+	if(game->mode != SoloState) pacman_level_init(&game->pacman_enemy);
 	ghosts_init(game->ghosts);
 
 	reset_item(&game->gameItem1, &game->board);

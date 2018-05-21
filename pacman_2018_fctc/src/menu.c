@@ -131,7 +131,7 @@ static void draw_remote_choice_screen(MenuSystem *menuSystem)
 
 static void draw_remote_server_screen(MenuSystem *menuSystem)
 {
-	unsigned int dt = SDL_GetTicks() - menuSystem->ticksSinceModeChange;
+	//unsigned int dt = SDL_GetTicks() - menuSystem->ticksSinceModeChange;
 
 	draw_player_info();
 	

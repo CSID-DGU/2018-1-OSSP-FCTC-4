@@ -77,11 +77,7 @@ static void main_loop(void)
 			process_events(Two);
 		}
 		else process_events(One);
-		/*
-		bool* tmp;
-		tmp = player2_key_state();
-		printf("%d\n",tmp[SDLK_UP]);
-		*/
+		
 		internal_tick();
 		internal_render();
 
@@ -117,18 +113,46 @@ static void internal_tick(void)
 				 * 
 				 */
 				if(menuSystem.role == Server) {
-					bool* tmp;
-					recv(socket_info.client_fd, tmp, MAX_KEYS, 0);
-					printf("receive: %s\n", tmp);
-					game_tick(&pacmanGame);
+					/*
+					unsigned int* enemy_keyPressed = (unsigned int*)malloc(sizeof(unsigned int)*MAX_KEYS);
+					recv(socket_info.client_fd, enemy_keyPressed, sizeof(unsigned int)*MAX_KEYS, 0);
+					printf("Rele1: %d %d %d %d\n", enemy_keyPressed[SDLK_UP], enemy_keyPressed[SDLK_DOWN], enemy_keyPressed[SDLK_LEFT], enemy_keyPressed[SDLK_DOWN]);
+					printf("Rele2: %d %d %d %d\n", enemy_keyPressed[SDLK_w], enemy_keyPressed[SDLK_s], enemy_keyPressed[SDLK_a], enemy_keyPressed[SDLK_d]);
+					store_enemy_keyPressed(enemy_keyPressed);
 					
+					bool* enemy_keysHeld = (bool*)malloc(sizeof(bool)*MAX_KEYS);
+					recv(socket_info.client_fd, enemy_keysHeld, MAX_KEYS, 0);
+					store_enemy_keysHeld(enemy_keysHeld);
+					print_enemy_key();
+					*/
+					
+					game_tick(&pacmanGame);
+					send(socket_info.client_fd, &pacmanGame, sizeof(PacmanGame)+1, 0);
+					//PacmanGame *d = (PacmanGame*)malloc(sizeof(PacmanGame));
+					//int a = recv(socket_info.client_fd, pacmanGame, sizeof(PacmanGame), 0);
+					//printf("size: %d\n",a);
+					//send(socket_info.client_fd, tmp, MAX_KEYS, 0);
 				}
 				else if(menuSystem.role == Client) {
-					bool* tmp = player2_key_state();
-					printf("%d\n",tmp[SDLK_UP]);
+					/*
+					unsigned int* my_keyPressed;
+					my_keyPressed = player2_keyPressed_state();
+					printf("Rele1: %d %d %d %d\n", my_keyPressed[SDLK_UP], my_keyPressed[SDLK_DOWN], my_keyPressed[SDLK_LEFT], my_keyPressed[SDLK_DOWN]);
+					printf("Rele2: %d %d %d %d\n", my_keyPressed[SDLK_w], my_keyPressed[SDLK_s], my_keyPressed[SDLK_a], my_keyPressed[SDLK_d]);
+					send(socket_info.client_fd, my_keyPressed, sizeof(unsigned int)*MAX_KEYS+1, 0);
 					
-					send(socket_info.client_fd, tmp, MAX_KEYS, 0);
-					game_tick(&pacmanGame);
+					bool* my_keysHeld;
+					my_keysHeld = player2_keysHeld_state();
+					send(socket_info.client_fd, my_keysHeld, MAX_KEYS+1, 0);
+					*/
+					PacmanGame *d = (PacmanGame*)malloc(sizeof(PacmanGame));
+					int a = recv(socket_info.client_fd, d, sizeof(PacmanGame), 0);
+					pacmanGame = *d;
+					printf("size : %d\n",a);
+					//game_tick(&pacmanGame);
+					
+					//recv(socket_info.client_fd, tmp, MAX_KEYS, 0);
+					
 				}
 			}
 			else game_tick(&pacmanGame);
