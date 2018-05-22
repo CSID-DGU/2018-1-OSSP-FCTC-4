@@ -50,6 +50,9 @@ void menu_tick(MenuSystem *menuSystem)
 	{
 		if(menuSystem->mode == RemoteState) menuSystem->action = ReadyConnect;
 		else menuSystem->action = GoToGame;
+		
+		handle_keyup(SDLK_KP_ENTER);
+		handle_keyup(SDLK_RETURN);
 	}
 	
 }

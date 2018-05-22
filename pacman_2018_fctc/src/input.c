@@ -32,20 +32,6 @@ void keyinfo_store(KeyState *key_info){
 	key_info->keyPressed[3] = keysPressedFrame_player2[SDLK_d];
 }
 
-void player2_keysHeld_store(bool* player2_keyHelds){
-	player2_keyHelds[0] = keysHeld_player2[SDLK_w];
-	player2_keyHelds[1] = keysHeld_player2[SDLK_s];
-	player2_keyHelds[2] = keysHeld_player2[SDLK_a];
-	player2_keyHelds[3] = keysHeld_player2[SDLK_d];
-}
-
-void player2_keyPressed_store(unsigned int* player2_keyPressed){
-	keysPressedFrame_player2[0] = player2_keyPressed[SDLK_w];
-	keysPressedFrame_player2[1] = player2_keyPressed[SDLK_s];
-	keysPressedFrame_player2[2] = player2_keyPressed[SDLK_a];
-	keysPressedFrame_player2[3] = player2_keyPressed[SDLK_d];
-}
-
 void store_enemy_keysinfo(KeyState* key_info) {
 	keysHeld_player2[SDLK_w] = key_info->keyHeld[0];
 	keysHeld_player2[SDLK_s] = key_info->keyHeld[1];
@@ -57,27 +43,6 @@ void store_enemy_keysinfo(KeyState* key_info) {
 	keysPressedFrame_player2[SDLK_a] = key_info->keyPressed[2];
 	keysPressedFrame_player2[SDLK_d] = key_info->keyPressed[3];
 	
-}
-
-void store_enemy_keysHeld(bool* enemy_key) {
-	keysHeld_player2[SDLK_w] = enemy_key[0];
-	keysHeld_player2[SDLK_s] = enemy_key[1];
-	keysHeld_player2[SDLK_a] = enemy_key[2];
-	keysHeld_player2[SDLK_d] = enemy_key[3];
-}
-
-void store_enemy_keyPressed(unsigned int* enemy_key) {
-	keysPressedFrame_player2[SDLK_w] = enemy_key[0];
-	keysPressedFrame_player2[SDLK_s] = enemy_key[1];
-	keysPressedFrame_player2[SDLK_a] = enemy_key[2];
-	keysPressedFrame_player2[SDLK_d] = enemy_key[3];
-}
-
-void print_enemy_key(void) {
-	printf("Held1: %d %d %d %d\n", keysHeld_player2[SDLK_UP], keysHeld_player2[SDLK_DOWN], keysHeld_player2[SDLK_LEFT], keysHeld_player2[SDLK_DOWN]);
-	printf("Held2: %d %d %d %d\n", keysHeld_player2[SDLK_w], keysHeld_player2[SDLK_s], keysHeld_player2[SDLK_a], keysHeld_player2[SDLK_d]);
-	printf("Rele1: %d %d %d %d\n", keysPressedFrame_player2[SDLK_UP], keysPressedFrame_player2[SDLK_DOWN], keysPressedFrame_player2[SDLK_LEFT], keysPressedFrame_player2[SDLK_DOWN]);
-	printf("Rele2: %d %d %d %d\n", keysPressedFrame_player2[SDLK_w], keysPressedFrame_player2[SDLK_s], keysPressedFrame_player2[SDLK_a], keysPressedFrame_player2[SDLK_d]);
 }
 
 void keyevents_finished(void)

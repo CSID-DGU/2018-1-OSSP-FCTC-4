@@ -88,18 +88,20 @@ static void main_loop(void)
 }
 
 static void copy_pacmanGame_info(void){
+	pacmanGame.death_player = pac->death_player;
+	pacmanGame.tick = pac->tick;
 	pacmanGame.gameState = pac->gameState;
 	pacmanGame.ticksSinceModeChange = pac->ticksSinceModeChange;
 	pacmanGame.highscore = pac->highscore;
 	pacmanGame.currentLevel = pac->currentLevel;
-				
+	pacmanGame.mode = pac->mode;
+	
 	pacmanGame.pacman = pac->pacman;
 	pacmanGame.pacman_enemy = pac->pacman_enemy;
-					
-	pacmanGame.ghosts[0] = pac->ghosts[0];
-	pacmanGame.ghosts[1] = pac->ghosts[1];
-	pacmanGame.ghosts[2] = pac->ghosts[2];
-	pacmanGame.ghosts[3] = pac->ghosts[3];
+	
+	for(int i=0; i<4; i++) {
+		pacmanGame.ghosts[i] = pac->ghosts[i];
+	}
 	
 	pacmanGame.gameItem1 = pac->gameItem1;
 	pacmanGame.gameItem2 = pac->gameItem2;
@@ -115,10 +117,12 @@ static void copy_pacmanGame_info(void){
 		pacmanGame.pelletHolder.pellets[i].y = pac->pelletHolder.pellets[i].y;
 		pacmanGame.pelletHolder.pellets[i].eaten = pac->pelletHolder.pellets[i].eaten;
 		pacmanGame.pelletHolder.pellets[i].type = pac->pelletHolder.pellets[i].type;
-		pacmanGame.pelletHolder.pellets[i].image = small_pellet_image();
+		if(pacmanGame.pelletHolder.pellets[i].type == LargePellet) pacmanGame.pelletHolder.pellets[i].image = large_pellet_image();
+		else pacmanGame.pelletHolder.pellets[i].image = small_pellet_image();
 	}
 	
 }
+
 static void internal_tick(void)
 {
 	switch (state)
@@ -132,6 +136,7 @@ static void internal_tick(void)
 			}
 			else if(menuSystem.action == ReadyConnect){
 				state = Remote;
+				menuSystem.role = Server;
 			}
 
 			break;
@@ -141,12 +146,10 @@ static void internal_tick(void)
 					
 					KeyState key_info;
 					recv(socket_info.client_fd, (char*)&key_info, sizeof(KeyState), MSG_WAITALL);
-					//printf("Held: %d %d %d %d\n", key_info.keyHeld[0], key_info.keyHeld[1], key_info.keyHeld[2], key_info.keyHeld[3]);
-					//printf("Pressed: %d %d %d %d\n", key_info.keyPressed[0], key_info.keyPressed[1], key_info.keyPressed[2], key_info.keyPressed[3]);
 					store_enemy_keysinfo(&key_info);
-					print_enemy_key();
 					
 					game_tick(&pacmanGame);
+					pacmanGame.tick = ticks_game();
 					send(socket_info.client_fd, (char*)&pacmanGame, sizeof(PacmanGame),0);
 				}
 				else if(menuSystem.role == Client) {
@@ -160,6 +163,7 @@ static void internal_tick(void)
 					
 					copy_pacmanGame_info();
 				}
+				
 			}
 			else game_tick(&pacmanGame);
 			
@@ -167,6 +171,8 @@ static void internal_tick(void)
 			{
 				menu_init(&menuSystem);
 				state = Menu;
+				//if(menuSystem.role == Client)
+				close(socket_info.client_fd);
 			}
 
 			break;
@@ -200,8 +206,9 @@ static void internal_render(void)
 			menu_render(&menuSystem);
 			break;
 		case Game:
-			//if(menuSystem.role == Client) 
-				game_render(&pacmanGame);
+			if(menuSystem.role == Client) game_render(&pacmanGame,pacmanGame.tick);
+			else game_render(&pacmanGame,ticks_game());
+			
 			break;
 		case Remote:
 			remote_render(&menuSystem);
@@ -348,14 +355,12 @@ static void key_down_hacks(int keycode)
 		
 		if (keycode == SDLK_DOWN) 
 		{
-			if(menuSystem.role == None) menuSystem.role = Server;
 			menuSystem.role++;
 			if(menuSystem.role > 2) menuSystem.role = 1;
 		}
 		
 		if (keycode == SDLK_UP)
 		{
-			if(menuSystem.role == None) menuSystem.role = Server;
 			menuSystem.role--;
 			if(menuSystem.role == 0) menuSystem.role = 2;
 		}
@@ -367,15 +372,16 @@ static void key_down_hacks(int keycode)
 		if ( (keycode == SDLK_BACKSPACE) && (len > 0) ) menuSystem.severIP[len-1] = NULL;
 		if ( len < 20 && ( (keycode >= SDLK_0 && keycode <= SDLK_9) || keycode == SDLK_PERIOD) ) menuSystem.severIP[len] = keycode;
 	}
-	
-	if (keycode == SDLK_9 && state != Remote)
+	//if (keycode == SDLK_9 && state != Remote)
+	if (keycode == SDLK_9)
 	{
 		printf("plus\n");
 		for (int i = 0; i < 4; i++) pacmanGame.ghosts[i].body.velocity += 5;
 
 		printf("ghost speed: %d\n", pacmanGame.ghosts[0].body.velocity);
 	}
-	else if (keycode == SDLK_0 && state != Remote)
+	//else if (keycode == SDLK_0 && state != Remote)
+	else if (keycode == SDLK_0)
 	{
 		printf("minus\n");
 		for (int i = 0; i < 4; i++) pacmanGame.ghosts[i].body.velocity -= 5;
