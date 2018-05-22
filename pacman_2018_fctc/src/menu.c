@@ -135,7 +135,7 @@ static void draw_remote_server_screen(MenuSystem *menuSystem)
 
 	draw_player_info();
 	
-	draw_vanity_text("WAIT TO CONNECT", 9, 17);
+	draw_vanity_text("WAIT TO CONNECT...", 6, 17);
 	//if (dt%1900 > 400) draw_vanity_text(".", 18, 17);
 	//if (dt%1900 > 900) draw_vanity_text(".", 19, 17);
 	//if (dt%1900 > 1400) draw_vanity_text(".", 20, 17);

@@ -16,6 +16,8 @@
 #include "sound.h"
 #include "text.h"
 #include "window.h"
+// Remote Play 모드에서 정보를 받아옴
+static void copy_pacmanGame_info(void);
 
 //Initializes all resources.
 static void resource_init(void);
@@ -85,6 +87,38 @@ static void main_loop(void)
 	}
 }
 
+static void copy_pacmanGame_info(void){
+	pacmanGame.gameState = pac->gameState;
+	pacmanGame.ticksSinceModeChange = pac->ticksSinceModeChange;
+	pacmanGame.highscore = pac->highscore;
+	pacmanGame.currentLevel = pac->currentLevel;
+				
+	pacmanGame.pacman = pac->pacman;
+	pacmanGame.pacman_enemy = pac->pacman_enemy;
+					
+	pacmanGame.ghosts[0] = pac->ghosts[0];
+	pacmanGame.ghosts[1] = pac->ghosts[1];
+	pacmanGame.ghosts[2] = pac->ghosts[2];
+	pacmanGame.ghosts[3] = pac->ghosts[3];
+	
+	pacmanGame.gameItem1 = pac->gameItem1;
+	pacmanGame.gameItem2 = pac->gameItem2;
+	pacmanGame.gameItem3 = pac->gameItem3;
+	pacmanGame.gameItem4 = pac->gameItem4;
+	pacmanGame.gameItem5 = pac->gameItem5;
+					
+	pacmanGame.pelletHolder.numLeft = pac->pelletHolder.numLeft;
+	pacmanGame.pelletHolder.totalNum = pac->pelletHolder.totalNum;
+					
+	for(int i=0; i<294; i++){
+		pacmanGame.pelletHolder.pellets[i].x = pac->pelletHolder.pellets[i].x;
+		pacmanGame.pelletHolder.pellets[i].y = pac->pelletHolder.pellets[i].y;
+		pacmanGame.pelletHolder.pellets[i].eaten = pac->pelletHolder.pellets[i].eaten;
+		pacmanGame.pelletHolder.pellets[i].type = pac->pelletHolder.pellets[i].type;
+		pacmanGame.pelletHolder.pellets[i].image = small_pellet_image();
+	}
+	
+}
 static void internal_tick(void)
 {
 	switch (state)
@@ -103,31 +137,28 @@ static void internal_tick(void)
 			break;
 		case Game:
 			if(pacmanGame.mode == RemoteState) {
-				/*
-				 * 
-				 * 서버가 game_tick으로 pacmanGame에 정보저장하고 
-				 * 이때, 클라이언트쪽의 팩맨 정보를 받아서 pacman_enemy의 정보로 저장
-				 * 이 정보를 클라이언트로 보내는데 클라이언트는 서버의 pacmanGame의 정보중에서
-				 * pacman의 정보를 클라이언트의 pacmanGame의 pacman_enemy에 저장
-				 * 나머지 펠렛이나 아이템 고스트의 위치에 관한 모든 정보를 저장
-				 * 
-				 */
 				if(menuSystem.role == Server) {
+					
+					KeyState key_info;
+					recv(socket_info.client_fd, (char*)&key_info, sizeof(KeyState), MSG_WAITALL);
+					//printf("Held: %d %d %d %d\n", key_info.keyHeld[0], key_info.keyHeld[1], key_info.keyHeld[2], key_info.keyHeld[3]);
+					//printf("Pressed: %d %d %d %d\n", key_info.keyPressed[0], key_info.keyPressed[1], key_info.keyPressed[2], key_info.keyPressed[3]);
+					store_enemy_keysinfo(&key_info);
+					print_enemy_key();
+					
 					game_tick(&pacmanGame);
-					int a = send(socket_info.client_fd, (char*)&pacmanGame, sizeof(PacmanGame),0);
-					printf("size: %d \n", a);
-					//printf("ok\n");
+					send(socket_info.client_fd, (char*)&pacmanGame, sizeof(PacmanGame),0);
 				}
 				else if(menuSystem.role == Client) {
+					
+					KeyState key_info;
+					keyinfo_store(&key_info);
+					send(socket_info.client_fd, (char*)&key_info, sizeof(KeyState),0);
+					
 					pac = (PacmanGame*)malloc(sizeof(PacmanGame));
-					//printf("a: %d \n",pac->highscore);
-					int a = recv(socket_info.client_fd, (char*)pac, sizeof(PacmanGame), MSG_WAITALL);
-					pacmanGame = *pac;
-					printf("%d\n",pacmanGame.highscore);
-					//printf("size: %d \n", a);
-					//game_render(pac);
-					//printf("a");
-					//game_tick(&pacmanGame);
+					recv(socket_info.client_fd, (char*)pac, sizeof(PacmanGame), MSG_WAITALL);
+					
+					copy_pacmanGame_info();
 				}
 			}
 			else game_tick(&pacmanGame);
@@ -169,7 +200,8 @@ static void internal_render(void)
 			menu_render(&menuSystem);
 			break;
 		case Game:
-			if(menuSystem.role == Client) game_render(&pacmanGame);
+			//if(menuSystem.role == Client) 
+				game_render(&pacmanGame);
 			break;
 		case Remote:
 			remote_render(&menuSystem);
@@ -270,7 +302,8 @@ static void key_down_hacks(int keycode)
 	static bool rateSwitch = false;
 
 	//TODO: remove this hack and try make it work with the physics body
-	if (keycode == SDLK_SPACE && state != Remote) fps_sethz((rateSwitch = !rateSwitch) ? 200 : 60);
+	if (keycode == SDLK_SPACE) fps_sethz((rateSwitch = !rateSwitch) ? 200 : 60);
+	//if (keycode == SDLK_SPACE && state != Remote) fps_sethz((rateSwitch = !rateSwitch) ? 200 : 60);
 
 	if (keycode == SDLK_m && state != Remote) {
 		if(!pacmanGame.pacman.boostOn) {

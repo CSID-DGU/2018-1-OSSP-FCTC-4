@@ -7,10 +7,17 @@
 
 #define MAX_KEYS 323
 
-bool* player2_keysHeld_state(bool *enemy_key);
-unsigned int* player2_keyPressed_state(void);
+typedef struct{
+	bool keyHeld[4];
+	unsigned int keyPressed[4];
+} KeyState;
+
+void keyinfo_store(KeyState *key_info);
+void player2_keysHeld_store(bool* player2_keyHelds);
+void player2_keyPressed_store(unsigned int* player2_keyPressed);
 
 void print_enemy_key(void);
+void store_enemy_keysinfo(KeyState *key_info);
 void store_enemy_keysHeld(bool* enemy_key);
 void store_enemy_keyPressed(unsigned int* enemy_key);
 //Call at the end of each round of keypresses. If this isn't called key_pressed() and key_released() will not work.

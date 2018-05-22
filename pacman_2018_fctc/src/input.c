@@ -20,22 +20,57 @@ static unsigned int keysReleasedFrame_player2[MAX_KEYS] = {0};
 
 static unsigned int curKeyFrame = 1;
 
-bool* player2_keysHeld_state(bool *enemy_key){
-	for(int i=0; i<MAX_KEYS; i++) enemy_key[i] = keysHeld_player2[i];
-	return keysHeld_player2;
+void keyinfo_store(KeyState *key_info){
+	key_info->keyHeld[0] = keysHeld_player2[SDLK_w];
+	key_info->keyHeld[1] = keysHeld_player2[SDLK_s];
+	key_info->keyHeld[2] = keysHeld_player2[SDLK_a];
+	key_info->keyHeld[3] = keysHeld_player2[SDLK_d];
+	
+	key_info->keyPressed[0] = keysPressedFrame_player2[SDLK_w];
+	key_info->keyPressed[1] = keysPressedFrame_player2[SDLK_s];
+	key_info->keyPressed[2] = keysPressedFrame_player2[SDLK_a];
+	key_info->keyPressed[3] = keysPressedFrame_player2[SDLK_d];
 }
 
-unsigned int* player2_keyPressed_state(void){
+void player2_keysHeld_store(bool* player2_keyHelds){
+	player2_keyHelds[0] = keysHeld_player2[SDLK_w];
+	player2_keyHelds[1] = keysHeld_player2[SDLK_s];
+	player2_keyHelds[2] = keysHeld_player2[SDLK_a];
+	player2_keyHelds[3] = keysHeld_player2[SDLK_d];
+}
+
+void player2_keyPressed_store(unsigned int* player2_keyPressed){
+	keysPressedFrame_player2[0] = player2_keyPressed[SDLK_w];
+	keysPressedFrame_player2[1] = player2_keyPressed[SDLK_s];
+	keysPressedFrame_player2[2] = player2_keyPressed[SDLK_a];
+	keysPressedFrame_player2[3] = player2_keyPressed[SDLK_d];
+}
+
+void store_enemy_keysinfo(KeyState* key_info) {
+	keysHeld_player2[SDLK_w] = key_info->keyHeld[0];
+	keysHeld_player2[SDLK_s] = key_info->keyHeld[1];
+	keysHeld_player2[SDLK_a] = key_info->keyHeld[2];
+	keysHeld_player2[SDLK_d] = key_info->keyHeld[3];
 	
-	return keysPressedFrame_player2;
+	keysPressedFrame_player2[SDLK_w] = key_info->keyPressed[0];
+	keysPressedFrame_player2[SDLK_s] = key_info->keyPressed[1];
+	keysPressedFrame_player2[SDLK_a] = key_info->keyPressed[2];
+	keysPressedFrame_player2[SDLK_d] = key_info->keyPressed[3];
+	
 }
 
 void store_enemy_keysHeld(bool* enemy_key) {
-	for(int i=0; i<MAX_KEYS; i++) keysHeld_player2[i] = enemy_key[i];
+	keysHeld_player2[SDLK_w] = enemy_key[0];
+	keysHeld_player2[SDLK_s] = enemy_key[1];
+	keysHeld_player2[SDLK_a] = enemy_key[2];
+	keysHeld_player2[SDLK_d] = enemy_key[3];
 }
 
 void store_enemy_keyPressed(unsigned int* enemy_key) {
-	for(int i=0; i<MAX_KEYS; i++) keysPressedFrame_player2[i] = enemy_key[i];
+	keysPressedFrame_player2[SDLK_w] = enemy_key[0];
+	keysPressedFrame_player2[SDLK_s] = enemy_key[1];
+	keysPressedFrame_player2[SDLK_a] = enemy_key[2];
+	keysPressedFrame_player2[SDLK_d] = enemy_key[3];
 }
 
 void print_enemy_key(void) {

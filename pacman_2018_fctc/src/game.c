@@ -155,9 +155,9 @@ void game_render(PacmanGame *game)
 	
 	draw_pacman_lives(game->pacman.livesLeft);
 	if(game->mode != SoloState) draw_pacman2_lives(game->pacman_enemy.livesLeft);
-	//printf("1\n");
+	
 	draw_small_pellets(&game->pelletHolder);
-	//printf("2\n");
+	
 	draw_item_indicators(game->currentLevel);
 
 	//in gameover state big pellets don't render
