@@ -38,7 +38,7 @@ void menu_init(MenuSystem *menuSystem)
 	menuSystem->role = Nothing;
 	menuSystem->action = Nothing;
 	menuSystem->ticksSinceModeChange = SDL_GetTicks();
-	menuSystem->severIP = (char*)malloc(sizeof(char)*20);
+	menuSystem->severIP = (char*)malloc(sizeof(char)*50);
 	for(int i=0; i<20; i++) menuSystem->severIP[i] = NULL;
 }
 
@@ -48,6 +48,7 @@ void menu_tick(MenuSystem *menuSystem)
 
 	if (startNew)
 	{
+		printf(" action : %d\n",menuSystem->action);
 		if(menuSystem->mode == RemoteState) menuSystem->action = ReadyConnect;
 		else menuSystem->action = GoToGame;
 		
@@ -65,6 +66,7 @@ void remote_tick(MenuSystem *menuSystem, Socket_value *socket_info)
 		if(menuSystem->action == ReadyConnect){
 			if(menuSystem->role == Server) {
 				menuSystem->action = ServerWait;
+				
 				init_server(socket_info);
 			}
 			else if(menuSystem->role == Client) {
@@ -74,6 +76,7 @@ void remote_tick(MenuSystem *menuSystem, Socket_value *socket_info)
 		else if(menuSystem->action == ConnectClient){
 			// client socket 초기화
 			// client가 server와 연결시도
+			
 			if(connect_client(socket_info, menuSystem->severIP) == -1)
 				for(int i=0; i<20; i++) menuSystem->severIP[i] = NULL;
 			else

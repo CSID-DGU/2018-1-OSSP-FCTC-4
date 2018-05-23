@@ -4,6 +4,8 @@
 #define SERV_IP_ADDR "127.0.0.1"
 #define PORT_NUM 3088
 
+int port_num = 3088;
+
 void init_server(Socket_value *socket_info){
 	/* server socket 초기화 & 연결 client로부터 대기*/
 	
@@ -16,18 +18,18 @@ void init_server(Socket_value *socket_info){
 	
 	//server_Addr 을 NULL로 초기화
 	memset(&socket_info->server_addr, 0x00, sizeof(socket_info->server_addr));
-	
+	printf("port_num: %d\n",port_num);
 	//server_addr 셋팅		 
 	socket_info->server_addr.sin_family = AF_INET;
-	//socket_info->server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	socket_info->server_addr.sin_addr.s_addr = inet_addr(SERV_IP_ADDR);
-	socket_info->server_addr.sin_port = htons(PORT_NUM);
+	socket_info->server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	//socket_info->server_addr.sin_addr.s_addr = inet_addr(SERV_IP_ADDR);
+	socket_info->server_addr.sin_port = htons(port_num++);
 	socket_info->addr_len = 0;
 	
 	if(bind(socket_info->server_fd, (struct sockaddr *)&socket_info->server_addr, sizeof(socket_info->server_addr)) <0)
     {
         printf("Server : Can't bind local address.\n");
-        exit(0);
+        //exit(0);
     }
 	
 	printf("Ip : %s\n", inet_ntoa(socket_info->server_addr.sin_addr));
@@ -76,13 +78,16 @@ int connect_client(Socket_value *socket_info, char *severIP){
 		exit(0);
 	}
 	
+	printf("port_num: %d\n",port_num);
 	socket_info->server_addr.sin_family = AF_INET;
 	socket_info->server_addr.sin_addr.s_addr = inet_addr(severIP);
-	socket_info->server_addr.sin_port = htons(PORT_NUM);
+	socket_info->server_addr.sin_port = htons(port_num++);
     
 	//서버로 연결요청
 	if(connect(socket_info->client_fd, (struct sockaddr *)&socket_info->server_addr, sizeof(socket_info->server_addr)) < 0)
     {
+		printf("Ip : %s\n", inet_ntoa(socket_info->server_addr.sin_addr));
+		printf("Port : %d\n",socket_info->server_addr.sin_port);
 		printf("can't connect.\n");
 		return -1;
 	}

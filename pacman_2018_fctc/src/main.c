@@ -51,7 +51,7 @@ static MenuSystem menuSystem;
 static PacmanGame pacmanGame;
 static PacmanGame *pac;
 // Socket value
-static Socket_value socket_info;
+static Socket_value *socket_info;
 
 static bool gameRunning = true;
 static int numCredits = 0;
@@ -137,6 +137,7 @@ static void internal_tick(void)
 			else if(menuSystem.action == ReadyConnect){
 				state = Remote;
 				menuSystem.role = Server;
+				socket_info = (Socket_value*)malloc(sizeof(Socket_value));
 			}
 
 			break;
@@ -145,30 +146,38 @@ static void internal_tick(void)
 				if(menuSystem.role == Server) {
 					
 					KeyState key_info;
-					recv(socket_info.client_fd, (char*)&key_info, sizeof(KeyState), MSG_WAITALL);
+					recv(socket_info->client_fd, (char*)&key_info, sizeof(KeyState), MSG_WAITALL);
 					store_enemy_keysinfo(&key_info);
 					
 					game_tick(&pacmanGame);
 					pacmanGame.tick = ticks_game();
-					send(socket_info.client_fd, (char*)&pacmanGame, sizeof(PacmanGame),0);
+					send(socket_info->client_fd, (char*)&pacmanGame, sizeof(PacmanGame),0);
 				}
 				else if(menuSystem.role == Client) {
 					
 					KeyState key_info;
 					keyinfo_store(&key_info);
-					send(socket_info.client_fd, (char*)&key_info, sizeof(KeyState),0);
+					send(socket_info->client_fd, (char*)&key_info, sizeof(KeyState),0);
 					
 					pac = (PacmanGame*)malloc(sizeof(PacmanGame));
-					recv(socket_info.client_fd, (char*)pac, sizeof(PacmanGame), MSG_WAITALL);
+					recv(socket_info->client_fd, (char*)pac, sizeof(PacmanGame), MSG_WAITALL);
 					
 					copy_pacmanGame_info();
 				}
+				
+				int flag = 0;
 				if (is_game_over(&pacmanGame, pacmanGame.tick))
 				{
 					menu_init(&menuSystem);
 					state = Menu;
-
-					close(socket_info.client_fd);
+					pacmanGame.role = None;
+					flag = 1;
+				}
+				if(flag == 1) {
+					printf("socket reset!\n");
+					close(socket_info->client_fd);
+					if(menuSystem.role == Server) close(socket_info->server_fd);
+					free(socket_info);
 				}
 			}
 			else {
@@ -187,11 +196,12 @@ static void internal_tick(void)
 		case Remote:
 			if (menuSystem.action == ServerWait) {
 				// listen client
-				if(connect_server(&socket_info) == -1) printf("Wait...\n");
+				
+				if(connect_server(socket_info) == -1) printf("Wait...\n");
 				else menuSystem.action = GoToGame;
 			}
 			
-			remote_tick(&menuSystem, &socket_info);
+			remote_tick(&menuSystem, socket_info);
 			if (menuSystem.action == GoToGame) {
 				state = Game;
 				startgame_init();

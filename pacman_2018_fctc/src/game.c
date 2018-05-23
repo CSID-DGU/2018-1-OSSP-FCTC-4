@@ -45,8 +45,6 @@ void game_tick(PacmanGame *game)
 			process_player(&game->pacman, &game->board, One);
 			if(game->mode != SoloState) process_player(&game->pacman_enemy, &game->board, Two);
 			
-			//if(game->mode == RemoteState && game->mode == Server) process_player(&game->pacman_enemy, &game->board, One);
-			//if(game->mode == RemoteState && game->mode == Client) process_player(&game->pacman_enemy, &game->board, Two);
 			process_ghosts(game);
 
 			process_item(game);
@@ -111,7 +109,6 @@ void game_tick(PacmanGame *game)
 
 			//TODO: remove this hacks
 			if (key_held(SDLK_k)) enter_state(game, DeathState);
-
 			else if (allPelletsEaten) enter_state(game, WinState);
 			else if (collidedWithGhost) enter_state(game, DeathState);
 
@@ -124,7 +121,8 @@ void game_tick(PacmanGame *game)
 		case DeathState:
 			if (dt > 4000)
 			{
-				if (lives == 0 || player2_lives == 0) enter_state(game, GameoverState);
+				if (lives == 0 && death_player == One) enter_state(game, GameoverState);
+				else if (player2_lives == 0 && death_player == Two) enter_state(game, GameoverState);
 				else enter_state(game, LevelBeginState);
 			}
 
@@ -317,7 +315,7 @@ void game_render(PacmanGame *game, int tick)
 			draw_credits(num_credits());
 			break;
 	}
-	}
+}
 
 static void enter_state(PacmanGame *game, GameState state)
 {
@@ -340,7 +338,7 @@ static void enter_state(PacmanGame *game, GameState state)
 			{
 				if(death_player == Two) game->pacman_enemy.livesLeft--;
 				else game->pacman.livesLeft--;
-				
+				printf("1: %d / 2: %d\n",game->pacman.livesLeft,game->pacman_enemy.livesLeft);
 				pacdeath_init(game);
 			}
 		default: ; //do nothing
@@ -884,7 +882,7 @@ static void process_pellets(PacmanGame *game)
 			//eating a small pellet makes pacman not move for 1 frame
 			//eating a large pellet makes pacman not move for 3 frames
 			game->pacman.missedFrames = pellet_nop_frames(p);
-
+			game->pacman_enemy.missedFrames = pellet_nop_frames(p);
 			//can only ever eat 1 pellet in a frame, so return
 			return;
 		}
@@ -909,6 +907,7 @@ static void process_pellets(PacmanGame *game)
 
 			//eating a small pellet makes pacman not move for 1 frame
 			//eating a large pellet makes pacman not move for 3 frames
+			game->pacman.missedFrames = pellet_nop_frames(p);
 			game->pacman_enemy.missedFrames = pellet_nop_frames(p);
 
 			//can only ever eat 1 pellet in a frame, so return
