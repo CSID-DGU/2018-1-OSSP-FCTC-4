@@ -7,6 +7,8 @@
 #define BOARD_LENGTH 28
 #define BOARD_HEIGHT 31
 
+#define STAGE_COUNT 3
+
 typedef enum
 {
 	DoubleCorner,

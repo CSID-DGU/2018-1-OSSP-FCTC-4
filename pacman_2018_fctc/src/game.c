@@ -41,11 +41,11 @@ void game_tick(PacmanGame *game)
 			break;
 		case GamePlayState:
 			// everyone can move and this is the standard 'play' game mode
-			if(game->mode == SoloState) process_player(&game->pacman, &game->board, One);
-			if(game->mode == MultiState) process_player(&game->pacman_enemy, &game->board, Two);
+			if(game->mode == SoloState) process_player(&game->pacman, &game->board[game->stageLevel], One);
+			if(game->mode == MultiState) process_player(&game->pacman_enemy, &game->board[game->stageLevel], Two);
 			if(game->mode == RemoteState) {
-				process_player(&game->pacman, &game->board, One);
-				process_player(&game->pacman_enemy, &game->board, Two);
+				process_player(&game->pacman, &game->board[game->stageLevel], One);
+				process_player(&game->pacman_enemy, &game->board[game->stageLevel], Two);
 			}
 			//if(game->mode == RemoteState && game->mode == Server) process_player(&game->pacman_enemy, &game->board, One);
 			//if(game->mode == RemoteState && game->mode == Client) process_player(&game->pacman_enemy, &game->board, Two);
@@ -90,7 +90,7 @@ void game_tick(PacmanGame *game)
 	// State Transitions - refer to gameflow for descriptions
 	//
 
-	bool allPelletsEaten = game->pelletHolder.numLeft == 0;
+	bool allPelletsEaten = game->pelletHolder[game->stageLevel].numLeft == 0;
 	bool collidedWithGhost = check_pacghost_collision(game);
 	
 	int lives = game->pacman.livesLeft;
@@ -157,7 +157,7 @@ void game_render(PacmanGame *game)
 	draw_pacman_lives(game->pacman.livesLeft);
 	if(game->mode != SoloState) draw_pacman2_lives(game->pacman_enemy.livesLeft);
 
-	draw_small_pellets(&game->pelletHolder);
+	draw_small_pellets(&game->pelletHolder[game->stageLevel]);
 
 	//in gameover state big pellets don't render
 	//in gamebegin + levelbegin big pellets don't flash
@@ -169,8 +169,8 @@ void game_render(PacmanGame *game)
 			draw_game_playerone_start();
 			draw_game_ready();
 
-			draw_large_pellets(&game->pelletHolder, false);
-			draw_board(&game->board);
+			draw_large_pellets(&game->pelletHolder[game->stageLevel], false);
+			draw_board(&game->board[game->stageLevel]);
 			break;
 		case LevelBeginState:
 			draw_game_ready();
@@ -181,14 +181,14 @@ void game_render(PacmanGame *game)
 			
 			for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
 
-			draw_large_pellets(&game->pelletHolder, false);
-			draw_board(&game->board);
+			draw_large_pellets(&game->pelletHolder[game->stageLevel], false);
+			draw_board(&game->board[game->stageLevel]);
 			break;
 		case GamePlayState:
 			//stage 표시
 			draw_stage(game->currentLevel);
-			draw_large_pellets(&game->pelletHolder, true);
-			draw_board(&game->board);
+			draw_large_pellets(&game->pelletHolder[game->stageLevel], true);
+			draw_board(&game->board[game->stageLevel]);
 
 			if (game->gameItem1.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem1);
 			if (game->gameItem2.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem2);
@@ -278,12 +278,12 @@ void game_render(PacmanGame *game)
 			if (dt < 2000)
 			{
 				for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
-				draw_board(&game->board);
+				draw_board(&game->board[game->stageLevel]);
 			}
 			else
 			{
 				//stop rendering the pen, and do the flash animation
-				draw_board_flash(&game->board);
+				draw_board_flash(&game->board[game->stageLevel]);
 			}
 
 			break;
@@ -306,12 +306,12 @@ void game_render(PacmanGame *game)
 				if(game->mode != SoloState) draw_pacman2_death(&game->pacman_enemy, dt - 1000);
 			}
 
-			draw_large_pellets(&game->pelletHolder, true);
-			draw_board(&game->board);
+			draw_large_pellets(&game->pelletHolder[game->stageLevel], true);
+			draw_board(&game->board[game->stageLevel]);
 			break;
 		case GameoverState:
 			draw_game_gameover();
-			draw_board(&game->board);
+			draw_board(&game->board[game->stageLevel]);
 			draw_credits(num_credits());
 			break;
 	}
@@ -329,6 +329,12 @@ static void enter_state(PacmanGame *game, GameState state)
 			break;
 		case WinState:
 			game->currentLevel++;
+			
+			// there is maximum num of  maps, so when max num of maps > index , change the maps
+			if(game->stageLevel < STAGE_COUNT -1) {
+				game->stageLevel++;
+			}
+			
 			game->gameState = LevelBeginState;
 			level_init(game);
 			break;
@@ -395,6 +401,7 @@ bool can_move(Pacman *pacman, Board *board, Direction dir)
 
 static void process_player(Pacman *pacman, Board *board, Player player)
 {
+	
 	if (pacman->missedFrames != 0)
 	{
 		pacman->missedFrames--;
@@ -533,7 +540,7 @@ static void process_ghosts(PacmanGame *game)
 			// execute ghost AI logic according to currentLeve
 			execute_ghost_logic(game->currentLevel, g, g->ghostType, &game->ghosts[0], &game->pacman);
 
-			g->nextDirection = next_direction(g, &game->board);
+			g->nextDirection = next_direction(g, &game->board[game->stageLevel]);
 		}
 		else if (result == OverCenter)
 		{
@@ -547,7 +554,7 @@ static void process_ghosts(PacmanGame *game)
 
 static void process_item(PacmanGame *game)
 {
-	int pelletsEaten = game->pelletHolder.totalNum - game->pelletHolder.numLeft;
+	int pelletsEaten = game->pelletHolder[game->stageLevel].totalNum - game->pelletHolder[game->stageLevel].numLeft;
 
 	GameItem *f1 = &game->gameItem1;
 	GameItem *f2 = &game->gameItem2;
@@ -1036,7 +1043,7 @@ static void process_pellets(PacmanGame *game)
 	//set pellet to not be active
 	//decrease num of alive pellets
 	
-	PelletHolder *holder = &game->pelletHolder;
+	PelletHolder *holder = &game->pelletHolder[game->stageLevel];
 
 	for (int i = 0; i < holder->totalNum; i++)
 	{
@@ -1182,17 +1189,17 @@ void level_init(PacmanGame *game)
 	else pacman_level_init(&game->pacman_enemy);
 	
 	//reset pellets
-	pellets_init(&game->pelletHolder);
+	pellets_init(&game->pelletHolder[game->stageLevel]);
 
 	//reset ghosts
 	ghosts_init(game->ghosts);
 
 	//reset fruit
-	reset_item(&game->gameItem1, &game->board);
-	reset_item(&game->gameItem2, &game->board);
-	reset_item(&game->gameItem3, &game->board);
-	reset_item(&game->gameItem4, &game->board);
-	reset_item(&game->gameItem5, &game->board);
+	reset_item(&game->gameItem1, &game->board[game->stageLevel]);
+	reset_item(&game->gameItem2, &game->board[game->stageLevel]);
+	reset_item(&game->gameItem3, &game->board[game->stageLevel]);
+	reset_item(&game->gameItem4, &game->board[game->stageLevel]);
+	reset_item(&game->gameItem5, &game->board[game->stageLevel]);
 
 }
 
@@ -1202,11 +1209,11 @@ void pacdeath_init(PacmanGame *game)
 	if(game->mode == MultiState) pacman_level_init(&game->pacman_enemy);
 	ghosts_init(game->ghosts);
 
-	reset_item(&game->gameItem1, &game->board);
-	reset_item(&game->gameItem2, &game->board);
-	reset_item(&game->gameItem3, &game->board);
-	reset_item(&game->gameItem4, &game->board);
-	reset_item(&game->gameItem5, &game->board);
+	reset_item(&game->gameItem1, &game->board[game->stageLevel]);
+	reset_item(&game->gameItem2, &game->board[game->stageLevel]);
+	reset_item(&game->gameItem3, &game->board[game->stageLevel]);
+	reset_item(&game->gameItem4, &game->board[game->stageLevel]);
+	reset_item(&game->gameItem5, &game->board[game->stageLevel]);
 
 }
 

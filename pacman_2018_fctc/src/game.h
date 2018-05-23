@@ -42,11 +42,13 @@ typedef struct
 	Pacman pacman;
 	Pacman pacman_enemy;
 	Ghost ghosts[4];
-	Board board;
-	PelletHolder pelletHolder;
+	Board board[STAGE_COUNT];
+	PelletHolder pelletHolder[STAGE_COUNT];
 	GameItem gameItem1, gameItem2, gameItem3, gameItem4, gameItem5;
 	int highscore;
 	int currentLevel;
+
+	int stageLevel; // it means stage level
 	ModeState mode;
 	RemoteRole role;
 } PacmanGame;
