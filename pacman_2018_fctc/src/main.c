@@ -163,17 +163,25 @@ static void internal_tick(void)
 					
 					copy_pacmanGame_info();
 				}
+				if (is_game_over(&pacmanGame, pacmanGame.tick))
+				{
+					menu_init(&menuSystem);
+					state = Menu;
+
+					close(socket_info.client_fd);
+				}
+			}
+			else {
+				game_tick(&pacmanGame);
 				
+				if (is_game_over(&pacmanGame, ticks_game()))
+				{
+					menu_init(&menuSystem);
+					state = Menu;
+				}
 			}
-			else game_tick(&pacmanGame);
 			
-			if (is_game_over(&pacmanGame))
-			{
-				menu_init(&menuSystem);
-				state = Menu;
-				//if(menuSystem.role == Client)
-				close(socket_info.client_fd);
-			}
+			
 
 			break;
 		case Remote:

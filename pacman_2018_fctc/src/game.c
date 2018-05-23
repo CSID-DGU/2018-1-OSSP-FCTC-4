@@ -1025,10 +1025,11 @@ void pacdeath_init(PacmanGame *game)
 
 //TODO: make this method based on a state, not a conditional
 //or make the menu system the same. Just make it consistant
-bool is_game_over(PacmanGame *game)
+bool is_game_over(PacmanGame *game, int tick)
 {
-	unsigned dt = ticks_game() - game->ticksSinceModeChange;
-
+	//unsigned dt = ticks_game() - game->ticksSinceModeChange;
+	unsigned dt = tick - game->ticksSinceModeChange;
+	
 	return dt > 2000 && game->gameState == GameoverState;
 }
 

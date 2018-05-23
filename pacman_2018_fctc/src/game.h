@@ -60,7 +60,7 @@ void game_tick(PacmanGame *game);
 void game_render(PacmanGame *game, int tick);
 
 //Returns true if the game is finished and is ready to hand back to the menu system.
-bool is_game_over(PacmanGame *game);
+bool is_game_over(PacmanGame *game, int tick);
 
 //Call this at start of level 1 to initialize all entities and game objects.
 void gamestart_init(PacmanGame *game, int mode);
