@@ -21,6 +21,7 @@ typedef enum
         Chomp1Sound,
         Chomp2Sound,
         CutsceneSound,
+	CoinSound,
         GameoverSound,
         PacmanDeathSound
 } SoundEffect;

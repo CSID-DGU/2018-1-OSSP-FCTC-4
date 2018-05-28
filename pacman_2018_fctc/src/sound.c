@@ -27,6 +27,7 @@ static Mix_Chunk *deathSound;
 static Mix_Chunk *chomp1Sound;
 static Mix_Chunk *chomp2Sound;
 static Mix_Chunk *cutsceneSound;
+static Mix_Chunk *coinSound;
 static Mix_Chunk *gameoverSound;
 
 static int levelStartChanel;
@@ -68,6 +69,7 @@ void load_sounds(void)
         chomp1Sound = Mix_LoadWAV("sound/chomp1.wav");
         chomp2Sound = Mix_LoadWAV("sound/chomp2.wav");
         cutsceneSound = Mix_LoadWAV("sound/cutscene.wav");
+        coinSound = Mix_LoadWAV("sound/coin.wav");
         gameoverSound = Mix_LoadWAV("sound/game_over.wav");
         set_sound_volume(0.5);
         set_sound_muted(false);
@@ -140,6 +142,7 @@ void play_sound(SoundEffect effectName)
                 case Chomp1Sound:  chunk = chomp1Sound;  channel = &levelStartChanel; break;
                 case Chomp2Sound:  chunk = chomp2Sound;  channel = &levelStartChanel; break;
                 case CutsceneSound:  chunk = cutsceneSound;  channel = &levelStartChanel; break;
+                case CoinSound:  chunk = coinSound;  channel = &levelStartChanel; break;
                 case GameoverSound:  chunk = gameoverSound;  channel = &levelStartChanel; break;
 
                 case PacmanDeathSound: chunk = deathSound; channel = &levelStartChanel; break;
@@ -172,6 +175,7 @@ void stop_sound(SoundEffect effectName)
                 case Chomp1Sound:    channel = &levelStartChanel; break;
                 case Chomp2Sound:    channel = &levelStartChanel; break;
                 case CutsceneSound:    channel = &levelStartChanel; break;
+                case CoinSound:    channel = &levelStartChanel; break;
                 case GameoverSound:    channel = &levelStartChanel; break;
 
                 case PacmanDeathSound: channel = levelStartChanel; break;
