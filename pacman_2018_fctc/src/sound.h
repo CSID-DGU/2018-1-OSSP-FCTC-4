@@ -18,6 +18,10 @@ typedef enum
         BoosterSound,
         BonusSound,
         DieSound,
+        Chomp1Sound,
+        Chomp2Sound,
+        CutsceneSound,
+        GameoverSound,
         PacmanDeathSound
 } SoundEffect;
 

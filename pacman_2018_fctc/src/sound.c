@@ -24,7 +24,13 @@ static Mix_Chunk *boosterSound;
 static Mix_Chunk *bonusSound;
 static Mix_Chunk *dieSound;
 static Mix_Chunk *deathSound;
+static Mix_Chunk *chomp1Sound;
+static Mix_Chunk *chomp2Sound;
+static Mix_Chunk *cutsceneSound;
+static Mix_Chunk *gameoverSound;
+
 static int levelStartChanel;
+
 
 void load_sounds(void)
 {
@@ -58,8 +64,11 @@ void load_sounds(void)
         boosterSound = Mix_LoadWAV("sound/booster.wav");
         bonusSound = Mix_LoadWAV("sound/bonus.wav");
         dieSound = Mix_LoadWAV("sound/die.wav");
-        deathSound = Mix_LoadWAV("sound/death.wav");
-
+        deathSound = Mix_LoadWAV("sound/death.wav");	
+        chomp1Sound = Mix_LoadWAV("sound/chomp1.wav");
+        chomp2Sound = Mix_LoadWAV("sound/chomp2.wav");
+        cutsceneSound = Mix_LoadWAV("sound/cutscene.wav");
+        gameoverSound = Mix_LoadWAV("sound/game_over.wav");
         set_sound_volume(0.5);
         set_sound_muted(false);
 }
@@ -128,6 +137,10 @@ void play_sound(SoundEffect effectName)
                 case BoosterSound:  chunk = boosterSound;  channel = &levelStartChanel; break;
                 case BonusSound:  chunk = bonusSound;  channel = &levelStartChanel; break;
                 case DieSound:  chunk = dieSound;  channel = &levelStartChanel; break;
+                case Chomp1Sound:  chunk = chomp1Sound;  channel = &levelStartChanel; break;
+                case Chomp2Sound:  chunk = chomp2Sound;  channel = &levelStartChanel; break;
+                case CutsceneSound:  chunk = cutsceneSound;  channel = &levelStartChanel; break;
+                case GameoverSound:  chunk = gameoverSound;  channel = &levelStartChanel; break;
 
                 case PacmanDeathSound: chunk = deathSound; channel = &levelStartChanel; break;
         }
@@ -156,6 +169,10 @@ void stop_sound(SoundEffect effectName)
                 case BoosterSound:    channel = &levelStartChanel; break;
                 case BonusSound:    channel = &levelStartChanel; break;
                 case DieSound:    channel = &levelStartChanel; break;
+                case Chomp1Sound:    channel = &levelStartChanel; break;
+                case Chomp2Sound:    channel = &levelStartChanel; break;
+                case CutsceneSound:    channel = &levelStartChanel; break;
+                case GameoverSound:    channel = &levelStartChanel; break;
 
                 case PacmanDeathSound: channel = levelStartChanel; break;
                 default: printf("badsound\naborting\n"); exit(1); //TODO: fix this up
