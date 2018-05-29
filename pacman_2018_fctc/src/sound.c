@@ -50,8 +50,7 @@ void load_sounds(void)
         //{
                 //effects[i] = Mix_LoadWAV(EFFECT_FILES[i]);
         //}
-	 levelStart = Mix_LoadWAV("sound/pacintro.wav");
-
+	levelStart = Mix_LoadWAV("sound/pacintro.wav");
         smallEatSound = Mix_LoadWAV("sound/ghost_eat.wav");
         largeEatSound = Mix_LoadWAV("sound/large_pellet.wav");
         sirenSound = Mix_LoadWAV("sound/siren.wav");
@@ -122,7 +121,8 @@ void play_sound(SoundEffect effectName)
 {
         Mix_Chunk *chunk;
         int *channel;
-
+	switch(effectName)
+		{
 		case LevelStartSound:  chunk = levelStart; channel = &levelStartChanel; break;
                 case SmallSound:    chunk = smallEatSound; channel = &levelStartChanel; break;
                 case LargeSound:    chunk = largeEatSound; channel = &levelStartChanel; break;
@@ -140,7 +140,7 @@ void play_sound(SoundEffect effectName)
                 case GameoverSound:  chunk = gameoverSound;  channel = &levelStartChanel; break;
 
                 case PacmanDeathSound: chunk = deathSound; channel = &levelStartChanel; break;
-
+	}
         *channel = Mix_PlayChannel(-1, chunk, 0);
 }
 
