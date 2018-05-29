@@ -12,7 +12,6 @@ static bool muted;
 static Mix_Music *music;
 //static Mix_Chunk *effects[NUM_EFFECTS];
 
-
 static Mix_Chunk *levelStart;
 static Mix_Chunk *smallEatSound;
 static Mix_Chunk *largeEatSound;
@@ -24,7 +23,12 @@ static Mix_Chunk *boosterSound;
 static Mix_Chunk *bonusSound;
 static Mix_Chunk *dieSound;
 static Mix_Chunk *deathSound;
-static int levelStartChanel;
+static Mix_Chunk *chomp1Sound;
+static Mix_Chunk *chomp2Sound;
+static Mix_Chunk *cutsceneSound;
+static Mix_Chunk *coinSound;
+static Mix_Chunk *gameoverSound;
+
 
 void load_sounds(void)
 {
@@ -46,8 +50,7 @@ void load_sounds(void)
         //{
                 //effects[i] = Mix_LoadWAV(EFFECT_FILES[i]);
         //}
-
-        levelStart = Mix_LoadWAV("sound/pacintro.wav");
+	 levelStart = Mix_LoadWAV("sound/pacintro.wav");
 
         smallEatSound = Mix_LoadWAV("sound/ghost_eat.wav");
         largeEatSound = Mix_LoadWAV("sound/large_pellet.wav");
@@ -59,10 +62,14 @@ void load_sounds(void)
         bonusSound = Mix_LoadWAV("sound/bonus.wav");
         dieSound = Mix_LoadWAV("sound/die.wav");
         deathSound = Mix_LoadWAV("sound/death.wav");
-
+        chomp1Sound = Mix_LoadWAV("sound/chomp1.wav");
+        chomp2Sound = Mix_LoadWAV("sound/chomp2.wav");
+        cutsceneSound = Mix_LoadWAV("sound/cutscene.wav");
+        coinSound = Mix_LoadWAV("sound/coin.wav");
+        gameoverSound = Mix_LoadWAV("sound/game_over.wav");
         set_sound_volume(0.5);
         set_sound_muted(false);
-}
+  }
 
 void dispose_sounds(void)
 {
@@ -116,9 +123,7 @@ void play_sound(SoundEffect effectName)
         Mix_Chunk *chunk;
         int *channel;
 
-        switch (effectName)
-        {
-                case LevelStartSound:  chunk = levelStart; channel = &levelStartChanel; break;
+		case LevelStartSound:  chunk = levelStart; channel = &levelStartChanel; break;
                 case SmallSound:    chunk = smallEatSound; channel = &levelStartChanel; break;
                 case LargeSound:    chunk = largeEatSound; channel = &levelStartChanel; break;
                 case SirenSound:       chunk = sirenSound; channel = &levelStartChanel; break;
@@ -128,9 +133,13 @@ void play_sound(SoundEffect effectName)
                 case BoosterSound:  chunk = boosterSound;  channel = &levelStartChanel; break;
                 case BonusSound:  chunk = bonusSound;  channel = &levelStartChanel; break;
                 case DieSound:  chunk = dieSound;  channel = &levelStartChanel; break;
+                case Chomp1Sound:  chunk = chomp1Sound;  channel = &levelStartChanel; break;
+                case Chomp2Sound:  chunk = chomp2Sound;  channel = &levelStartChanel; break;
+                case CutsceneSound:  chunk = cutsceneSound;  channel = &levelStartChanel; break;
+                case CoinSound:  chunk = coinSound;  channel = &levelStartChanel; break;
+                case GameoverSound:  chunk = gameoverSound;  channel = &levelStartChanel; break;
 
                 case PacmanDeathSound: chunk = deathSound; channel = &levelStartChanel; break;
-        }
 
         *channel = Mix_PlayChannel(-1, chunk, 0);
 }
@@ -146,7 +155,7 @@ void stop_sound(SoundEffect effectName)
 
         switch (effectName)
         {
-                case LevelStartSound:  channel = levelStartChanel; break;
+		case LevelStartSound:  channel = levelStartChanel; break;
                 case SmallSound:    channel = levelStartChanel; break;
                 case LargeSound:        channel = levelStartChanel; break;
                 case SirenSound:        channel = levelStartChanel; break;
@@ -156,10 +165,16 @@ void stop_sound(SoundEffect effectName)
                 case BoosterSound:    channel = &levelStartChanel; break;
                 case BonusSound:    channel = &levelStartChanel; break;
                 case DieSound:    channel = &levelStartChanel; break;
+                case Chomp1Sound:    channel = &levelStartChanel; break;
+                case Chomp2Sound:    channel = &levelStartChanel; break;
+                case CutsceneSound:    channel = &levelStartChanel; break;
+                case CoinSound:    channel = &levelStartChanel; break;
+                case GameoverSound:    channel = &levelStartChanel; break;
 
                 case PacmanDeathSound: channel = levelStartChanel; break;
                 default: printf("badsound\naborting\n"); exit(1); //TODO: fix this up
-        }
+
+                       }
         Mix_HaltChannel(channel);
 }
 

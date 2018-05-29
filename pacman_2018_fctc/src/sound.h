@@ -6,6 +6,7 @@
 #define NUM_EFFECTS 3
 
 //The different sound effects we can use.
+
 typedef enum
 {
         LevelStartSound,
@@ -18,9 +19,13 @@ typedef enum
         BoosterSound,
         BonusSound,
         DieSound,
+        Chomp1Sound,
+        Chomp2Sound,
+        CutsceneSound,
+        CoinSound,
+        GameoverSound,
         PacmanDeathSound
 } SoundEffect;
-
 //Initializes and loads all sounds. Must be called before playing any sounds.
 void load_sounds(void);
 
