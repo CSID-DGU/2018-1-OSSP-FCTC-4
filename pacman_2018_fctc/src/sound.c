@@ -29,6 +29,7 @@ static Mix_Chunk *cutsceneSound;
 static Mix_Chunk *coinSound;
 static Mix_Chunk *gameoverSound;
 
+static int levelStartChanel;
 
 void load_sounds(void)
 {
