@@ -38,7 +38,7 @@ void menu_init(MenuSystem *menuSystem)
 	menuSystem->role = Nothing;
 	menuSystem->action = Nothing;
 	menuSystem->ticksSinceModeChange = SDL_GetTicks();
-	menuSystem->severIP = (char*)malloc(sizeof(char)*20);
+	menuSystem->severIP = (char*)malloc(sizeof(char)*50);
 	for(int i=0; i<20; i++) menuSystem->severIP[i] = NULL;
 }
 
@@ -48,8 +48,12 @@ void menu_tick(MenuSystem *menuSystem)
 
 	if (startNew)
 	{
+		printf(" action : %d\n",menuSystem->action);
 		if(menuSystem->mode == RemoteState) menuSystem->action = ReadyConnect;
 		else menuSystem->action = GoToGame;
+		
+		handle_keyup(SDLK_KP_ENTER);
+		handle_keyup(SDLK_RETURN);
 	}
 	
 }
@@ -62,6 +66,7 @@ void remote_tick(MenuSystem *menuSystem, Socket_value *socket_info)
 		if(menuSystem->action == ReadyConnect){
 			if(menuSystem->role == Server) {
 				menuSystem->action = ServerWait;
+				
 				init_server(socket_info);
 			}
 			else if(menuSystem->role == Client) {
@@ -71,6 +76,7 @@ void remote_tick(MenuSystem *menuSystem, Socket_value *socket_info)
 		else if(menuSystem->action == ConnectClient){
 			// client socket 초기화
 			// client가 server와 연결시도
+			
 			if(connect_client(socket_info, menuSystem->severIP) == -1)
 				for(int i=0; i<20; i++) menuSystem->severIP[i] = NULL;
 			else
@@ -131,11 +137,11 @@ static void draw_remote_choice_screen(MenuSystem *menuSystem)
 
 static void draw_remote_server_screen(MenuSystem *menuSystem)
 {
-	unsigned int dt = SDL_GetTicks() - menuSystem->ticksSinceModeChange;
+	//unsigned int dt = SDL_GetTicks() - menuSystem->ticksSinceModeChange;
 
 	draw_player_info();
 	
-	draw_vanity_text("WAIT TO CONNECT", 9, 17);
+	draw_vanity_text("WAIT TO CONNECT...", 6, 17);
 	//if (dt%1900 > 400) draw_vanity_text(".", 18, 17);
 	//if (dt%1900 > 900) draw_vanity_text(".", 19, 17);
 	//if (dt%1900 > 1400) draw_vanity_text(".", 20, 17);

@@ -16,6 +16,8 @@
 #include "sound.h"
 #include "text.h"
 #include "window.h"
+// Remote Play 모드에서 정보를 받아옴
+static void copy_pacmanGame_info(void);
 
 //Initializes all resources.
 static void resource_init(void);
@@ -47,9 +49,9 @@ static void key_down_hacks(int keycode);
 static ProgramState state;
 static MenuSystem menuSystem;
 static PacmanGame pacmanGame;
-
+static PacmanGame *pac;
 // Socket value
-static Socket_value socket_info;
+static Socket_value *socket_info;
 
 static bool gameRunning = true;
 static int numCredits = 0;
@@ -77,16 +79,48 @@ static void main_loop(void)
 			process_events(Two);
 		}
 		else process_events(One);
-		/*
-		bool* tmp;
-		tmp = player2_key_state();
-		printf("%d\n",tmp[SDLK_UP]);
-		*/
+		
 		internal_tick();
 		internal_render();
 
 		fps_sleep();
 	}
+}
+
+static void copy_pacmanGame_info(void){
+	pacmanGame.death_player = pac->death_player;
+	pacmanGame.tick = pac->tick;
+	pacmanGame.gameState = pac->gameState;
+	pacmanGame.ticksSinceModeChange = pac->ticksSinceModeChange;
+	pacmanGame.highscore = pac->highscore;
+	pacmanGame.currentLevel = pac->currentLevel;
+	pacmanGame.mode = pac->mode;
+	
+	pacmanGame.pacman = pac->pacman;
+	pacmanGame.pacman_enemy = pac->pacman_enemy;
+	
+	for(int i=0; i<4; i++) {
+		pacmanGame.ghosts[i] = pac->ghosts[i];
+	}
+	
+	pacmanGame.gameItem1 = pac->gameItem1;
+	pacmanGame.gameItem2 = pac->gameItem2;
+	pacmanGame.gameItem3 = pac->gameItem3;
+	pacmanGame.gameItem4 = pac->gameItem4;
+	pacmanGame.gameItem5 = pac->gameItem5;
+					
+	pacmanGame.pelletHolder.numLeft = pac->pelletHolder.numLeft;
+	pacmanGame.pelletHolder.totalNum = pac->pelletHolder.totalNum;
+					
+	for(int i=0; i<294; i++){
+		pacmanGame.pelletHolder.pellets[i].x = pac->pelletHolder.pellets[i].x;
+		pacmanGame.pelletHolder.pellets[i].y = pac->pelletHolder.pellets[i].y;
+		pacmanGame.pelletHolder.pellets[i].eaten = pac->pelletHolder.pellets[i].eaten;
+		pacmanGame.pelletHolder.pellets[i].type = pac->pelletHolder.pellets[i].type;
+		if(pacmanGame.pelletHolder.pellets[i].type == LargePellet) pacmanGame.pelletHolder.pellets[i].image = large_pellet_image();
+		else pacmanGame.pelletHolder.pellets[i].image = small_pellet_image();
+	}
+	
 }
 
 static void internal_tick(void)
@@ -102,47 +136,72 @@ static void internal_tick(void)
 			}
 			else if(menuSystem.action == ReadyConnect){
 				state = Remote;
+				menuSystem.role = Server;
+				socket_info = (Socket_value*)malloc(sizeof(Socket_value));
 			}
 
 			break;
 		case Game:
 			if(pacmanGame.mode == RemoteState) {
-				/*
-				 * 
-				 * 서버가 game_tick으로 pacmanGame에 정보저장하고 
-				 * 이때, 클라이언트쪽의 팩맨 정보를 받아서 pacman_enemy의 정보로 저장
-				 * 이 정보를 클라이언트로 보내는데 클라이언트는 서버의 pacmanGame의 정보중에서
-				 * pacman의 정보를 클라이언트의 pacmanGame의 pacman_enemy에 저장
-				 * 나머지 펠렛이나 아이템 고스트의 위치에 관한 모든 정보를 저장
-				 * 
-				 */
 				if(menuSystem.role == Server) {
 					
-					game_tick(&pacmanGame);
+					KeyState key_info;
+					recv(socket_info->client_fd, (char*)&key_info, sizeof(KeyState), MSG_WAITALL);
+					store_enemy_keysinfo(&key_info);
 					
+					game_tick(&pacmanGame);
+					pacmanGame.tick = ticks_game();
+					send(socket_info->client_fd, (char*)&pacmanGame, sizeof(PacmanGame),0);
 				}
 				else if(menuSystem.role == Client) {
 					
-					game_tick(&pacmanGame);
+					KeyState key_info;
+					keyinfo_store(&key_info);
+					send(socket_info->client_fd, (char*)&key_info, sizeof(KeyState),0);
+					
+					pac = (PacmanGame*)malloc(sizeof(PacmanGame));
+					recv(socket_info->client_fd, (char*)pac, sizeof(PacmanGame), MSG_WAITALL);
+					
+					copy_pacmanGame_info();
+				}
+				
+				int flag = 0;
+				if (is_game_over(&pacmanGame, pacmanGame.tick))
+				{
+					menu_init(&menuSystem);
+					state = Menu;
+					pacmanGame.role = None;
+					flag = 1;
+				}
+				if(flag == 1) {
+					printf("socket reset!\n");
+					close(socket_info->client_fd);
+					if(menuSystem.role == Server) close(socket_info->server_fd);
+					free(socket_info);
 				}
 			}
-			else game_tick(&pacmanGame);
-			
-			if (is_game_over(&pacmanGame))
-			{
-				menu_init(&menuSystem);
-				state = Menu;
+			else {
+				game_tick(&pacmanGame);
+				
+				if (is_game_over(&pacmanGame, ticks_game()))
+				{
+					menu_init(&menuSystem);
+					state = Menu;
+				}
 			}
+			
+			
 
 			break;
 		case Remote:
 			if (menuSystem.action == ServerWait) {
 				// listen client
-				if(connect_server(&socket_info) == -1) printf("Wait...\n");
+				
+				if(connect_server(socket_info) == -1) printf("Wait...\n");
 				else menuSystem.action = GoToGame;
 			}
 			
-			remote_tick(&menuSystem, &socket_info);
+			remote_tick(&menuSystem, socket_info);
 			if (menuSystem.action == GoToGame) {
 				state = Game;
 				startgame_init();
@@ -165,7 +224,9 @@ static void internal_render(void)
 			menu_render(&menuSystem);
 			break;
 		case Game:
-			game_render(&pacmanGame);
+			if(menuSystem.role == Client) game_render(&pacmanGame,pacmanGame.tick);
+			else game_render(&pacmanGame,ticks_game());
+			
 			break;
 		case Remote:
 			remote_render(&menuSystem);
@@ -266,7 +327,8 @@ static void key_down_hacks(int keycode)
 	static bool rateSwitch = false;
 
 	//TODO: remove this hack and try make it work with the physics body
-	if (keycode == SDLK_SPACE && state != Remote) fps_sethz((rateSwitch = !rateSwitch) ? 200 : 60);
+	if (keycode == SDLK_SPACE) fps_sethz((rateSwitch = !rateSwitch) ? 200 : 60);
+	//if (keycode == SDLK_SPACE && state != Remote) fps_sethz((rateSwitch = !rateSwitch) ? 200 : 60);
 
 	//TODO: move logic into the tick method of the menu
 	if (state == Menu && keycode == SDLK_5 && numCredits < 99)
@@ -291,14 +353,12 @@ static void key_down_hacks(int keycode)
 		
 		if (keycode == SDLK_DOWN) 
 		{
-			if(menuSystem.role == None) menuSystem.role = Server;
 			menuSystem.role++;
 			if(menuSystem.role > 2) menuSystem.role = 1;
 		}
 		
 		if (keycode == SDLK_UP)
 		{
-			if(menuSystem.role == None) menuSystem.role = Server;
 			menuSystem.role--;
 			if(menuSystem.role == 0) menuSystem.role = 2;
 		}
@@ -310,15 +370,16 @@ static void key_down_hacks(int keycode)
 		if ( (keycode == SDLK_BACKSPACE) && (len > 0) ) menuSystem.severIP[len-1] = NULL;
 		if ( len < 20 && ( (keycode >= SDLK_0 && keycode <= SDLK_9) || keycode == SDLK_PERIOD) ) menuSystem.severIP[len] = keycode;
 	}
-	
-	if (keycode == SDLK_9 && state != Remote)
+	//if (keycode == SDLK_9 && state != Remote)
+	if (keycode == SDLK_9)
 	{
 		printf("plus\n");
 		for (int i = 0; i < 4; i++) pacmanGame.ghosts[i].body.velocity += 5;
 
 		printf("ghost speed: %d\n", pacmanGame.ghosts[0].body.velocity);
 	}
-	else if (keycode == SDLK_0 && state != Remote)
+	//else if (keycode == SDLK_0 && state != Remote)
+	else if (keycode == SDLK_0)
 	{
 		printf("minus\n");
 		for (int i = 0; i < 4; i++) pacmanGame.ghosts[i].body.velocity -= 5;
