@@ -8,6 +8,7 @@
 #include "pacman.h"
 #include "pellet.h"
 #include "text.h"
+#include "missile.h"
 
 //Holds data relating to a single rendered ghost-row.
 typedef struct
@@ -104,6 +105,7 @@ void draw_ghost(Ghost *ghost);
 bool draw_scared_ghost(Ghost *ghost, unsigned int timeGhostScared);
 void draw_eyes(Ghost *ghost);
 
+void draw_missile(Missile *missile);
 //
 // Points rendering
 //

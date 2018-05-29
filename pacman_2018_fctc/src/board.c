@@ -26,3 +26,5 @@ bool is_ghost_noup_square(int x, int y)
 	return (x == 12 && y == 22) || (x == 15 && y == 22) ||
 	       (x == 12 && y == 10) || (x == 15 && y == 10);
 }
+
+

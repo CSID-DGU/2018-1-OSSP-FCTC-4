@@ -3,11 +3,9 @@
 void pacman_init(Pacman *pacman)
 {
 	pacman_location_init(pacman);
-
 	pacman->score = 0;
 	pacman->livesLeft = 3;
 	pacman->itemRemainTime = 0;
-
 	pacman->missedFrames = 0;
 	pacman->godMode = false;
 	pacman->itemOn = false;
@@ -28,10 +26,7 @@ void pacman_location_init(Pacman *pacman)
 
 int pacman_speed_normal(int level)
 {
-	if (level == 1)  return 80;
-	if (level <= 4)  return 90;
-	if (level <= 20) return 100;
-	return 90;
+	return 80;
 }
 
 int pacman_speed_fright(int level)

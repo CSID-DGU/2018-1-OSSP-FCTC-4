@@ -6,6 +6,7 @@
 #include "ghost.h"
 #include "pacman.h"
 #include "pellet.h"
+#include "missile.h"
 
 typedef enum
 {
@@ -42,6 +43,7 @@ typedef struct
 	Pacman pacman;
 	Pacman pacman_enemy;
 	Ghost ghosts[4];
+	Missile missiles[2];
 	Board board;
 	PelletHolder pelletHolder;
 	GameItem gameItem1, gameItem2, gameItem3, gameItem4, gameItem5;

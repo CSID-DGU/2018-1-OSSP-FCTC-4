@@ -18,8 +18,10 @@ static void process_player(Pacman *pacman, Board *board, Player player);
 static void process_fruit(PacmanGame *game);
 static void process_ghosts(PacmanGame *game);
 static void process_pellets(PacmanGame *game);
+static void process_missiles(PacmanGame *game);
 
 static bool check_pacghost_collision(PacmanGame *game);     //return true if pacman collided with any ghosts
+static bool check_ghomissile_collision(PacmanGame *game);
 static void enter_state(PacmanGame *game, GameState state); //transitions to/ from a state
 static bool resolve_telesquare(PhysicsBody *body);          //wraps the body around if they've gone tele square
 
@@ -27,6 +29,7 @@ static Player death_player;
 
 void game_tick(PacmanGame *game)
 {
+	Pacman *pac = &game->pacman;
 	unsigned dt = ticks_game() - game->ticksSinceModeChange;
 
 	switch (game->gameState)
@@ -50,7 +53,8 @@ void game_tick(PacmanGame *game)
 			//if(game->mode == RemoteState && game->mode == Server) process_player(&game->pacman_enemy, &game->board, One);
 			//if(game->mode == RemoteState && game->mode == Client) process_player(&game->pacman_enemy, &game->board, Two);
 			process_ghosts(game);
-
+			if(pac->missile == 1) process_missiles(game);
+			else {}
 			process_item(game);
 			process_pellets(game);
 			
@@ -92,6 +96,7 @@ void game_tick(PacmanGame *game)
 
 	bool allPelletsEaten = game->pelletHolder.numLeft == 0;
 	bool collidedWithGhost = check_pacghost_collision(game);
+	bool collidedWithMissile = check_ghomissile_collision(game);
 	
 	int lives = game->pacman.livesLeft;
 	int player2_lives = -1;
@@ -146,7 +151,8 @@ void game_render(PacmanGame *game)
 	unsigned dt = ticks_game() - game->ticksSinceModeChange;
 	static unsigned godDt = 0;
 	static bool godChange = false;
-
+	Pacman *pac = &game->pacman;
+	
 	//common stuff that is rendered in every mode:
 	// 1up + score, highscore, base board, lives, small pellets, fruit indicators
 	draw_common_oneup(true, game->pacman.score);
@@ -180,7 +186,7 @@ void game_render(PacmanGame *game)
 			if(game->mode != SoloState) draw_pacman2_static(&game->pacman_enemy);
 			
 			for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
-
+			
 			draw_large_pellets(&game->pelletHolder, false);
 			draw_board(&game->board);
 			break;
@@ -202,7 +208,6 @@ void game_render(PacmanGame *game)
 			if (game->gameItem4.eaten && ticks_game() - game->gameItem4.eatenAt < 2000) draw_item_pts(&game->gameItem4);
 			if (game->gameItem5.eaten && ticks_game() - game->gameItem5.eatenAt < 2000) draw_item_pts(&game->gameItem5);
 
-
 			draw_pacman(&game->pacman);
 
 			if(game->pacman.godMode == false) {
@@ -212,8 +217,11 @@ void game_render(PacmanGame *game)
 					} else
 						draw_ghost(&game->ghosts[i]);
 				}
-
-			} else {
+			if(pac->missile == 1)	
+				for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);
+			} 
+			
+			else {
 				if(godChange == false) {
 					game->pacman.originDt = ticks_game();
 					godChange = true;
@@ -234,6 +242,8 @@ void game_render(PacmanGame *game)
 							game->ghosts[i].isDead = 0;
 					}
 				}
+			if(pac->missile == 1)					
+				for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);				
 			}
 			
 			if(game->mode != SoloState) {
@@ -545,6 +555,61 @@ static void process_ghosts(PacmanGame *game)
 	}
 }
 
+static void process_missiles(PacmanGame *game)
+{
+	for (int i = 0; i < 2; i++)
+	{
+		Missile *m = &game->missiles[i];
+
+		if (m->m_movementMode == InPen)
+		{
+			//ghosts bob up and down - move in direction. If they hit a square, change direction
+			bool moved = move_missile(&m->body);
+
+			if (moved && (m->body.y == 13 || m->body.y == 15))
+			{
+				m->body.nextDir = m->body.curDir;
+				m->body.curDir = dir_opposite(m->body.curDir);
+			}
+
+			continue;
+		}
+
+		if (m->m_movementMode == LeavingPen)
+		{
+			//ghost is in center of tile
+			//move em to the center of the pen (in x axis)
+			//then more em up out the gate
+			//when they are out of the gate, set them to be in normal chase mode then set them off on their way
+
+			continue;
+		}
+
+		//all other modes can move normally (I think)
+		MovementResult result = move_missile(&m->body);
+		resolve_telesquare(&m->body);
+
+		if (result == NewSquare)
+		{
+			//if they are in a new tile, rerun their target update logic
+			// execute ghost AI logic according to currentLeve
+			execute_missile_logic(game->currentLevel, m, m->missileType, &game->missiles[0], &game->ghosts[0]);
+
+			m->nextDirection = next_direction(m, &game->board);
+		}
+		else if (result == OverCenter)
+		{
+			//they've hit the center of a tile, so change their current direction to the new direction
+			m->body.curDir = m->transDirection;
+			m->body.nextDir = m->nextDirection;
+			m->transDirection = m->nextDirection;
+		}
+	}
+}
+
+
+
+
 static void process_item(PacmanGame *game)
 {
 	int pelletsEaten = game->pelletHolder.totalNum - game->pelletHolder.numLeft;
@@ -597,6 +662,8 @@ static void process_item(PacmanGame *game)
 		pac->itemRemainTime = 0;
 		pac->protect = 0;
 		pac->itemOn = false;
+		pac->missile = 0;
+		missiles_init(game->missiles);
 	}
 	
 	if (f1->itemMode == Displaying)
@@ -653,9 +720,10 @@ static void process_item(PacmanGame *game)
 		if(f1->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 		
-		if(f1->item==Move_USD) {
-            pac->itemOn = true;			
-			pac->itemRemainTime = 150;
+		if(f1->item==Fly_Missile) {
+			pac->itemOn = true;
+			pac->missile = 1;
+			pac->itemRemainTime = 400;
 		}
 		
 		if(f1->item==Ghost_mode) {
@@ -694,9 +762,10 @@ static void process_item(PacmanGame *game)
 		if(f2->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 		
-		if(f2->item==Move_USD) {
-            pac->itemOn = true;
-			pac->itemRemainTime = 150;
+		if(f2->item==Fly_Missile) {
+			pac->itemOn = true;
+			pac->missile = 1;
+			pac->itemRemainTime = 400;
 		}		
 		
 		if(f2->item==Ghost_mode) {
@@ -735,9 +804,10 @@ static void process_item(PacmanGame *game)
 		if(f3->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 		
-		if(f3->item==Move_USD) {
-            pac->itemOn = true;
-			pac->itemRemainTime = 150;
+		if(f3->item==Fly_Missile) {
+			pac->itemOn = true;
+			pac->missile = 1;
+			pac->itemRemainTime = 400;
 		}	
 		
 		if(f3->item==Ghost_mode) {
@@ -776,9 +846,10 @@ static void process_item(PacmanGame *game)
 		if(f4->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 		
-		if(f4->item==Move_USD) {
-            pac->itemOn = true;	
-			pac->itemRemainTime = 150;
+		if(f4->item==Fly_Missile) {
+			pac->itemOn = true;
+			pac->missile = 1;
+			pac->itemRemainTime = 400;
 		}
 		
 		if(f4->item==Ghost_mode) {
@@ -817,9 +888,10 @@ static void process_item(PacmanGame *game)
 		if(f5->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 	
-		if(f5->item==Move_USD) {
-            pac->itemOn = true;	
-			pac->itemRemainTime = 150;
+		if(f5->item==Fly_Missile) {
+			pac->itemOn = true;
+			pac->missile = 1;
+			pac->itemRemainTime = 400;
 		}
 		
 		if(f5->item==Ghost_mode) {
@@ -865,9 +937,10 @@ static void process_item(PacmanGame *game)
 			if(f1->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 
-			if(f1->item==Move_USD) {
-	            pac->itemOn = true;
-				pac->itemRemainTime = 150;
+			if(f1->item==Fly_Missile) {
+			pac->itemOn = true;
+			pac->missile = 1;
+			pac->itemRemainTime = 400;
 			}
 			
 			if(f1->item==Ghost_mode) {
@@ -902,9 +975,10 @@ static void process_item(PacmanGame *game)
 			if(f2->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 
-			if(f2->item==Move_USD) {
-		
-				pac->itemRemainTime = 150;
+			if(f2->item==Fly_Missile) {
+			pac->itemOn = true;
+			pac->missile = 1;
+			pac->itemRemainTime = 400;
 			}
 			
 			if(f2->item==Ghost_mode) {
@@ -939,9 +1013,10 @@ static void process_item(PacmanGame *game)
 			if(f3->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 		
-			if(f3->item==Move_USD) {
-	            pac->itemOn = true;	
-				pac->itemRemainTime = 150;
+			if(f3->item==Fly_Missile) {
+			pac->itemOn = true;
+			pac->missile = 1;
+			pac->itemRemainTime = 400;
 			}
 			
 			if(f3->item==Ghost_mode) {
@@ -976,9 +1051,10 @@ static void process_item(PacmanGame *game)
 			if(f4->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 			
-			if(f4->item==Move_USD) {
-	            pac->itemOn = true;	
-				pac->itemRemainTime = 150;
+			if(f4->item==Fly_Missile) {
+			pac->itemOn = true;
+			pac->missile = 1;
+			pac->itemRemainTime = 400;
 			}	
 			
 			if(f4->item==Ghost_mode) {
@@ -1013,9 +1089,10 @@ static void process_item(PacmanGame *game)
 			if(f5->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 			
-			if(f5->item==Move_USD) {
-	            pac->itemOn = true;			
-				pac->itemRemainTime = 150;
+			if(f5->item==Fly_Missile) {
+			pac->itemOn = true;
+			pac->missile = 1;
+			pac->itemRemainTime = 400;
 			}
 			
 			if(f5->item==Ghost_mode) {
@@ -1152,6 +1229,32 @@ static bool check_pacghost_collision(PacmanGame *game)
 	return false;
 }
 
+static bool check_ghomissile_collision(PacmanGame *game)
+{
+	for (int i = 0; i < 2; i++)
+	{
+		for(int j= 0; j<4; j++) {
+			Missile *m = &game->missiles[i];
+			Ghost *g = &game->ghosts[j];
+		
+		/*
+		switch(g->ghostType) {
+		case Blinky : printf("red : %d \n", g->isDead); break;
+		case Inky   : printf("blue : %d \n", g->isDead); break;
+		case Clyde  : printf("orange : %d \n", g->isDead); break;
+		case Pinky  : printf("pink : %d \n", g->isDead); break;
+		}
+		*/
+		
+		if (collides(&game->ghosts[j].body, &m->body)) {
+			game->ghosts[j].isDead = 1;
+			game->missiles[i].isDead = 1;
+		}
+}
+}
+	return false;
+}
+
 void gamestart_init(PacmanGame *game, int mode)
 {
 	// play mode 저장
@@ -1183,7 +1286,7 @@ void level_init(PacmanGame *game)
 	
 	//reset pellets
 	pellets_init(&game->pelletHolder);
-
+	missiles_init(game->missiles);
 	//reset ghosts
 	ghosts_init(game->ghosts);
 
@@ -1201,7 +1304,7 @@ void pacdeath_init(PacmanGame *game)
 	pacman_level_init(&game->pacman);
 	if(game->mode == MultiState) pacman_level_init(&game->pacman_enemy);
 	ghosts_init(game->ghosts);
-
+	missiles_init(game->missiles);
 	reset_item(&game->gameItem1, &game->board);
 	reset_item(&game->gameItem2, &game->board);
 	reset_item(&game->gameItem3, &game->board);

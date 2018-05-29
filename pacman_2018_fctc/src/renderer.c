@@ -523,6 +523,19 @@ void draw_ghost(Ghost *ghost)
 	draw_image_coord_offset(image, x, y, xOffset, yOffset);
 }
 
+void draw_missile(Missile *missile)
+{
+	SDL_Surface *image = missile_image(missile->missileType, missile->body.curDir, 0);
+
+	int x = missile->body.x;
+	int y = missile->body.y + Y_OFFSET;
+
+	int xOffset = missile->body.xOffset - 6;
+	int yOffset = missile->body.yOffset - 6;
+
+	draw_image_coord_offset(image, x, y, xOffset, yOffset);
+}
+
 bool draw_scared_ghost(Ghost *ghost, unsigned int dt)
 {
 	//hangs on first image for 200ms

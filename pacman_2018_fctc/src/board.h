@@ -39,3 +39,4 @@ bool is_tele_square(int x, int y);
 
 //Returns true if this is a square in which ghosts cannot move Up to enter in Chase mode
 bool is_ghost_noup_square(int x, int y);
+

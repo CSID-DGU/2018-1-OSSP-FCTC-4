@@ -13,11 +13,11 @@ int item_points(Item item)
 	switch (item)
 	{
 		case Move_Fast:     return 500;
-		case Move_Slow: 	return 500;
-		case Move_USD:      return 500;
+		case Move_Slow: 	  return 1000;
+		case Fly_Missile:   return 500;
 		case Ghost_mode:    return 500;
-		case Life:			return 500;
-		case Prof:			return 1000000;
+		case Life:			  return 500;
+		case Prof:			  return 10000;
 	}
 
 	printf("invalid fruit\naborting\n");
@@ -41,11 +41,11 @@ Item item_for_level(int level)
 		
 		if(ran <= 30)
 			return Move_Fast;
-		else if(ran > 30 && ran <=45)
+		else if(ran > 30 && ran <= 45)
 			return Move_Slow;
-		else if(ran > 45 && ran <=60)
-			return Move_USD;
-		else if(ran > 60 && ran <=90)
+		else if(ran > 45 && ran <= 60)
+			return Fly_Missile;
+		else if(ran > 60 && ran <= 90)
 			return Ghost_mode;
 		else if(ran > 90 && ran <=120)
 			return Life;

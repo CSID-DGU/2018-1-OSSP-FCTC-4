@@ -268,26 +268,6 @@ static void key_down_hacks(int keycode)
 	//TODO: remove this hack and try make it work with the physics body
 	if (keycode == SDLK_SPACE && state != Remote) fps_sethz((rateSwitch = !rateSwitch) ? 200 : 60);
 
-	if (keycode == SDLK_m && state != Remote) {
-		if(!pacmanGame.pacman.itemOn) {
-			pacmanGame.pacman.body.velocity = 100;
-			pacmanGame.pacman.itemOn = true;
-		} else {
-			pacmanGame.pacman.body.velocity = 80;
-			pacmanGame.pacman.itemOn = false;
-		}
-	}
-	
-	if (keycode == SDLK_b && state != Remote) {
-		if(!pacmanGame.pacman_enemy.itemOn) {
-			pacmanGame.pacman_enemy.body.velocity = 100;
-			pacmanGame.pacman_enemy.itemOn = true;
-		} else {
-			pacmanGame.pacman_enemy.body.velocity = 80;
-			pacmanGame.pacman_enemy.itemOn = false;
-		}
-	}
-
 	//TODO: move logic into the tick method of the menu
 	if (state == Menu && keycode == SDLK_5 && numCredits < 99)
 	{

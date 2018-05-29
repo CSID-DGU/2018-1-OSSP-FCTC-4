@@ -9,6 +9,7 @@
 #include "main.h"
 #include "item.h"
 #include "ghost.h"
+#include "missile.h"
 
 #define NUM_CHAR_IMAGES 26
 #define NUM_NUM_IMAGES 10
@@ -49,6 +50,7 @@ SDL_Surface* pacman2_death_image(int i);
 SDL_Surface* pacman2_life_image(void);
 
 SDL_Surface* ghost_image(GhostType type, Direction dir, int frame);
+SDL_Surface* missile_image(MissileType type, Direction dir, int frame);
 SDL_Surface* scared_ghost_image(int frame);
 SDL_Surface* ghost_eye_image(Direction dir);
 

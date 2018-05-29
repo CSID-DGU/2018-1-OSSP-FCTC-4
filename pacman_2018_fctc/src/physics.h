@@ -37,7 +37,7 @@ bool collides_obj(PhysicsBody *body, int otherX, int otherY);
 //Advances the body 1 step based on current direction and velocity.
 //Returns true if the body changed square (a complete tile) during the move, false otherwise
 MovementResult move_ghost(PhysicsBody *body);
-
+MovementResult move_missile(PhysicsBody *body);
 bool move_pacman(PhysicsBody *body, bool canMoveCur, bool canMoveNext);
 
 //Returns true if the body is in the center of a tile.

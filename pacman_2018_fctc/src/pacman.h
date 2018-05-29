@@ -32,7 +32,7 @@ typedef struct
 	Direction lastAttemptedMoveDirection;
 	MovementType movementType;
 	int itemRemainTime;
-
+	int missile;
 	int protect;
 } Pacman;
 
