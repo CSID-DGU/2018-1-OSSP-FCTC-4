@@ -28,7 +28,7 @@ void reset_missile(Missile *missile, MissileType type)
 	//
 	switch (type)
 	{
-		case M_One: { x = 20; y = 0; ox = -10; oy =  0; mode = M_Chase; dir = Left; next = Left; break; }
+		case M_One: { x = 5; y = 0; ox = -10; oy =  0; mode = M_Chase; dir = Left; next = Left; break; }
 		case M_Two: { x = 20; y = 30; ox = -10; oy =  0; mode = M_Chase; dir = Up;   next = Down; break; }
 
 		//testing
