@@ -9,6 +9,7 @@ void pacman_init(Pacman *pacman)
 	pacman->missedFrames = 0;
 	pacman->godMode = false;
 	pacman->itemOn = false;
+	pacman->missile = 0;
 }
 
 void pacman_level_init(Pacman *pacman)

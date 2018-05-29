@@ -19,7 +19,6 @@ static void process_fruit(PacmanGame *game);
 static void process_ghosts(PacmanGame *game);
 static void process_pellets(PacmanGame *game);
 static void process_missiles(PacmanGame *game);
-
 static bool check_pacghost_collision(PacmanGame *game);     //return true if pacman collided with any ghosts
 static bool check_ghomissile_collision(PacmanGame *game);
 static void enter_state(PacmanGame *game, GameState state); //transitions to/ from a state
@@ -30,6 +29,8 @@ static Player death_player;
 void game_tick(PacmanGame *game)
 {
 	Pacman *pac = &game->pacman;
+	Pacman *pac2 = &game->pacman_enemy;
+	
 	unsigned dt = ticks_game() - game->ticksSinceModeChange;
 
 	switch (game->gameState)
@@ -53,8 +54,13 @@ void game_tick(PacmanGame *game)
 			//if(game->mode == RemoteState && game->mode == Server) process_player(&game->pacman_enemy, &game->board, One);
 			//if(game->mode == RemoteState && game->mode == Client) process_player(&game->pacman_enemy, &game->board, Two);
 			process_ghosts(game);
+			
 			if(pac->missile == 1) process_missiles(game);
-			else {}
+			
+			if(pac2->missile == 1) process_missiles(game);
+			
+			printf("%d",pac2->missile);
+			
 			process_item(game);
 			process_pellets(game);
 			
@@ -121,6 +127,7 @@ void game_tick(PacmanGame *game)
 
 			else if (allPelletsEaten) enter_state(game, WinState);
 			else if (collidedWithGhost) enter_state(game, DeathState);
+			if(pac->missile == 1) process_missiles(game);
 
 			break;
 		case WinState:
@@ -152,7 +159,7 @@ void game_render(PacmanGame *game)
 	static unsigned godDt = 0;
 	static bool godChange = false;
 	Pacman *pac = &game->pacman;
-	
+	Pacman *pac2 = &game->pacman_enemy;
 	//common stuff that is rendered in every mode:
 	// 1up + score, highscore, base board, lives, small pellets, fruit indicators
 	draw_common_oneup(true, game->pacman.score);
@@ -219,6 +226,8 @@ void game_render(PacmanGame *game)
 				}
 			if(pac->missile == 1)	
 				for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);
+			if(pac2->missile == 1)
+				for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);			
 			} 
 			
 			else {
@@ -243,7 +252,9 @@ void game_render(PacmanGame *game)
 					}
 				}
 			if(pac->missile == 1)					
-				for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);				
+				for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);		
+			if(pac2->missile == 1)					
+				for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);					
 			}
 			
 			if(game->mode != SoloState) {
@@ -256,8 +267,10 @@ void game_render(PacmanGame *game)
 							} else
 								draw_ghost(&game->ghosts[i]);
 						}
-
-					} else {
+			if(pac2->missile == 1)					
+				for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);
+					} 
+					else {
 						if(godChange == false) {
 							game->pacman_enemy.originDt = ticks_game();
 							godChange = true;
@@ -278,6 +291,8 @@ void game_render(PacmanGame *game)
 									game->ghosts[i].isDead = 0;
 							}
 						}
+				if(pac2->missile == 1)					
+				for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);
 					}
 			}
 			break;
@@ -910,6 +925,8 @@ static void process_item(PacmanGame *game)
 			pac->itemRemainTime = 0;
 			pac->itemOn = false;
 			pac->protect = 0;
+			pac->missile = 0;
+			missiles_init(game->missiles);		
 		}		
 		
 		if (f1->itemMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
@@ -1185,7 +1202,7 @@ static bool check_pacghost_collision(PacmanGame *game)
 	{
 		Ghost *g = &game->ghosts[i];
 		Pacman *pac = &game->pacman;
-		
+		Pacman *pac2 = &game->pacman_enemy;
 		/*
 		switch(g->ghostType) {
 		case Blinky : printf("red : %d \n", g->isDead); break;
@@ -1212,6 +1229,7 @@ static bool check_pacghost_collision(PacmanGame *game)
 		}
 		
 		if(game->mode == MultiState){
+			if(pac2->protect == 0) {
 				if (collides(&game->pacman_enemy.body, &g->body)) {
 					if(game->pacman_enemy.godMode == false){
 						death_player = Two;
@@ -1223,6 +1241,7 @@ static bool check_pacghost_collision(PacmanGame *game)
 						death_send(g);
 					}
 				}
+			}
 		}
 	}
 
