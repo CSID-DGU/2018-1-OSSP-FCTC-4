@@ -378,13 +378,16 @@ static void enter_state(PacmanGame *game, GameState state)
 			
 			break;
 		case GamePlayState:
+			play_sound(GameoverSound);
 			break;
 		case WinState:
-
+			play_sound(LevelStartSound);
 			break;
 		case DeathState:
+			play_sound(PacmanDeathSound);
 			break;
 		case GameoverState:
+			play_sound(GameoverSound);
 			break;
 	}
 
