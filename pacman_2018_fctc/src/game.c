@@ -29,7 +29,7 @@ static Player death_player;
 
 void game_tick(PacmanGame *game)
 {
-	Pacman *pac = &game->pacman;
+	
 	unsigned dt = ticks_game() - game->ticksSinceModeChange;
 
 	switch (game->gameState)
@@ -48,9 +48,11 @@ void game_tick(PacmanGame *game)
 			if(game->mode != SoloState) process_player(&game->pacman_enemy, &game->board, Two);
 			
 			process_ghosts(game);
-			if(pac->missile == 1) process_missiles(game);
-			else {}
+			
 			process_item(game);
+			if(game->pacman.missile == 1) process_missiles(game);
+			if(game->mode != SoloState && game->pacman_enemy.missile == 1) process_missiles(game);
+			
 			process_pellets(game);
 			
 			if (game->pacman.score > game->highscore) game->highscore = game->pacman.score;
@@ -221,9 +223,9 @@ void game_render(PacmanGame *game, int tick)
 					} else
 						draw_ghost(&game->ghosts[i]);
 				}
-			if(pac->missile == 1)	
-				for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);
-			} 
+				if(pac->missile == 1)	
+					for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);
+			}
 			
 			else {
 				if(godChange == false) {
@@ -246,11 +248,12 @@ void game_render(PacmanGame *game, int tick)
 							game->ghosts[i].isDead = 0;
 					}
 				}
-			if(pac->missile == 1)					
-				for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);				
+				if(pac->missile == 1)					
+					for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);				
 			}
 			
 			if(game->mode != SoloState) {
+					pac = &game->pacman_enemy;
 					draw_pacman2(&game->pacman_enemy);
 					
 					if(game->pacman_enemy.godMode == false) {
@@ -260,7 +263,9 @@ void game_render(PacmanGame *game, int tick)
 							} else
 								draw_ghost(&game->ghosts[i]);
 						}
-
+						if(pac->missile == 1)					
+							for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);				
+							
 					} else {
 						if(godChange == false) {
 							game->pacman_enemy.originDt = tick;
@@ -282,6 +287,8 @@ void game_render(PacmanGame *game, int tick)
 									game->ghosts[i].isDead = 0;
 							}
 						}
+						if(pac->missile == 1)					
+							for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);				
 					}
 			}
 			break;
