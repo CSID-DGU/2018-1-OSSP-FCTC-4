@@ -29,7 +29,7 @@ static Player death_player;
 
 void game_tick(PacmanGame *game)
 {
-	
+	printf("life: %d / %d\n",game->pacman.livesLeft,game->pacman_enemy.livesLeft);
 	unsigned dt = ticks_game() - game->ticksSinceModeChange;
 
 	switch (game->gameState)
@@ -44,8 +44,13 @@ void game_tick(PacmanGame *game)
 			break;
 		case GamePlayState:
 			// everyone can move and this is the standard 'play' game mode
-			process_player(&game->pacman, &game->board, One);
-			if(game->mode != SoloState) process_player(&game->pacman_enemy, &game->board, Two);
+	
+			if(game->pacman.livesLeft != -1) process_player(&game->pacman, &game->board, One);
+			if(game->mode != SoloState && game->pacman_enemy.livesLeft != -1) process_player(&game->pacman_enemy, &game->board, Two);
+			
+			//process_player(&game->pacman, &game->board, One);
+			//if(game->mode != SoloState) process_player(&game->pacman_enemy, &game->board, Two);
+			
 			
 			process_ghosts(game);
 			
@@ -127,8 +132,11 @@ void game_tick(PacmanGame *game)
 		case DeathState:
 			if (dt > 4000)
 			{
-				if (lives == 0 && death_player == One) enter_state(game, GameoverState);
-				else if (player2_lives == 0 && death_player == Two) enter_state(game, GameoverState);
+				if(game->mode == SoloState && lives == 0) enter_state(game, GameoverState);
+				else if(game->mode != SoloState && ((lives == -1 && player2_lives == 0) || (lives == 0 && player2_lives == -1)) ) 
+				{ printf("ok\n"); enter_state(game, GameoverState); }
+				//if (lives == 0 && death_player == One) enter_state(game, GameoverState);
+				//else if (player2_lives == 0 && death_player == Two) enter_state(game, GameoverState);
 				else enter_state(game, LevelBeginState);
 			}
 
@@ -180,8 +188,12 @@ void game_render(PacmanGame *game, int tick)
 			draw_game_ready();
 
 			//we also draw pacman and ghosts (they are idle currently though)
-			draw_pacman_static(&game->pacman);
-			if(game->mode != SoloState) draw_pacman2_static(&game->pacman_enemy);
+			
+			if(game->pacman.livesLeft != -1) draw_pacman_static(&game->pacman);
+			if(game->mode != SoloState && game->pacman_enemy.livesLeft != -1) draw_pacman2_static(&game->pacman_enemy);
+			
+			//draw_pacman_static(&game->pacman);
+			//if(game->mode != SoloState) draw_pacman2_static(&game->pacman_enemy);
 			
 			for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
 			
@@ -200,13 +212,6 @@ void game_render(PacmanGame *game, int tick)
 			if (game->gameItem4.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem4);
 			if (game->gameItem5.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem5);
 
-/*
-			if (game->gameItem1.eaten && ticks_game() - game->gameItem1.eatenAt < 2000) draw_item_pts(&game->gameItem1);
-			if (game->gameItem2.eaten && ticks_game() - game->gameItem2.eatenAt < 2000) draw_item_pts(&game->gameItem2);
-			if (game->gameItem3.eaten && ticks_game() - game->gameItem3.eatenAt < 2000) draw_item_pts(&game->gameItem3);
-			if (game->gameItem4.eaten && ticks_game() - game->gameItem4.eatenAt < 2000) draw_item_pts(&game->gameItem4);
-			if (game->gameItem5.eaten && ticks_game() - game->gameItem5.eatenAt < 2000) draw_item_pts(&game->gameItem5);
-*/
 			if (game->gameItem1.eaten && tick - game->gameItem1.eatenAt < 2000) draw_item_pts(&game->gameItem1);
 			if (game->gameItem2.eaten && tick - game->gameItem2.eatenAt < 2000) draw_item_pts(&game->gameItem2);
 			if (game->gameItem3.eaten && tick - game->gameItem3.eatenAt < 2000) draw_item_pts(&game->gameItem3);
@@ -214,7 +219,9 @@ void game_render(PacmanGame *game, int tick)
 			if (game->gameItem5.eaten && tick - game->gameItem5.eatenAt < 2000) draw_item_pts(&game->gameItem5);			
 
 
-			draw_pacman(&game->pacman);
+			if(game->pacman.livesLeft != -1) draw_pacman(&game->pacman);
+			
+			//draw_pacman(&game->pacman);
 
 			if(game->pacman.godMode == false) {
 				for (int i = 0; i < 4; i++) {
@@ -254,8 +261,10 @@ void game_render(PacmanGame *game, int tick)
 			
 			if(game->mode != SoloState) {
 					pac = &game->pacman_enemy;
-					draw_pacman2(&game->pacman_enemy);
 					
+					if(game->mode != SoloState && game->pacman_enemy.livesLeft != -1) draw_pacman2(&game->pacman_enemy);
+					//draw_pacman2(&game->pacman_enemy);
+			
 					if(game->pacman_enemy.godMode == false) {
 						for (int i = 0; i < 4; i++) {
 							if(game->ghosts[i].isDead == 1) {
@@ -293,9 +302,14 @@ void game_render(PacmanGame *game, int tick)
 			}
 			break;
 		case WinState:
-			draw_pacman_static(&game->pacman);
-			if(game->mode != SoloState) draw_pacman2_static(&game->pacman_enemy);
-
+			
+			if(game->pacman.livesLeft != -1) draw_pacman_static(&game->pacman);
+			if(game->mode != SoloState && game->pacman_enemy.livesLeft != -1) draw_pacman2_static(&game->pacman_enemy);
+			
+			//draw_pacman_static(&game->pacman);
+			//if(game->mode != SoloState) draw_pacman2_static(&game->pacman_enemy);
+			
+			
 			if (dt < 2000)
 			{
 				for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
@@ -315,18 +329,33 @@ void game_render(PacmanGame *game, int tick)
 				//draw everything normally
 
 				//TODO: this actually draws the last frame pacman was on when he died
-				draw_pacman_static(&game->pacman);
-				if(game->mode != SoloState) draw_pacman2_static(&game->pacman_enemy);
+				if(game->pacman.livesLeft != -1) draw_pacman_static(&game->pacman);
+				if(game->mode != SoloState && game->pacman_enemy.livesLeft != -1) draw_pacman2_static(&game->pacman_enemy);
+				
+				//draw_pacman_static(&game->pacman);
+				//if(game->mode != SoloState) draw_pacman2_static(&game->pacman_enemy);
 
 				for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
 			}
 			else
 			{
 				//draw the death animation
+				if(game->pacman.livesLeft != -1) {
+					if(game->death_player == One) draw_pacman_death(&game->pacman, dt - 1000);
+					else draw_pacman_static(&game->pacman);
+				}
+				if(game->mode != SoloState && game->pacman_enemy.livesLeft != -1) {
+					if(game->mode != SoloState && game->death_player == Two) draw_pacman2_death(&game->pacman_enemy, dt - 1000);
+					else draw_pacman2_static(&game->pacman_enemy);
+				}
+				
+				
+				/*
 				if(game->death_player == One) draw_pacman_death(&game->pacman, dt - 1000);
 				else draw_pacman_static(&game->pacman);
 				if(game->mode != SoloState && game->death_player == Two) draw_pacman2_death(&game->pacman_enemy, dt - 1000);
 				else draw_pacman2_static(&game->pacman_enemy);
+				*/
 			}
 
 			draw_large_pellets(&game->pelletHolder, true);
@@ -361,7 +390,7 @@ static void enter_state(PacmanGame *game, GameState state)
 			{
 				if(death_player == Two) game->pacman_enemy.livesLeft--;
 				else game->pacman.livesLeft--;
-				printf("1: %d / 2: %d\n",game->pacman.livesLeft,game->pacman_enemy.livesLeft);
+				//printf("1: %d / 2: %d\n",game->pacman.livesLeft,game->pacman_enemy.livesLeft);
 				pacdeath_init(game);
 			}
 		default: ; //do nothing
@@ -1210,7 +1239,7 @@ static bool check_pacghost_collision(PacmanGame *game)
 		}
 		*/
 		
-		if(pac->protect == 0) {
+		if(pac->protect == 0 && pac->livesLeft != -1) {
 			if (collides(&game->pacman.body, &g->body)) {
 				if(game->pacman.godMode == false){
 					play_sound(DieSound);
@@ -1230,7 +1259,7 @@ static bool check_pacghost_collision(PacmanGame *game)
 		
 		
 		pac = &game->pacman_enemy;
-		if(pac->protect == 0) {
+		if(pac->protect == 0 && pac->livesLeft != -1) {
 			if(game->mode != SoloState){
 				if (collides(&game->pacman_enemy.body, &g->body)) {
 					if(game->pacman_enemy.godMode == false){
