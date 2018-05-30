@@ -245,7 +245,7 @@ static void game_init(void)
 	load_board(&pacmanGame.board[0], &pacmanGame.pelletHolder[0], "maps/stage1_map");
 	load_board(&pacmanGame.board[1], &pacmanGame.pelletHolder[1], "maps/stage2_map");
 	load_board(&pacmanGame.board[2], &pacmanGame.pelletHolder[2], "maps/stage3_map");
-	load_board(&pacmanGame.board[3], &pacmanGame.pelletHolder[3], "maps/boss_map");
+	load_board(&pacmanGame.board[2], &pacmanGame.pelletHolder[2], "maps/boss_map");
 	
 
 	//set to be in menu

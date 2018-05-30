@@ -7,7 +7,7 @@
 #define BOARD_LENGTH 28
 #define BOARD_HEIGHT 31
 
-#define STAGE_COUNT 4
+#define STAGE_COUNT 5
 
 typedef enum
 {
