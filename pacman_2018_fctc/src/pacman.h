@@ -33,6 +33,7 @@ typedef struct
 	MovementType movementType;
 	int itemRemainTime;
 	int missile;
+	int missile2;
 	int protect;
 } Pacman;
 

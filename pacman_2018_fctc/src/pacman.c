@@ -10,6 +10,7 @@ void pacman_init(Pacman *pacman)
 	pacman->godMode = false;
 	pacman->itemOn = false;
 	pacman->missile = 0;
+	pacman->missile2 = 0;
 }
 
 void pacman_level_init(Pacman *pacman)
