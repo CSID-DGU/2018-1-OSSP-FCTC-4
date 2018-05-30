@@ -49,7 +49,8 @@ void game_tick(PacmanGame *game)
 			process_player(&game->pacman, &game->board, One);
 			if(game->mode != SoloState) process_player(&game->pacman_enemy, &game->board, Two);
 						
-			if(pac->missile == 1 || pac2->missile2 == 1) process_missiles(game);
+			if(pac->missile == 1 || pac2->missile2 == 1) 
+				process_missiles(game);
 
 			process_ghosts(game);			
 			process_item(game);		
@@ -223,10 +224,8 @@ void game_render(PacmanGame *game, int tick)
 						draw_ghost(&game->ghosts[i]);
 				}
 
-			if(pac->missile == 1)	
+			if(pac->missile == 1 || pac2->missile2 == 1)	
 				for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);
-			if(pac2->missile2 == 1)
-				for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);			
 			} 
 
 			
@@ -253,10 +252,8 @@ void game_render(PacmanGame *game, int tick)
 							game->ghosts[i].isDead = 0;
 					}
 				}
-			if(pac->missile == 1)					
+			if(pac->missile == 1 || pac2->missile2 == 1)					
 				for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);		
-			if(pac2->missile2 == 1)					
-				for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);					
 			}
 			
 			if(game->mode != SoloState) {
@@ -617,7 +614,7 @@ static void process_missiles(PacmanGame *game)
 		{
 			//if they are in a new tile, rerun their target update logic
 			// execute ghost AI logic according to currentLeve
-			execute_missile_logic(game->currentLevel, m, m->missileType, &game->missiles, &game->ghosts);
+			execute_missile_logic(game->currentLevel, m, m->missileType, &game->missiles[0], &game->ghosts[0]);
 
 			m->nextDirection = next_direction(m, &game->board);
 		}
@@ -744,7 +741,7 @@ static void process_item(PacmanGame *game)
 		if(f1->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 		
-		if(f1->item==Fly_Missile) {
+		if(f1->item==Tornado) {
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
@@ -786,7 +783,7 @@ static void process_item(PacmanGame *game)
 		if(f2->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 		
-		if(f2->item==Fly_Missile) {
+		if(f2->item==Tornado) {
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
@@ -828,7 +825,7 @@ static void process_item(PacmanGame *game)
 		if(f3->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 		
-		if(f3->item==Fly_Missile) {
+		if(f3->item==Tornado) {
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
@@ -870,7 +867,7 @@ static void process_item(PacmanGame *game)
 		if(f4->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 		
-		if(f4->item==Fly_Missile) {
+		if(f4->item==Tornado) {
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
@@ -912,7 +909,7 @@ static void process_item(PacmanGame *game)
 		if(f5->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 	
-		if(f5->item==Fly_Missile) {
+		if(f5->item==Tornado) {
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
@@ -964,7 +961,7 @@ static void process_item(PacmanGame *game)
 			if(f1->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 
-			if(f1->item==Fly_Missile) {
+			if(f1->item==Tornado) {
 			pac2->itemOn = true;
 			pac2->missile2 = 1;
 			pac2->itemRemainTime = 400;
@@ -1002,7 +999,7 @@ static void process_item(PacmanGame *game)
 			if(f2->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 
-			if(f2->item==Fly_Missile) {
+			if(f2->item==Tornado) {
 			pac2->itemOn = true;
 			pac2->missile2 = 1;
 			pac2->itemRemainTime = 400;
@@ -1040,7 +1037,7 @@ static void process_item(PacmanGame *game)
 			if(f3->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 		
-			if(f3->item==Fly_Missile) {
+			if(f3->item==Tornado) {
 			pac2->itemOn = true;
 			pac2->missile2 = 1;
 			pac2->itemRemainTime = 400;
@@ -1078,7 +1075,7 @@ static void process_item(PacmanGame *game)
 			if(f4->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 			
-			if(f4->item==Fly_Missile) {
+			if(f4->item==Tornado) {
 			pac2->itemOn = true;
 			pac2->missile2 = 1;
 			pac2->itemRemainTime = 400;
@@ -1116,7 +1113,7 @@ static void process_item(PacmanGame *game)
 			if(f5->item==Prof)
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
 			
-			if(f5->item==Fly_Missile) {
+			if(f5->item==Tornado) {
 			pac2->itemOn = true;
 			pac2->missile2 = 1;
 			pac2->itemRemainTime = 400;
@@ -1279,10 +1276,16 @@ static bool check_ghomissile_collision(PacmanGame *game)
 		*/
 		
 		if (collides(&game->ghosts[j].body, &m->body)) {
-			game->ghosts[j].isDead = 1;
+			game->ghosts[j].body.velocity = 0;
+			game->ghosts[j].remain = 150;
 			game->missiles[i].isDead = 1;
 		}
-}
+		if (game->ghosts[j].remain != 0) game->ghosts[j].remain--;
+		else {
+			game->ghosts[j].body.velocity = 70;
+			game->ghosts[j].remain = 0;
+		}
+	}
 }
 	return false;
 }
