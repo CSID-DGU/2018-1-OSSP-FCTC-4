@@ -29,7 +29,7 @@ static Player death_player;
 
 void game_tick(PacmanGame *game)
 {
-	printf("life: %d / %d\n",game->pacman.livesLeft,game->pacman_enemy.livesLeft);
+	// printf("life: %d / %d\n",game->pacman.livesLeft,game->pacman_enemy.livesLeft);
 	unsigned dt = ticks_game() - game->ticksSinceModeChange;
 
 	switch (game->gameState)
@@ -381,6 +381,25 @@ static void enter_state(PacmanGame *game, GameState state)
 			break;
 		case WinState:
 			game->currentLevel++;
+			printf("enter_state : %d\n", game->currentLevel);
+			switch (game->currentLevel){
+				case 2:
+					//Load the board here. We only need to do it once
+					load_board(&game->board, &game->pelletHolder, "maps/encodedboard.1");
+				break;
+				case 3:
+					//Load the board here. We only need to do it once
+					load_board(&game->board, &game->pelletHolder, "maps/encodedboard");
+				break;
+				case 4:
+					//Load the board here. We only need to do it once
+					load_board(&game->board, &game->pelletHolder, "maps/encodedboard");
+				break;
+				case 5:
+					//Load the board here. We only need to do it once
+					load_board(&game->board, &game->pelletHolder, "maps/encodedboard");
+				break;
+			}
 			game->gameState = LevelBeginState;
 			level_init(game);
 			break;
