@@ -17,7 +17,7 @@
 #include "text.h"
 #include "window.h"
 // Remote Play 모드에서 정보를 받아옴
-static void copy_pacmanGame_info(void);
+static void copy_pacmanGame_info(PacmanGame *game);
 
 //Initializes all resources.
 static void resource_init(void);
@@ -32,10 +32,10 @@ static void startgame_init(void);
 static void clean_up(void);
 
 //Performs a loop, updating and rendering at 60hz.
-static void main_loop(void);
+static void main_loop(PacmanGame *game);
 
 //Defers to appropriate tick, based on current state.
-static void internal_tick(void);
+static void internal_tick(PacmanGame *game);
 
 //Defers to appropriate render, based on current state.
 static void internal_render(void);
@@ -56,19 +56,19 @@ static Socket_value *socket_info;
 static bool gameRunning = true;
 static int numCredits = 0;
 
-int main(void)
+int main(PacmanGame *game)
 {
 	resource_init();
 	game_init();
 
-	main_loop();
+	main_loop(game);
 
 	clean_up();
 	
 	return 0;
 }
 
-static void main_loop(void)
+static void main_loop(PacmanGame *game)
 {
 	while (gameRunning && !key_held(SDLK_ESCAPE))
 	{
@@ -80,14 +80,14 @@ static void main_loop(void)
 		}
 		else process_events(One);
 		
-		internal_tick();
+		internal_tick(game);
 		internal_render();
 
 		fps_sleep();
 	}
 }
 
-static void copy_pacmanGame_info(void){
+static void copy_pacmanGame_info(PacmanGame *game){
 	pacmanGame.death_player = pac->death_player;
 	pacmanGame.tick = pac->tick;
 	pacmanGame.gameState = pac->gameState;
@@ -123,7 +123,7 @@ static void copy_pacmanGame_info(void){
 	
 }
 
-static void internal_tick(void)
+static void internal_tick(PacmanGame *game)
 {
 	switch (state)
 	{
@@ -162,7 +162,7 @@ static void internal_tick(void)
 					pac = (PacmanGame*)malloc(sizeof(PacmanGame));
 					recv(socket_info->client_fd, (char*)pac, sizeof(PacmanGame), MSG_WAITALL);
 					
-					copy_pacmanGame_info();
+					copy_pacmanGame_info(game);
 				}
 				
 				int flag = 0;
@@ -242,8 +242,10 @@ static void internal_render(void)
 static void game_init(void)
 {
 	//Load the board here. We only need to do it once
-	load_board(&pacmanGame.board[0], &pacmanGame.pelletHolder[0], "maps/map1test");
-	load_board(&pacmanGame.board[1], &pacmanGame.pelletHolder[1], "maps/rea_map");
+	load_board(&pacmanGame.board[0], &pacmanGame.pelletHolder[0], "maps/stage1_map");
+	load_board(&pacmanGame.board[1], &pacmanGame.pelletHolder[1], "maps/stage2_map");
+	load_board(&pacmanGame.board[2], &pacmanGame.pelletHolder[2], "maps/stage3_map");
+	load_board(&pacmanGame.board[3], &pacmanGame.pelletHolder[3], "maps/boss_map");
 	
 
 	//set to be in menu

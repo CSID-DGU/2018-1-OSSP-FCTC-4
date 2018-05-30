@@ -44,8 +44,8 @@ void game_tick(PacmanGame *game)
 			break;
 		case GamePlayState:
 			// everyone can move and this is the standard 'play' game mode
-			process_player(&game->pacman, &game->board, One);
-			if(game->mode != SoloState) process_player(&game->pacman_enemy, &game->board, Two);
+			process_player(&game->pacman, &game->board[game->stageLevel], One);
+			if(game->mode != SoloState) process_player(&game->pacman_enemy, &game->board[game->stageLevel], Two);
 			
 			process_ghosts(game);
 			
@@ -334,7 +334,7 @@ void game_render(PacmanGame *game, int tick)
 			break;
 		case GameoverState:
 			draw_game_gameover();
-			draw_board(&game->board);
+			draw_board(&game->board[game->stageLevel]);
 			draw_credits(num_credits());
 			break;
 	}
@@ -612,7 +612,7 @@ static void process_missiles(PacmanGame *game)
 			// execute ghost AI logic according to currentLeve
 			execute_missile_logic(game->currentLevel, m, m->missileType, &game->missiles[0], &game->ghosts[0]);
 
-			m->nextDirection = next_direction(m, &game->board);
+			m->nextDirection = next_direction(m, &game->board[game->stageLevel]);
 		}
 		else if (result == OverCenter)
 		{
@@ -1131,7 +1131,7 @@ static void process_pellets(PacmanGame *game)
 	//set pellet to not be active
 	//decrease num of alive pellets
 	
-	PelletHolder *holder = &game->pelletHolder;
+	PelletHolder *holder = &game->pelletHolder[game->stageLevel];
 
 	for (int i = 0; i < holder->totalNum; i++)
 	{
@@ -1311,7 +1311,7 @@ void level_init(PacmanGame *game)
 	if(game->mode != SoloState) pacman_level_init(&game->pacman_enemy);
 	
 	//reset pellets
-	pellets_init(&game->pelletHolder);
+	pellets_init(&game->pelletHolder[game->stageLevel]);
 	missiles_init(game->missiles);
 	//reset ghosts
 	ghosts_init(game->ghosts);
