@@ -45,8 +45,8 @@ void game_tick(PacmanGame *game)
 		case GamePlayState:
 			// everyone can move and this is the standard 'play' game mode
 	
-			if(game->pacman.livesLeft != -1) process_player(&game->pacman, &game->board, One);
-			if(game->mode != SoloState && game->pacman_enemy.livesLeft != -1) process_player(&game->pacman_enemy, &game->board, Two);
+			if(game->pacman.livesLeft != -1) process_player(&game->pacman, &game->board[game->stageLevel], One);
+			if(game->mode != SoloState && game->pacman_enemy.livesLeft != -1) process_player(&game->pacman_enemy, &game->board[game->stageLevel], Two);
 			
 			//process_player(&game->pacman, &game->board, One);
 			//if(game->mode != SoloState) process_player(&game->pacman_enemy, &game->board, Two);
@@ -96,7 +96,7 @@ void game_tick(PacmanGame *game)
 	// State Transitions - refer to gameflow for descriptions
 	//
 
-	bool allPelletsEaten = game->pelletHolder.numLeft == 0;
+	bool allPelletsEaten = game->pelletHolder[game->stageLevel].numLeft == 0;
 	bool collidedWithGhost = check_pacghost_collision(game);
 	bool collidedWithMissile = check_ghomissile_collision(game);
 	
@@ -169,7 +169,7 @@ void game_render(PacmanGame *game, int tick)
 	draw_pacman_lives(game->pacman.livesLeft);
 	if(game->mode != SoloState) draw_pacman2_lives(game->pacman_enemy.livesLeft);
 	
-	draw_small_pellets(&game->pelletHolder);
+	draw_small_pellets(&game->pelletHolder[game->stageLevel]);
 
 	//in gameover state big pellets don't render
 	//in gamebegin + levelbegin big pellets don't flash
@@ -181,8 +181,8 @@ void game_render(PacmanGame *game, int tick)
 			draw_game_playerone_start();
 			draw_game_ready();
 
-			draw_large_pellets(&game->pelletHolder, false);
-			draw_board(&game->board);
+			draw_large_pellets(&game->pelletHolder[game->stageLevel], false);
+			draw_board(&game->board[game->stageLevel]);
 			break;
 		case LevelBeginState:
 			draw_game_ready();
@@ -197,26 +197,26 @@ void game_render(PacmanGame *game, int tick)
 			
 			for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
 			
-			draw_large_pellets(&game->pelletHolder, false);
-			draw_board(&game->board);
+			draw_large_pellets(&game->pelletHolder[game->stageLevel], false);
+			draw_board(&game->board[game->stageLevel]);
 			break;
 		case GamePlayState:
 			//stage 표시
 			draw_stage(game->currentLevel);
-			draw_large_pellets(&game->pelletHolder, true);
-			draw_board(&game->board);
+			draw_large_pellets(&game->pelletHolder[game->stageLevel], true);
+			draw_board(&game->board[game->stageLevel]);
 
-			if (game->gameItem1.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem1);
-			if (game->gameItem2.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem2);
-			if (game->gameItem3.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem3);
-			if (game->gameItem4.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem4);
-			if (game->gameItem5.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem5);
+			if (game->gameItem1[game->stageLevel].itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem1[game->stageLevel]);
+			if (game->gameItem2[game->stageLevel].itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem2[game->stageLevel]);
+			if (game->gameItem3[game->stageLevel].itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem3[game->stageLevel]);
+			if (game->gameItem4[game->stageLevel].itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem4[game->stageLevel]);
+			if (game->gameItem5[game->stageLevel].itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem5[game->stageLevel]);
 
-			if (game->gameItem1.eaten && tick - game->gameItem1.eatenAt < 2000) draw_item_pts(&game->gameItem1);
-			if (game->gameItem2.eaten && tick - game->gameItem2.eatenAt < 2000) draw_item_pts(&game->gameItem2);
-			if (game->gameItem3.eaten && tick - game->gameItem3.eatenAt < 2000) draw_item_pts(&game->gameItem3);
-			if (game->gameItem4.eaten && tick - game->gameItem4.eatenAt < 2000) draw_item_pts(&game->gameItem4);
-			if (game->gameItem5.eaten && tick - game->gameItem5.eatenAt < 2000) draw_item_pts(&game->gameItem5);			
+			if (game->gameItem1[game->stageLevel].eaten && tick - game->gameItem1[game->stageLevel].eatenAt < 2000) draw_item_pts(&game->gameItem1[game->stageLevel]);
+			if (game->gameItem2[game->stageLevel].eaten && tick - game->gameItem2[game->stageLevel].eatenAt < 2000) draw_item_pts(&game->gameItem2[game->stageLevel]);
+			if (game->gameItem3[game->stageLevel].eaten && tick - game->gameItem3[game->stageLevel].eatenAt < 2000) draw_item_pts(&game->gameItem3[game->stageLevel]);
+			if (game->gameItem4[game->stageLevel].eaten && tick - game->gameItem4[game->stageLevel].eatenAt < 2000) draw_item_pts(&game->gameItem4[game->stageLevel]);
+			if (game->gameItem5[game->stageLevel].eaten && tick - game->gameItem5[game->stageLevel].eatenAt < 2000) draw_item_pts(&game->gameItem5[game->stageLevel]);			
 
 
 			if(game->pacman.livesLeft != -1) draw_pacman(&game->pacman);
@@ -313,12 +313,12 @@ void game_render(PacmanGame *game, int tick)
 			if (dt < 2000)
 			{
 				for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
-				draw_board(&game->board);
+				draw_board(&game->board[game->stageLevel]);
 			}
 			else
 			{
 				//stop rendering the pen, and do the flash animation
-				draw_board_flash(&game->board);
+				draw_board_flash(&game->board[game->stageLevel]);
 			}
 
 			break;
@@ -358,12 +358,12 @@ void game_render(PacmanGame *game, int tick)
 				*/
 			}
 
-			draw_large_pellets(&game->pelletHolder, true);
-			draw_board(&game->board);
+			draw_large_pellets(&game->pelletHolder[game->stageLevel], true);
+			draw_board(&game->board[game->stageLevel]);
 			break;
 		case GameoverState:
 			draw_game_gameover();
-			draw_board(&game->board);
+			draw_board(&game->board[game->stageLevel]);
 			draw_credits(num_credits());
 			break;
 	}
@@ -381,6 +381,9 @@ static void enter_state(PacmanGame *game, GameState state)
 			break;
 		case WinState:
 			game->currentLevel++;
+			if(game->stageLevel < STAGE_COUNT -1 ){
+				game->stageLevel++;
+			}
 			game->gameState = LevelBeginState;
 			level_init(game);
 			break;
@@ -447,6 +450,7 @@ bool can_move(Pacman *pacman, Board *board, Direction dir)
 
 static void process_player(Pacman *pacman, Board *board, Player player)
 {
+	
 	if (pacman->missedFrames != 0)
 	{
 		pacman->missedFrames--;
@@ -585,7 +589,7 @@ static void process_ghosts(PacmanGame *game)
 			// execute ghost AI logic according to currentLeve
 			execute_ghost_logic(game->currentLevel, g, g->ghostType, &game->ghosts[0], &game->pacman);
 
-			g->nextDirection = next_direction(g, &game->board);
+			g->nextDirection = next_direction(g, &game->board[game->stageLevel]);
 		}
 		else if (result == OverCenter)
 		{
@@ -637,7 +641,7 @@ static void process_missiles(PacmanGame *game)
 			// execute ghost AI logic according to currentLeve
 			execute_missile_logic(game->currentLevel, m, m->missileType, &game->missiles[0], &game->ghosts[0]);
 
-			m->nextDirection = next_direction(m, &game->board);
+			m->nextDirection = next_direction(m, &game->board[game->stageLevel]);
 		}
 		else if (result == OverCenter)
 		{
@@ -654,13 +658,13 @@ static void process_missiles(PacmanGame *game)
 
 static void process_item(PacmanGame *game)
 {
-	int pelletsEaten = game->pelletHolder.totalNum - game->pelletHolder.numLeft;
+	int pelletsEaten = game->pelletHolder[game->stageLevel].totalNum - game->pelletHolder[game->stageLevel].numLeft;
 
-	GameItem *f1 = &game->gameItem1;
-	GameItem *f2 = &game->gameItem2;
-	GameItem *f3 = &game->gameItem3;
-	GameItem *f4 = &game->gameItem4;
-	GameItem *f5 = &game->gameItem5;
+	GameItem *f1 = &game->gameItem1[game->stageLevel];
+	GameItem *f2 = &game->gameItem2[game->stageLevel];
+	GameItem *f3 = &game->gameItem3[game->stageLevel];
+	GameItem *f4 = &game->gameItem4[game->stageLevel];
+	GameItem *f5 = &game->gameItem5[game->stageLevel];
 
 	int curLvl = game->currentLevel;
 
@@ -1156,7 +1160,7 @@ static void process_pellets(PacmanGame *game)
 	//set pellet to not be active
 	//decrease num of alive pellets
 	
-	PelletHolder *holder = &game->pelletHolder;
+	PelletHolder *holder = &game->pelletHolder[game->stageLevel];
 
 	for (int i = 0; i < holder->totalNum; i++)
 	{
@@ -1322,6 +1326,7 @@ void gamestart_init(PacmanGame *game, int mode)
 	//fuit_init();
 	game->highscore = 0; //TODO maybe load this in from a file..?
 	game->currentLevel = 1;
+	game->stageLevel = 0;
 
 	//invalidate the state so it doesn't effect the enter_state function
 	game->gameState = -1;
@@ -1335,17 +1340,17 @@ void level_init(PacmanGame *game)
 	if(game->mode != SoloState) pacman_level_init(&game->pacman_enemy);
 	
 	//reset pellets
-	pellets_init(&game->pelletHolder);
+	pellets_init(&game->pelletHolder[game->stageLevel]);
 	missiles_init(game->missiles);
 	//reset ghosts
 	ghosts_init(game->ghosts);
 
 	//reset fruit
-	reset_item(&game->gameItem1, &game->board);
-	reset_item(&game->gameItem2, &game->board);
-	reset_item(&game->gameItem3, &game->board);
-	reset_item(&game->gameItem4, &game->board);
-	reset_item(&game->gameItem5, &game->board);
+	reset_item(&game->gameItem1[game->stageLevel], &game->board[game->stageLevel]);
+	reset_item(&game->gameItem2[game->stageLevel], &game->board[game->stageLevel]);
+	reset_item(&game->gameItem3[game->stageLevel], &game->board[game->stageLevel]);
+	reset_item(&game->gameItem4[game->stageLevel], &game->board[game->stageLevel]);
+	reset_item(&game->gameItem5[game->stageLevel], &game->board[game->stageLevel]);
 
 }
 
@@ -1355,11 +1360,11 @@ void pacdeath_init(PacmanGame *game)
 	if(game->mode != SoloState) pacman_level_init(&game->pacman_enemy);
 	ghosts_init(game->ghosts);
 	missiles_init(game->missiles);
-	reset_item(&game->gameItem1, &game->board);
-	reset_item(&game->gameItem2, &game->board);
-	reset_item(&game->gameItem3, &game->board);
-	reset_item(&game->gameItem4, &game->board);
-	reset_item(&game->gameItem5, &game->board);
+	reset_item(&game->gameItem1[game->stageLevel], &game->board[game->stageLevel]);
+	reset_item(&game->gameItem2[game->stageLevel], &game->board[game->stageLevel]);
+	reset_item(&game->gameItem3[game->stageLevel], &game->board[game->stageLevel]);
+	reset_item(&game->gameItem4[game->stageLevel], &game->board[game->stageLevel]);
+	reset_item(&game->gameItem5[game->stageLevel], &game->board[game->stageLevel]);
 
 }
 

@@ -44,11 +44,12 @@ typedef struct
 	Pacman pacman_enemy;
 	Ghost ghosts[4];
 	Missile missiles[2];
-	Board board;
-	PelletHolder pelletHolder;
-	GameItem gameItem1, gameItem2, gameItem3, gameItem4, gameItem5;
+	Board board[STAGE_COUNT];
+	PelletHolder pelletHolder[STAGE_COUNT];
+	GameItem gameItem1[STAGE_COUNT], gameItem2[STAGE_COUNT], gameItem3[STAGE_COUNT], gameItem4[STAGE_COUNT], gameItem5[STAGE_COUNT];
 	int highscore;
 	int currentLevel;
+	int stageLevel;
 	ModeState mode;
 	RemoteRole role;
 	int tick;
