@@ -103,22 +103,22 @@ static void copy_pacmanGame_info(void){
 		pacmanGame.ghosts[i] = pac->ghosts[i];
 	}
 	
-	pacmanGame.gameItem1 = pac->gameItem1;
-	pacmanGame.gameItem2 = pac->gameItem2;
-	pacmanGame.gameItem3 = pac->gameItem3;
-	pacmanGame.gameItem4 = pac->gameItem4;
-	pacmanGame.gameItem5 = pac->gameItem5;
+	pacmanGame.gameItem1[game->stageLevel] = pac->gameItem1[game->stageLevel];
+	pacmanGame.gameItem2[game->stageLevel] = pac->gameItem2[game->stageLevel];
+	pacmanGame.gameItem3[game->stageLevel] = pac->gameItem3[game->stageLevel];
+	pacmanGame.gameItem4[game->stageLevel] = pac->gameItem4[game->stageLevel];
+	pacmanGame.gameItem5[game->stageLevel] = pac->gameItem5[game->stageLevel];
 					
-	pacmanGame.pelletHolder.numLeft = pac->pelletHolder.numLeft;
-	pacmanGame.pelletHolder.totalNum = pac->pelletHolder.totalNum;
+	pacmanGame.pelletHolder[game->stageLevel].numLeft = pac->pelletHolder[game->stageLevel].numLeft;
+	pacmanGame.pelletHolder[game->stageLevel].totalNum = pac->pelletHolder[game->stageLevel].totalNum;
 					
 	for(int i=0; i<294; i++){
-		pacmanGame.pelletHolder.pellets[i].x = pac->pelletHolder.pellets[i].x;
-		pacmanGame.pelletHolder.pellets[i].y = pac->pelletHolder.pellets[i].y;
-		pacmanGame.pelletHolder.pellets[i].eaten = pac->pelletHolder.pellets[i].eaten;
-		pacmanGame.pelletHolder.pellets[i].type = pac->pelletHolder.pellets[i].type;
-		if(pacmanGame.pelletHolder.pellets[i].type == LargePellet) pacmanGame.pelletHolder.pellets[i].image = large_pellet_image();
-		else pacmanGame.pelletHolder.pellets[i].image = small_pellet_image();
+		pacmanGame.pelletHolder[game->stageLevel].pellets[i].x = pac->pelletHolder[game->stageLevel].pellets[i].x;
+		pacmanGame.pelletHolder[game->stageLevel].pellets[i].y = pac->pelletHolder[game->stageLevel].pellets[i].y;
+		pacmanGame.pelletHolder[game->stageLevel].pellets[i].eaten = pac->pelletHolder[game->stageLevel].pellets[i].eaten;
+		pacmanGame.pelletHolder[game->stageLevel].pellets[i].type = pac->pelletHolder[game->stageLevel].pellets[i].type;
+		if(pacmanGame.pelletHolder[game->stageLevel].pellets[i].type == LargePellet) pacmanGame.pelletHolder[game->stageLevel].pellets[i].image = large_pellet_image();
+		else pacmanGame.pelletHolder[game->stageLevel].pellets[i].image = small_pellet_image();
 	}
 	
 }
@@ -242,7 +242,9 @@ static void internal_render(void)
 static void game_init(void)
 {
 	//Load the board here. We only need to do it once
-	load_board(&pacmanGame.board, &pacmanGame.pelletHolder, "maps/rea_map");
+	load_board(&pacmanGame.board[0], &pacmanGame.pelletHolder[0], "maps/map1test");
+	load_board(&pacmanGame.board[1], &pacmanGame.pelletHolder[1], "maps/rea_map");
+	
 
 	//set to be in menu
 	state = Menu;
