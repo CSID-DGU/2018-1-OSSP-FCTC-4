@@ -412,11 +412,13 @@ static void enter_state(PacmanGame *game, GameState state)
 		case GamePlayState:
 			break;
 		case WinState:
-
+			play_sound(LevelStartSound);
 			break;
 		case DeathState:
+			play_sound(PacmanDeathSound);
 			break;
 		case GameoverState:
+			play_sound(GameoverSound);
 			break;
 	}
 
@@ -763,19 +765,22 @@ static void process_item(PacmanGame *game)
             play_sound(Munch_Bsound);			
 		}
 		
-		if(f1->item==Prof)
+		if(f1->item==Prof){
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
-		
+			play_sound(Chomp1Sound);
+		}
 		if(f1->item==Fly_Missile) {
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 		}
 		
 		if(f1->item==Ghost_mode) {
             pac->itemOn = true;			
 			pac->protect = 1;
 			pac->itemRemainTime = 150;
+			play_sound(CutsceneSound);
 		}
 	}
 
@@ -805,19 +810,22 @@ static void process_item(PacmanGame *game)
             play_sound(Munch_Bsound);			
 		}
 		
-		if(f2->item==Prof)
+		if(f2->item==Prof){
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
-		
+			play_sound(Chomp1Sound);
+		}
 		if(f2->item==Fly_Missile) {
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 		}		
 		
 		if(f2->item==Ghost_mode) {
 			pac->protect = 1;
 			pac->itemRemainTime = 150;
-            pac->itemOn = true;			
+            pac->itemOn = true;
+		play_sound(CutsceneSound);			
 		}		
 	}
 
@@ -847,19 +855,23 @@ static void process_item(PacmanGame *game)
             pac->itemOn = true;
 		}
 		
-		if(f3->item==Prof)
+		if(f3->item==Prof){
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
+			play_sound(Chomp1Sound);
+		}
 		
 		if(f3->item==Fly_Missile) {
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 		}	
 		
 		if(f3->item==Ghost_mode) {
 			pac->protect = 1;
 			pac->itemRemainTime = 150;
             pac->itemOn = true;			
+		play_sound(CutsceneSound);
 		}				
 	}
 	
@@ -889,19 +901,22 @@ static void process_item(PacmanGame *game)
             pac->itemOn = true;
 		}
 		
-		if(f4->item==Prof)
+		if(f4->item==Prof){
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
-		
+			play_sound(Chomp1Sound);
+		}
 		if(f4->item==Fly_Missile) {
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 		}
 		
 		if(f4->item==Ghost_mode) {
 			pac->protect = 1;
 			pac->itemRemainTime = 150;
             pac->itemOn = true;
+		play_sound(CutsceneSound);
 		}					
 	}
 	
@@ -931,19 +946,22 @@ static void process_item(PacmanGame *game)
             pac->itemOn = true;
 		}
 		
-		if(f5->item==Prof)
+		if(f5->item==Prof){
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
-	
+			play_sound(Chomp1Sound);
+		}
 		if(f5->item==Fly_Missile) {
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 		}
 		
 		if(f5->item==Ghost_mode) {
 			pac->protect = 1;
 			pac->itemRemainTime = 150;
-            pac->itemOn = true;			
+            pac->itemOn = true;		
+		play_sound(CutsceneSound);	
 		}			
 	}
 	
@@ -966,35 +984,41 @@ static void process_item(PacmanGame *game)
 			f1->eatenAt = ticks_game();
 			pac->score += item_points(f1->item);
 			
-			if(f1->item==Life)
+			if(f1->item==Life){
 				pac->livesLeft += 1;
-			
+				play_sound(BonusSound);
+			}
 			if(f1->item==Move_Fast) {
 				pac->body.velocity = 120;
 				pac->itemRemainTime = 150;			
 				pac->itemOn = true;
+				play_sound(BoosterSound);
 			}
 			
 			if(f1->item==Move_Slow) {
 				pac->body.velocity = 60;
 				pac->itemRemainTime = 150;			
 	            pac->itemOn = true;
+			play_sound(Munch_Bsound);
 			}	
 				
-			if(f1->item==Prof)
+			if(f1->item==Prof){
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
-
+			play_sound(Chomp1Sound);
+			}
 			if(f1->item==Fly_Missile) {
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 			}
 			
 			if(f1->item==Ghost_mode) {
 			pac->protect = 1;
 			pac->itemRemainTime = 150;
             pac->itemOn = true;	
-		}
+			play_sound(CutsceneSound);
+			}
 		}
 
 		if (f2->itemMode == Displaying && collides_obj(&pac->body, f2->x, f2->y))
@@ -1004,34 +1028,40 @@ static void process_item(PacmanGame *game)
 			f2->eatenAt = ticks_game();
 			pac->score += item_points(f2->item);
 			
-			if(f2->item==Life)
+			if(f2->item==Life){
 				pac->livesLeft += 1;
-				
+				play_sound(BonusSound);
+			}
 			if(f2->item==Move_Fast) {
 				pac->body.velocity = 120;	
 				pac->itemRemainTime = 150;			
 				pac->itemOn = true;
+				play_sound(BoosterSound);
 			}
 			
 			if(f2->item==Move_Slow) {
 				pac->body.velocity = 60;
 				pac->itemRemainTime = 150;			
 	            pac->itemOn = true;
+				play_sound(Munch_Bsound);
 			}
 
-			if(f2->item==Prof)
+			if(f2->item==Prof){
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
-
+			play_sound(Chomp1Sound);
+			}
 			if(f2->item==Fly_Missile) {
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 			}
 			
 			if(f2->item==Ghost_mode) {
 			pac->protect = 1;
 			pac->itemRemainTime = 150;
             pac->itemOn = true;
+			play_sound(CutsceneSound);
 		}					
 		}
 
@@ -1042,35 +1072,41 @@ static void process_item(PacmanGame *game)
 			f3->eatenAt = ticks_game();
 			pac->score += item_points(f3->item);
 			
-			if(f3->item==Life)
+			if(f3->item==Life){
 				pac->livesLeft += 1;
-				
+				play_sound(BonusSound);
+			}
 			if(f3->item==Move_Fast) {
 				pac->body.velocity = 120;
 				pac->itemRemainTime = 150;			
 	            pac->itemOn = true;
+			play_sound(BoosterSound);
 			}
 
 			if(f3->item==Move_Slow) {
 				pac->body.velocity = 60;
 				pac->itemRemainTime = 150;			
 	            pac->itemOn = true;
+				play_sound(Munch_Bsound);
 			}
 			
-			if(f3->item==Prof)
+			if(f3->item==Prof){
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
-		
+			play_sound(Chomp1Sound);
+			}
 			if(f3->item==Fly_Missile) {
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 			}
 			
 			if(f3->item==Ghost_mode) {
 			pac->protect = 1;
 			pac->itemRemainTime = 150;
-            pac->itemOn = true;
-		}					
+            		pac->itemOn = true;
+			play_sound(CutsceneSound);
+			}					
 		}
 		
 		if (f4->itemMode == Displaying && collides_obj(&pac->body, f4->x, f4->y))
@@ -1080,35 +1116,41 @@ static void process_item(PacmanGame *game)
 			f4->eatenAt = ticks_game();
 			pac->score += item_points(f4->item);
 			
-			if(f4->item==Life)
+			if(f4->item==Life){
 				pac->livesLeft += 1;
-				
+				play_sound(BonusSound);
+			}
 			if(f4->item==Move_Fast) {
 				pac->body.velocity = 120;
 				pac->itemRemainTime = 150;
-	            pac->itemOn = true;						
+	            pac->itemOn = true;					
+				play_sound(BoosterSound);	
 			}
 			
 			if(f4->item==Move_Slow) {
 				pac->body.velocity = 60;
 				pac->itemRemainTime = 150;			
 	            pac->itemOn = true;		
+				play_sound(Munch_Bsound);
 			}
 			
-			if(f4->item==Prof)
+			if(f4->item==Prof){
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
-			
+			play_sound(Chomp1Sound);
+			}
 			if(f4->item==Fly_Missile) {
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 			}	
 			
 			if(f4->item==Ghost_mode) {
 			pac->protect = 1;
 			pac->itemRemainTime = 150;
             pac->itemOn = true;
-		}				
+			play_sound(CutsceneSound);
+			}				
 		}
 		
 		if (f5->itemMode == Displaying && collides_obj(&pac->body, f5->x, f5->y))
@@ -1118,35 +1160,41 @@ static void process_item(PacmanGame *game)
 			f5->eatenAt = ticks_game();
 			pac->score += item_points(f5->item);
 			
-			if(f5->item==Life)
+			if(f5->item==Life){
 				pac->livesLeft += 1;
-				
+				play_sound(BonusSound);
+			}
 			if(f5->item==Move_Fast) {
 				pac->body.velocity = 120;
 				pac->itemRemainTime = 150;			
-	            pac->itemOn = true;		
+	            pac->itemOn = true;	
+				play_sound(BoosterSound);	
 			}
 			
 			if(f5->item==Move_Slow) {
 				pac->body.velocity = 60;
 				pac->itemRemainTime = 150;			
 	            pac->itemOn = true;		
+				play_sound(Munch_Bsound);
 			}
 
-			if(f5->item==Prof)
+			if(f5->item==Prof){
 			for (int i = 0; i < 4; i++) game->ghosts[i].body.velocity = 1;
-			
+				play_sound(Chomp1Sound);
+			}
 			if(f5->item==Fly_Missile) {
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 			}
 			
 			if(f5->item==Ghost_mode) {
 			pac->protect = 1;
 			pac->itemRemainTime = 150;
             pac->itemOn = true;		
-		}					
+			play_sound(CutsceneSound);
+			}					
 		}
 	}
 
@@ -1246,7 +1294,6 @@ static bool check_pacghost_collision(PacmanGame *game)
 		if(pac->protect == 0 && pac->livesLeft != -1) {
 			if (collides(&game->pacman.body, &g->body)) {
 				if(game->pacman.godMode == false){
-					play_sound(DieSound);
 					death_player = One;
 					game->death_player = One;
 					return true;
