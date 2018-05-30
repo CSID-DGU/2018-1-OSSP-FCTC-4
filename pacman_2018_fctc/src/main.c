@@ -247,6 +247,7 @@ static void game_init(void)
 	//set to be in menu
 	state = Menu;
 	
+	play_sound(IntrobgmSound);
 	//init the framerate manager
 	fps_init(60);
 

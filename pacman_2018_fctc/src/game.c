@@ -371,6 +371,7 @@ static void enter_state(PacmanGame *game, GameState state)
 	switch (state)
 	{
 		case GameBeginState:
+			stop_sound(IntrobgmSound);
 			play_sound(LevelStartSound);
 
 			break;
