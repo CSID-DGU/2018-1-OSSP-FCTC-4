@@ -270,7 +270,7 @@ void game_render(PacmanGame *game, int tick)
 							} else
 								draw_ghost(&game->ghosts[i]);
 						}
-						if(pac2->missile2 == 1)					
+						if(pac2->missile2 == 1 || pac->missile == 1)					
 							for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);
 					} 
 					else {
@@ -296,7 +296,7 @@ void game_render(PacmanGame *game, int tick)
 									game->ghosts[i].isDead = 0;
 							}
 						}
-						if(pac2->missile2 == 1)					
+						if(pac2->missile2 == 1 || pac->missile == 1)					
 							for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);
 					}
 			}
@@ -328,7 +328,7 @@ void game_render(PacmanGame *game, int tick)
 				if(game->mode != SoloState) draw_pacman2_static(&game->pacman_enemy);
 
 				for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
-				if(pac2->missile2 == 1)					
+				if(pac2->missile2 == 1 || pac->missile == 1)					
 					for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);
 			}
 			else
@@ -617,7 +617,7 @@ static void process_missiles(PacmanGame *game)
 		{
 			//if they are in a new tile, rerun their target update logic
 			// execute ghost AI logic according to currentLeve
-			execute_missile_logic(game->currentLevel, m, m->missileType, &game->missiles[0], &game->ghosts[0]);
+			execute_missile_logic(game->currentLevel, m, m->missileType, &game->missiles, &game->ghosts);
 
 			m->nextDirection = next_direction(m, &game->board);
 		}
