@@ -50,7 +50,7 @@ LibraryFlag := -l
 LibPathFlag := -L
 # -MMD flag let gcc generate a dependency file "objectfilename.d" in addition to the object file "objectfilename.o"
 CC          := gcc -MMD
-LD          := gcc
+LD          := gcc -pthread
 
 #########################
 # Generic Template Part #

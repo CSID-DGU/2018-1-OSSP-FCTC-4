@@ -44,7 +44,7 @@ void apply_surface(int x, int y, SDL_Surface* source)
 
 	offset.x = x;
 	offset.y = y;
-
+	
 	SDL_BlitSurface(source, NULL, screen, &offset);
 }
 

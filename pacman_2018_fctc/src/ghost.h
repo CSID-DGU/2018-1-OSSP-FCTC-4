@@ -46,10 +46,10 @@ Direction next_direction(Ghost *ghost, Board *board);
 void send_to_home(Ghost *ghost, GhostType type);
 void death_send(Ghost *ghost);
 
-void execute_red_logic(Ghost *redGhost, Pacman *pacman);
-void execute_pink_logic(Ghost *pinkGhost, Pacman *pacman);
-void execute_orange_logic(Ghost *orangeGhost, Pacman *pacman);
-void execute_blue_logic(Ghost *blueGhost, Ghost *redGhost, Pacman *pacman);
+void execute_red_logic(int curLvl, Ghost *redGhost, Pacman *pacman);
+void execute_pink_logic(int curLvl, Ghost *pinkGhost, Pacman *pacman);
+void execute_orange_logic(int curLvl, Ghost *orangeGhost, Pacman *pacman);
+void execute_blue_logic(int curLvl, Ghost *blueGhost, Ghost *redGhost, Pacman *pacman);
 
 int ghost_speed_normal(int level);
 int ghost_speed_fright(int level);

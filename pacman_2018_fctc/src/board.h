@@ -7,6 +7,8 @@
 #define BOARD_LENGTH 28
 #define BOARD_HEIGHT 31
 
+#define STAGE_COUNT 5
+
 typedef enum
 {
 	DoubleCorner,
@@ -39,3 +41,4 @@ bool is_tele_square(int x, int y);
 
 //Returns true if this is a square in which ghosts cannot move Up to enter in Chase mode
 bool is_ghost_noup_square(int x, int y);
+

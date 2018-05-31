@@ -1,10 +1,12 @@
 #pragma once
 
+#include "main.h"
 #include "board.h"
-#include "fruit.h"
+#include "item.h"
 #include "ghost.h"
 #include "pacman.h"
 #include "pellet.h"
+#include "missile.h"
 
 typedef enum
 {
@@ -15,6 +17,12 @@ typedef enum
 	DeathState,
 	GameoverState
 } GameState;
+
+typedef enum
+{
+	One,
+	Two
+} Player;
 
 //what you do in current state
 
@@ -33,25 +41,32 @@ typedef struct
 	GameState gameState;
 	unsigned int ticksSinceModeChange;
 	Pacman pacman;
+	Pacman pacman_enemy;
 	Ghost ghosts[4];
-	Board board;
-	PelletHolder pelletHolder;
-	GameFruit gameFruit1, gameFruit2, gameFruit3, gameFruit4, gameFruit5;
+	Missile missiles[2];
+	Board board[STAGE_COUNT];
+	PelletHolder pelletHolder[STAGE_COUNT];
+	GameItem gameItem1[STAGE_COUNT], gameItem2[STAGE_COUNT], gameItem3[STAGE_COUNT], gameItem4[STAGE_COUNT], gameItem5[STAGE_COUNT];
 	int highscore;
 	int currentLevel;
+	int stageLevel;
+	ModeState mode;
+	RemoteRole role;
+	int tick;
+	Player death_player;
 } PacmanGame;
 
 //Updates the game 1 tick, or 1/60th of a second.
 void game_tick(PacmanGame *game);
 
 //Renders the game in its current state.
-void game_render(PacmanGame *game);
+void game_render(PacmanGame *game, int tick);
 
 //Returns true if the game is finished and is ready to hand back to the menu system.
-bool is_game_over(PacmanGame *game);
+bool is_game_over(PacmanGame *game, int tick);
 
 //Call this at start of level 1 to initialize all entities and game objects.
-void gamestart_init(PacmanGame *game);
+void gamestart_init(PacmanGame *game, int mode);
 
 //Call this at the start of each level to reinitialize all entities to a default state.
 void level_init(PacmanGame *game);

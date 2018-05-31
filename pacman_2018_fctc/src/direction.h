@@ -21,6 +21,7 @@ typedef enum
 //Copies -1, 0, 1 to the given x and y ints depending on what direction is given.
 void dir_xy(Direction dir, int *x, int *y);
 
+void dir_xy_usd(Direction dir, int *x, int *y);
 //Same behaviour as dir_xy() except this emulates the bug for ghosts where
 //AI based on up direction is both Up *and* Left.
 void dir_xy_buggy(Direction dir, int *x, int *y);
