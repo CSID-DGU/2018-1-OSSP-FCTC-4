@@ -1262,7 +1262,8 @@ static void process_pellets(PacmanGame *game)
 			}
 
 			//play eat sound
-
+			
+			play_sound(SmallSound);
 			//eating a small pellet makes pacman not move for 1 frame
 			//eating a large pellet makes pacman not move for 3 frames
 			game->pacman.missedFrames = pellet_nop_frames(p);
