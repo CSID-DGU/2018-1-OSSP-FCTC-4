@@ -31,6 +31,7 @@ static Mix_Chunk *gameoverSound;
 static Mix_Chunk *introbgmSound;
 
 static int levelStartChanel;
+static int smallStartChanel;
 
 void load_sounds(void)
 {
@@ -127,7 +128,7 @@ void play_sound(SoundEffect effectName)
 	switch(effectName)
 		{
 		case LevelStartSound:  chunk = levelStart; channel = &levelStartChanel; break;
-                case SmallSound:    chunk = smallEatSound; channel = &levelStartChanel; break;
+                case SmallSound:    chunk = smallEatSound; channel = &smallStartChanel; break;
                 case LargeSound:    chunk = largeEatSound; channel = &levelStartChanel; break;
                 case SirenSound:       chunk = sirenSound; channel = &levelStartChanel; break;
                 case FruitSound:    chunk = fruitEatSound; channel = &levelStartChanel; break;
