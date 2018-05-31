@@ -1210,6 +1210,7 @@ static void process_pellets(PacmanGame *game)
 	//decrease num of alive pellets
 	
 	PelletHolder *holder = &game->pelletHolder[game->stageLevel];
+	
 
 	for (int i = 0; i < holder->totalNum; i++)
 	{
@@ -1217,11 +1218,12 @@ static void process_pellets(PacmanGame *game)
 
 		//skip if we've eaten this one already
 		if (p->eaten) continue;
-
+		bool flag = false;
 		if (collides_obj(&game->pacman.body, p->x, p->y))
 		{
+			flag = true;
 			holder->numLeft--;
-			printf("numLeft : %d\n", holder->numLeft);
+			// printf("numLeft : %d\n", holder->numLeft);
 
 			p->eaten = true;
 			game->pacman.score += pellet_points(p);
@@ -1245,10 +1247,10 @@ static void process_pellets(PacmanGame *game)
 			//can only ever eat 1 pellet in a frame, so return
 			// return;
 		}
-		if (collides_obj(&game->pacman_enemy.body, p->x, p->y))
+		if (collides_obj(&game->pacman_enemy.body, p->x, p->y) && flag == false)
 		{
 			holder->numLeft--;
-			printf("numLeft : %d\n", holder->numLeft);
+			// printf("numLeft : %d\n", holder->numLeft);
 			p->eaten = true;
 			game->pacman_enemy.score += pellet_points(p);
 			if(pellet_check(p)) {
@@ -1271,7 +1273,7 @@ static void process_pellets(PacmanGame *game)
 			game->pacman_enemy.missedFrames = pellet_nop_frames(p);
 
 			//can only ever eat 1 pellet in a frame, so return
-			return;
+			// return;
 		}
 	}
 	
