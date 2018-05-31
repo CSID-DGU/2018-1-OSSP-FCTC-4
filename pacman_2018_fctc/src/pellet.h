@@ -4,7 +4,8 @@
 
 #include <SDL/SDL.h>
 
-#define NUM_PELLETS 294
+// #define NUM_PELLETS 294
+#define NUM_PELLETS 800
 
 //The different pellet types.
 typedef enum
@@ -25,6 +26,7 @@ typedef struct
 //Holds all the pellets in the game. Records how many are eaten and are left.
 typedef struct
 {
+	int pelletNumOfCurrentMap;
 	int numLeft;
 	int totalNum;
 	Pellet pellets[NUM_PELLETS];

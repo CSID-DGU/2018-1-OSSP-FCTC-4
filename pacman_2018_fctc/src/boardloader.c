@@ -20,7 +20,8 @@ void load_board(Board *board, PelletHolder *pelletHolder, const char* file)
 	int pelletI = 0;
 
 	bool walkable = false;
-
+	fscanf(fp, "%d", &pelletHolder->pelletNumOfCurrentMap);
+	printf("%s : %d\n", file, pelletHolder->pelletNumOfCurrentMap);
 	while (((c = fgetc(fp)) != EOF))
 	{
 		if (c == '\n' || c == 13) continue; //continue if a newline or carriage-return

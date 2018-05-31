@@ -29,7 +29,7 @@ static Player death_player;
 
 void game_tick(PacmanGame *game)
 {
-	printf("life: %d / %d\n",game->pacman.livesLeft,game->pacman_enemy.livesLeft);
+	// printf("life: %d / %d\n",game->pacman.livesLeft,game->pacman_enemy.livesLeft);
 	unsigned dt = ticks_game() - game->ticksSinceModeChange;
 
 	switch (game->gameState)
@@ -1221,6 +1221,7 @@ static void process_pellets(PacmanGame *game)
 		if (collides_obj(&game->pacman.body, p->x, p->y))
 		{
 			holder->numLeft--;
+			printf("numLeft : %d\n", holder->numLeft);
 
 			p->eaten = true;
 			game->pacman.score += pellet_points(p);
@@ -1242,12 +1243,12 @@ static void process_pellets(PacmanGame *game)
 			game->pacman.missedFrames = pellet_nop_frames(p);
 			game->pacman_enemy.missedFrames = pellet_nop_frames(p);
 			//can only ever eat 1 pellet in a frame, so return
-			return;
+			// return;
 		}
 		if (collides_obj(&game->pacman_enemy.body, p->x, p->y))
 		{
 			holder->numLeft--;
-
+			printf("numLeft : %d\n", holder->numLeft);
 			p->eaten = true;
 			game->pacman_enemy.score += pellet_points(p);
 			if(pellet_check(p)) {
