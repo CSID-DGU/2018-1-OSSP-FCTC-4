@@ -16,6 +16,7 @@
 #include "sound.h"
 #include "text.h"
 #include "window.h"
+#include "pellet.h"
 // Remote Play 모드에서 정보를 받아옴
 static void copy_pacmanGame_info(PacmanGame *game);
 
@@ -112,7 +113,7 @@ static void copy_pacmanGame_info(PacmanGame *game){
 	pacmanGame.pelletHolder[game->stageLevel].numLeft = pac->pelletHolder[game->stageLevel].numLeft;
 	pacmanGame.pelletHolder[game->stageLevel].totalNum = pac->pelletHolder[game->stageLevel].totalNum;
 					
-	for(int i=0; i<294; i++){
+	for(int i=0; i<NUM_PELLETS; i++){
 		pacmanGame.pelletHolder[game->stageLevel].pellets[i].x = pac->pelletHolder[game->stageLevel].pellets[i].x;
 		pacmanGame.pelletHolder[game->stageLevel].pellets[i].y = pac->pelletHolder[game->stageLevel].pellets[i].y;
 		pacmanGame.pelletHolder[game->stageLevel].pellets[i].eaten = pac->pelletHolder[game->stageLevel].pellets[i].eaten;

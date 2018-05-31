@@ -1,10 +1,9 @@
 #pragma once
-
 #include <stdbool.h>
 
 #include <SDL/SDL.h>
 
-#define NUM_PELLETS 294
+#define NUM_PELLETS 754
 
 //The different pellet types.
 typedef enum

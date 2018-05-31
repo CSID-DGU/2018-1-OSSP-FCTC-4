@@ -1,4 +1,5 @@
 #include "pellet.h"
+#include "game.h"
 
 void pellets_init(PelletHolder *pelletHolder)
 {
