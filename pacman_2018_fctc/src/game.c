@@ -32,6 +32,9 @@ void game_tick(PacmanGame *game)
 	Pacman *pac = &game->pacman;
 	Pacman *pac2 = &game->pacman_enemy;
 
+
+	// printf("life: %d / %d\n",game->pacman.livesLeft,game->pacman_enemy.livesLeft);
+
 	unsigned dt = ticks_game() - game->ticksSinceModeChange;
 
 	switch (game->gameState)
@@ -47,8 +50,8 @@ void game_tick(PacmanGame *game)
 		case GamePlayState:
 			// everyone can move and this is the standard 'play' game mode
 	
-			if(game->pacman.livesLeft != -1) process_player(&game->pacman, &game->board, One);
-			if(game->mode != SoloState && game->pacman_enemy.livesLeft != -1) process_player(&game->pacman_enemy, &game->board, Two);
+			if(game->pacman.livesLeft != -1) process_player(&game->pacman, &game->board[game->stageLevel], One);
+			if(game->mode != SoloState && game->pacman_enemy.livesLeft != -1) process_player(&game->pacman_enemy, &game->board[game->stageLevel], Two);
 			
 			//process_player(&game->pacman, &game->board, One);
 			//if(game->mode != SoloState) process_player(&game->pacman_enemy, &game->board, Two);
@@ -98,7 +101,7 @@ void game_tick(PacmanGame *game)
 	// State Transitions - refer to gameflow for descriptions
 	//
 
-	bool allPelletsEaten = game->pelletHolder.numLeft == 0;
+	bool allPelletsEaten = game->pelletHolder[game->stageLevel].numLeft == 0;
 	bool collidedWithGhost = check_pacghost_collision(game);
 	bool collidedWithMissile = check_ghomissile_collision(game);
 	
@@ -170,7 +173,7 @@ void game_render(PacmanGame *game, int tick)
 	draw_pacman_lives(game->pacman.livesLeft);
 	if(game->mode != SoloState) draw_pacman2_lives(game->pacman_enemy.livesLeft);
 	
-	draw_small_pellets(&game->pelletHolder);
+	draw_small_pellets(&game->pelletHolder[game->stageLevel]);
 
 	//in gameover state big pellets don't render
 	//in gamebegin + levelbegin big pellets don't flash
@@ -182,8 +185,8 @@ void game_render(PacmanGame *game, int tick)
 			draw_game_playerone_start();
 			draw_game_ready();
 
-			draw_large_pellets(&game->pelletHolder, false);
-			draw_board(&game->board);
+			draw_large_pellets(&game->pelletHolder[game->stageLevel], false);
+			draw_board(&game->board[game->stageLevel]);
 			break;
 		case LevelBeginState:
 			draw_game_ready();
@@ -198,26 +201,26 @@ void game_render(PacmanGame *game, int tick)
 			
 			for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
 			
-			draw_large_pellets(&game->pelletHolder, false);
-			draw_board(&game->board);
+			draw_large_pellets(&game->pelletHolder[game->stageLevel], false);
+			draw_board(&game->board[game->stageLevel]);
 			break;
 		case GamePlayState:
 			//stage 표시
 			draw_stage(game->currentLevel);
-			draw_large_pellets(&game->pelletHolder, true);
-			draw_board(&game->board);
+			draw_large_pellets(&game->pelletHolder[game->stageLevel], true);
+			draw_board(&game->board[game->stageLevel]);
 
-			if (game->gameItem1.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem1);
-			if (game->gameItem2.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem2);
-			if (game->gameItem3.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem3);
-			if (game->gameItem4.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem4);
-			if (game->gameItem5.itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem5);
+			if (game->gameItem1[game->stageLevel].itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem1[game->stageLevel]);
+			if (game->gameItem2[game->stageLevel].itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem2[game->stageLevel]);
+			if (game->gameItem3[game->stageLevel].itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem3[game->stageLevel]);
+			if (game->gameItem4[game->stageLevel].itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem4[game->stageLevel]);
+			if (game->gameItem5[game->stageLevel].itemMode == Displaying) draw_item_game(game->currentLevel, &game->gameItem5[game->stageLevel]);
 
-			if (game->gameItem1.eaten && tick - game->gameItem1.eatenAt < 2000) draw_item_pts(&game->gameItem1);
-			if (game->gameItem2.eaten && tick - game->gameItem2.eatenAt < 2000) draw_item_pts(&game->gameItem2);
-			if (game->gameItem3.eaten && tick - game->gameItem3.eatenAt < 2000) draw_item_pts(&game->gameItem3);
-			if (game->gameItem4.eaten && tick - game->gameItem4.eatenAt < 2000) draw_item_pts(&game->gameItem4);
-			if (game->gameItem5.eaten && tick - game->gameItem5.eatenAt < 2000) draw_item_pts(&game->gameItem5);			
+			if (game->gameItem1[game->stageLevel].eaten && tick - game->gameItem1[game->stageLevel].eatenAt < 2000) draw_item_pts(&game->gameItem1[game->stageLevel]);
+			if (game->gameItem2[game->stageLevel].eaten && tick - game->gameItem2[game->stageLevel].eatenAt < 2000) draw_item_pts(&game->gameItem2[game->stageLevel]);
+			if (game->gameItem3[game->stageLevel].eaten && tick - game->gameItem3[game->stageLevel].eatenAt < 2000) draw_item_pts(&game->gameItem3[game->stageLevel]);
+			if (game->gameItem4[game->stageLevel].eaten && tick - game->gameItem4[game->stageLevel].eatenAt < 2000) draw_item_pts(&game->gameItem4[game->stageLevel]);
+			if (game->gameItem5[game->stageLevel].eaten && tick - game->gameItem5[game->stageLevel].eatenAt < 2000) draw_item_pts(&game->gameItem5[game->stageLevel]);			
 
 
 			if(game->pacman.livesLeft != -1) draw_pacman(&game->pacman);
@@ -320,12 +323,12 @@ void game_render(PacmanGame *game, int tick)
 			if (dt < 2000)
 			{
 				for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
-				draw_board(&game->board);
+				draw_board(&game->board[game->stageLevel]);
 			}
 			else
 			{
 				//stop rendering the pen, and do the flash animation
-				draw_board_flash(&game->board);
+				draw_board_flash(&game->board[game->stageLevel]);
 			}
 
 			break;
@@ -367,12 +370,12 @@ void game_render(PacmanGame *game, int tick)
 				*/
 			}
 
-			draw_large_pellets(&game->pelletHolder, true);
-			draw_board(&game->board);
+			draw_large_pellets(&game->pelletHolder[game->stageLevel], true);
+			draw_board(&game->board[game->stageLevel]);
 			break;
 		case GameoverState:
 			draw_game_gameover();
-			draw_board(&game->board);
+			draw_board(&game->board[game->stageLevel]);
 			draw_credits(num_credits());
 			break;
 	}
@@ -390,6 +393,9 @@ static void enter_state(PacmanGame *game, GameState state)
 			break;
 		case WinState:
 			game->currentLevel++;
+			if(game->stageLevel < STAGE_COUNT -1 ){
+				game->stageLevel++;
+			}
 			game->gameState = LevelBeginState;
 			level_init(game);
 			break;
@@ -409,6 +415,7 @@ static void enter_state(PacmanGame *game, GameState state)
 	switch (state)
 	{
 		case GameBeginState:
+			stop_sound(IntrobgmSound);
 			play_sound(LevelStartSound);
 
 			break;
@@ -418,11 +425,13 @@ static void enter_state(PacmanGame *game, GameState state)
 		case GamePlayState:
 			break;
 		case WinState:
-
+			play_sound(GameoverSound);
 			break;
 		case DeathState:
+			play_sound(PacmanDeathSound);
 			break;
 		case GameoverState:
+			play_sound(GameoverSound);
 			break;
 	}
 
@@ -456,6 +465,7 @@ bool can_move(Pacman *pacman, Board *board, Direction dir)
 
 static void process_player(Pacman *pacman, Board *board, Player player)
 {
+	
 	if (pacman->missedFrames != 0)
 	{
 		pacman->missedFrames--;
@@ -594,7 +604,7 @@ static void process_ghosts(PacmanGame *game)
 			// execute ghost AI logic according to currentLeve
 			execute_ghost_logic(game->currentLevel, g, g->ghostType, &game->ghosts[0], &game->pacman);
 
-			g->nextDirection = next_direction(g, &game->board);
+			g->nextDirection = next_direction(g, &game->board[game->stageLevel]);
 		}
 		else if (result == OverCenter)
 		{
@@ -646,7 +656,7 @@ static void process_missiles(PacmanGame *game)
 			// execute ghost AI logic according to currentLeve
 			execute_missile_logic(game->currentLevel, m, m->missileType, &game->missiles[0], &game->ghosts[0]);
 
-			m->nextDirection = next_direction(m, &game->board);
+			m->nextDirection = next_direction(m, &game->board[game->stageLevel]);
 		}
 		else if (result == OverCenter)
 		{
@@ -663,13 +673,13 @@ static void process_missiles(PacmanGame *game)
 
 static void process_item(PacmanGame *game)
 {
-	int pelletsEaten = game->pelletHolder.totalNum - game->pelletHolder.numLeft;
+	int pelletsEaten = game->pelletHolder[game->stageLevel].totalNum - game->pelletHolder[game->stageLevel].numLeft;
 
-	GameItem *f1 = &game->gameItem1;
-	GameItem *f2 = &game->gameItem2;
-	GameItem *f3 = &game->gameItem3;
-	GameItem *f4 = &game->gameItem4;
-	GameItem *f5 = &game->gameItem5;
+	GameItem *f1 = &game->gameItem1[game->stageLevel];
+	GameItem *f2 = &game->gameItem2[game->stageLevel];
+	GameItem *f3 = &game->gameItem3[game->stageLevel];
+	GameItem *f4 = &game->gameItem4[game->stageLevel];
+	GameItem *f5 = &game->gameItem5[game->stageLevel];
 
 	int curLvl = game->currentLevel;
 
@@ -772,18 +782,21 @@ static void process_item(PacmanGame *game)
 			for (int i = 0; i < 4; i++) {
 				game->ghosts[i].body.velocity = 1;
 				game->ghosts[i].remain = 1000;
+				play_sound(Chomp1Sound);			
 			}
 		}
 		if(f1->item==Tornado) {
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 		}
 		
 		if(f1->item==Ghost_mode) {
             pac->itemOn = true;			
 			pac->protect = 1;
 			pac->itemRemainTime = 150;
+			play_sound(CutsceneSound);
 		}
 	}
 
@@ -817,18 +830,21 @@ static void process_item(PacmanGame *game)
 			for (int i = 0; i < 4; i++) {
 				game->ghosts[i].body.velocity = 1;
 				game->ghosts[i].remain = 1000;
+				play_sound(Chomp1Sound);			
 			}
 		}
 		if(f2->item==Tornado) {
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 		}		
 		
 		if(f2->item==Ghost_mode) {
 			pac->protect = 1;
 			pac->itemRemainTime = 150;
-            pac->itemOn = true;			
+            pac->itemOn = true;
+		play_sound(CutsceneSound);			
 		}		
 	}
 
@@ -862,6 +878,7 @@ static void process_item(PacmanGame *game)
 			for (int i = 0; i < 4; i++) {
 				game->ghosts[i].body.velocity = 1;
 				game->ghosts[i].remain = 1000;
+				play_sound(Chomp1Sound);
 			}
 		}
 		
@@ -869,12 +886,14 @@ static void process_item(PacmanGame *game)
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 		}	
 		
 		if(f3->item==Ghost_mode) {
 			pac->protect = 1;
 			pac->itemRemainTime = 150;
             pac->itemOn = true;			
+		play_sound(CutsceneSound);
 		}				
 	}
 	
@@ -908,6 +927,7 @@ static void process_item(PacmanGame *game)
 			for (int i = 0; i < 4; i++) {
 				game->ghosts[i].body.velocity = 1;
 				game->ghosts[i].remain = 1000;
+				play_sound(Chomp1Sound);
 			}
 		}
 		
@@ -915,12 +935,14 @@ static void process_item(PacmanGame *game)
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 		}
 		
 		if(f4->item==Ghost_mode) {
 			pac->protect = 1;
 			pac->itemRemainTime = 150;
             pac->itemOn = true;
+		play_sound(CutsceneSound);
 		}					
 	}
 	
@@ -954,6 +976,7 @@ static void process_item(PacmanGame *game)
 			for (int i = 0; i < 4; i++) {
 				game->ghosts[i].body.velocity = 1;
 				game->ghosts[i].remain = 1000;
+				play_sound(Chomp1Sound);
 			}
 		}
 	
@@ -961,12 +984,14 @@ static void process_item(PacmanGame *game)
 			pac->itemOn = true;
 			pac->missile = 1;
 			pac->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 		}
 		
 		if(f5->item==Ghost_mode) {
 			pac->protect = 1;
 			pac->itemRemainTime = 150;
-            pac->itemOn = true;			
+            pac->itemOn = true;		
+		play_sound(CutsceneSound);	
 		}			
 	}
 	
@@ -991,25 +1016,29 @@ static void process_item(PacmanGame *game)
 			f1->eatenAt = ticks_game();
 			pac2->score += item_points(f1->item);
 			
-			if(f1->item==Life)
+			if(f1->item==Life) {
 				pac2->livesLeft += 1;
-			
+				play_sound(BonusSound);
+			}
 			if(f1->item==Move_Fast) {
 				pac2->body.velocity = 120;
 				pac2->itemRemainTime = 150;			
 				pac2->itemOn = true;
+				play_sound(BoosterSound);
 			}
 			
 			if(f1->item==Move_Slow) {
 				pac2->body.velocity = 60;
 				pac2->itemRemainTime = 150;			
 	            pac2->itemOn = true;
+	            play_sound(Munch_Bsound);
 			}	
 				
 			if(f1->item==Prof){
 			for (int i = 0; i < 4; i++) {
 				game->ghosts[i].body.velocity = 1;
 				game->ghosts[i].remain = 1000;
+				play_sound(Chomp1Sound);
 			}
 		}
 
@@ -1017,14 +1046,16 @@ static void process_item(PacmanGame *game)
 			pac2->itemOn = true;
 			pac2->missile2 = 1;
 			pac2->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 			}
 			
 			if(f1->item==Ghost_mode) {
 			pac2->protect = 1;
 			pac2->itemRemainTime = 150;
             pac2->itemOn = true;	
+            play_sound(CutsceneSound);
 		}
-		}
+	}
 
 		if (f2->itemMode == Displaying && collides_obj(&pac2->body, f2->x, f2->y))
 		{
@@ -1032,41 +1063,48 @@ static void process_item(PacmanGame *game)
 			f2->eaten = true;
 			f2->eatenAt = ticks_game();
 			pac2->score += item_points(f2->item);
-			
-			if(f2->item==Life)
-				pac2->livesLeft += 1;
 				
+			if(f1->item==Life) {
+				pac2->livesLeft += 1;
+				play_sound(BonusSound);
+			}
 			if(f2->item==Move_Fast) {
-				pac2->body.velocity = 120;	
+				pac2->body.velocity = 120;
 				pac2->itemRemainTime = 150;			
 				pac2->itemOn = true;
+				play_sound(BoosterSound);
 			}
 			
 			if(f2->item==Move_Slow) {
 				pac2->body.velocity = 60;
 				pac2->itemRemainTime = 150;			
 	            pac2->itemOn = true;
-			}
-
+	            play_sound(Munch_Bsound);
+			}	
+				
 			if(f2->item==Prof){
 			for (int i = 0; i < 4; i++) {
 				game->ghosts[i].body.velocity = 1;
 				game->ghosts[i].remain = 1000;
+				play_sound(Chomp1Sound);
+				}
 			}
-		}
 
 			if(f2->item==Tornado) {
 			pac2->itemOn = true;
 			pac2->missile2 = 1;
 			pac2->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 			}
 			
 			if(f2->item==Ghost_mode) {
 			pac2->protect = 1;
 			pac2->itemRemainTime = 150;
-            pac2->itemOn = true;
+            pac2->itemOn = true;	
+            play_sound(CutsceneSound);
+			}
 		}					
-		}
+		
 
 		if (f3->itemMode == Displaying && collides_obj(&pac2->body, f3->x, f3->y))
 		{
@@ -1074,40 +1112,46 @@ static void process_item(PacmanGame *game)
 			f3->eaten = true;
 			f3->eatenAt = ticks_game();
 			pac2->score += item_points(f3->item);
-			
-			if(f3->item==Life)
-				pac2->livesLeft += 1;
 				
+			if(f3->item==Life) {
+				pac2->livesLeft += 1;
+				play_sound(BonusSound);
+			}
 			if(f3->item==Move_Fast) {
 				pac2->body.velocity = 120;
 				pac2->itemRemainTime = 150;			
-	            pac2->itemOn = true;
+				pac2->itemOn = true;
+				play_sound(BoosterSound);
 			}
-
+			
 			if(f3->item==Move_Slow) {
 				pac2->body.velocity = 60;
 				pac2->itemRemainTime = 150;			
 	            pac2->itemOn = true;
-			}
-			
+	            play_sound(Munch_Bsound);
+			}	
+				
 			if(f3->item==Prof){
 			for (int i = 0; i < 4; i++) {
 				game->ghosts[i].body.velocity = 1;
 				game->ghosts[i].remain = 1000;
+				play_sound(Chomp1Sound);
+				}
 			}
-		}
-		
+
 			if(f3->item==Tornado) {
 			pac2->itemOn = true;
 			pac2->missile2 = 1;
 			pac2->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 			}
 			
 			if(f3->item==Ghost_mode) {
 			pac2->protect = 1;
 			pac2->itemRemainTime = 150;
-            pac2->itemOn = true;
-		}					
+            pac2->itemOn = true;	
+            play_sound(CutsceneSound);
+			}	
 		}
 		
 		if (f4->itemMode == Displaying && collides_obj(&pac2->body, f4->x, f4->y))
@@ -1116,40 +1160,46 @@ static void process_item(PacmanGame *game)
 			f4->eaten = true;
 			f4->eatenAt = ticks_game();
 			pac2->score += item_points(f4->item);
-			
-			if(f4->item==Life)
+					
+			if(f4->item==Life) {
 				pac2->livesLeft += 1;
-				
+				play_sound(BonusSound);
+			}
 			if(f4->item==Move_Fast) {
 				pac2->body.velocity = 120;
-				pac2->itemRemainTime = 150;
-	            pac2->itemOn = true;						
+				pac2->itemRemainTime = 150;			
+				pac2->itemOn = true;
+				play_sound(BoosterSound);
 			}
 			
 			if(f4->item==Move_Slow) {
 				pac2->body.velocity = 60;
 				pac2->itemRemainTime = 150;			
-	            pac2->itemOn = true;		
-			}
-			
+	            pac2->itemOn = true;
+	            play_sound(Munch_Bsound);
+			}	
+				
 			if(f4->item==Prof){
 			for (int i = 0; i < 4; i++) {
 				game->ghosts[i].body.velocity = 1;
 				game->ghosts[i].remain = 1000;
+				play_sound(Chomp1Sound);
+				}
 			}
-		}
-			
+
 			if(f4->item==Tornado) {
 			pac2->itemOn = true;
 			pac2->missile2 = 1;
 			pac2->itemRemainTime = 400;
-			}	
+			play_sound(Chomp2Sound);
+			}
 			
 			if(f4->item==Ghost_mode) {
 			pac2->protect = 1;
 			pac2->itemRemainTime = 150;
-            pac2->itemOn = true;
-		}				
+            pac2->itemOn = true;	
+            play_sound(CutsceneSound);
+			}	
 		}
 		
 		if (f5->itemMode == Displaying && collides_obj(&pac2->body, f5->x, f5->y))
@@ -1159,42 +1209,47 @@ static void process_item(PacmanGame *game)
 			f5->eatenAt = ticks_game();
 			pac2->score += item_points(f5->item);
 			
-			if(f5->item==Life)
+			if(f5->item==Life) {
 				pac2->livesLeft += 1;
-				
+				play_sound(BonusSound);
+			}
 			if(f5->item==Move_Fast) {
 				pac2->body.velocity = 120;
 				pac2->itemRemainTime = 150;			
-	            pac2->itemOn = true;		
+				pac2->itemOn = true;
+				play_sound(BoosterSound);
 			}
 			
 			if(f5->item==Move_Slow) {
 				pac2->body.velocity = 60;
 				pac2->itemRemainTime = 150;			
-	            pac2->itemOn = true;		
-			}
-
+	            pac2->itemOn = true;
+	            play_sound(Munch_Bsound);
+			}	
+				
 			if(f5->item==Prof){
 			for (int i = 0; i < 4; i++) {
 				game->ghosts[i].body.velocity = 1;
 				game->ghosts[i].remain = 1000;
+				play_sound(Chomp1Sound);
+				}
 			}
-		}
-			
+
 			if(f5->item==Tornado) {
 			pac2->itemOn = true;
 			pac2->missile2 = 1;
 			pac2->itemRemainTime = 400;
+			play_sound(Chomp2Sound);
 			}
 			
 			if(f5->item==Ghost_mode) {
 			pac2->protect = 1;
 			pac2->itemRemainTime = 150;
-            pac2->itemOn = true;		
-		}					
+            pac2->itemOn = true;	
+            play_sound(CutsceneSound);
+			}
 		}
 	}
-
 }
 
 static void process_pellets(PacmanGame *game)
@@ -1205,7 +1260,8 @@ static void process_pellets(PacmanGame *game)
 	//set pellet to not be active
 	//decrease num of alive pellets
 	
-	PelletHolder *holder = &game->pelletHolder;
+	PelletHolder *holder = &game->pelletHolder[game->stageLevel];
+	
 
 	for (int i = 0; i < holder->totalNum; i++)
 	{
@@ -1213,10 +1269,12 @@ static void process_pellets(PacmanGame *game)
 
 		//skip if we've eaten this one already
 		if (p->eaten) continue;
-
+		bool flag = false;
 		if (collides_obj(&game->pacman.body, p->x, p->y))
 		{
+			flag = true;
 			holder->numLeft--;
+			// printf("numLeft : %d\n", holder->numLeft);
 
 			p->eaten = true;
 			game->pacman.score += pellet_points(p);
@@ -1238,12 +1296,12 @@ static void process_pellets(PacmanGame *game)
 			game->pacman.missedFrames = pellet_nop_frames(p);
 			game->pacman_enemy.missedFrames = pellet_nop_frames(p);
 			//can only ever eat 1 pellet in a frame, so return
-			return;
+			// return;
 		}
-		if (collides_obj(&game->pacman_enemy.body, p->x, p->y))
+		if (collides_obj(&game->pacman_enemy.body, p->x, p->y) && flag == false)
 		{
 			holder->numLeft--;
-
+			// printf("numLeft : %d\n", holder->numLeft);
 			p->eaten = true;
 			game->pacman_enemy.score += pellet_points(p);
 			if(pellet_check(p)) {
@@ -1258,14 +1316,15 @@ static void process_pellets(PacmanGame *game)
 			}
 
 			//play eat sound
-
+			
+			play_sound(SmallSound);
 			//eating a small pellet makes pacman not move for 1 frame
 			//eating a large pellet makes pacman not move for 3 frames
 			game->pacman.missedFrames = pellet_nop_frames(p);
 			game->pacman_enemy.missedFrames = pellet_nop_frames(p);
 
 			//can only ever eat 1 pellet in a frame, so return
-			return;
+			// return;
 		}
 	}
 	
@@ -1291,7 +1350,6 @@ static bool check_pacghost_collision(PacmanGame *game)
 		if(pac->protect == 0 && pac->livesLeft != -1) {
 			if (collides(&game->pacman.body, &g->body)) {
 				if(game->pacman.godMode == false){
-					play_sound(DieSound);
 					death_player = One;
 					game->death_player = One;
 					return true;
@@ -1377,6 +1435,7 @@ void gamestart_init(PacmanGame *game, int mode)
 	//fuit_init();
 	game->highscore = 0; //TODO maybe load this in from a file..?
 	game->currentLevel = 1;
+	game->stageLevel = 0;
 
 	//invalidate the state so it doesn't effect the enter_state function
 	game->gameState = -1;
@@ -1390,17 +1449,17 @@ void level_init(PacmanGame *game)
 	if(game->mode != SoloState) pacman_level_init(&game->pacman_enemy);
 	
 	//reset pellets
-	pellets_init(&game->pelletHolder);
+	pellets_init(&game->pelletHolder[game->stageLevel]);
 	missiles_init(game->missiles);
 	//reset ghosts
 	ghosts_init(game->ghosts);
 
 	//reset fruit
-	reset_item(&game->gameItem1, &game->board);
-	reset_item(&game->gameItem2, &game->board);
-	reset_item(&game->gameItem3, &game->board);
-	reset_item(&game->gameItem4, &game->board);
-	reset_item(&game->gameItem5, &game->board);
+	reset_item(&game->gameItem1[game->stageLevel], &game->board[game->stageLevel]);
+	reset_item(&game->gameItem2[game->stageLevel], &game->board[game->stageLevel]);
+	reset_item(&game->gameItem3[game->stageLevel], &game->board[game->stageLevel]);
+	reset_item(&game->gameItem4[game->stageLevel], &game->board[game->stageLevel]);
+	reset_item(&game->gameItem5[game->stageLevel], &game->board[game->stageLevel]);
 
 }
 
@@ -1410,11 +1469,11 @@ void pacdeath_init(PacmanGame *game)
 	if(game->mode != SoloState) pacman_level_init(&game->pacman_enemy);
 	ghosts_init(game->ghosts);
 	missiles_init(game->missiles);
-	reset_item(&game->gameItem1, &game->board);
-	reset_item(&game->gameItem2, &game->board);
-	reset_item(&game->gameItem3, &game->board);
-	reset_item(&game->gameItem4, &game->board);
-	reset_item(&game->gameItem5, &game->board);
+	reset_item(&game->gameItem1[game->stageLevel], &game->board[game->stageLevel]);
+	reset_item(&game->gameItem2[game->stageLevel], &game->board[game->stageLevel]);
+	reset_item(&game->gameItem3[game->stageLevel], &game->board[game->stageLevel]);
+	reset_item(&game->gameItem4[game->stageLevel], &game->board[game->stageLevel]);
+	reset_item(&game->gameItem5[game->stageLevel], &game->board[game->stageLevel]);
 
 }
 
