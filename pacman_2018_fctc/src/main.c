@@ -104,11 +104,13 @@ static void copy_pacmanGame_info(PacmanGame *game){
 		pacmanGame.ghosts[i] = pac->ghosts[i];
 	}
 	
+
 	pacmanGame.gameItem1[game->stageLevel] = pac->gameItem1[game->stageLevel];
 	pacmanGame.gameItem2[game->stageLevel] = pac->gameItem2[game->stageLevel];
 	pacmanGame.gameItem3[game->stageLevel] = pac->gameItem3[game->stageLevel];
 	pacmanGame.gameItem4[game->stageLevel] = pac->gameItem4[game->stageLevel];
 	pacmanGame.gameItem5[game->stageLevel] = pac->gameItem5[game->stageLevel];
+
 					
 	pacmanGame.pelletHolder[game->stageLevel].numLeft = pac->pelletHolder[game->stageLevel].numLeft;
 	pacmanGame.pelletHolder[game->stageLevel].totalNum = pac->pelletHolder[game->stageLevel].totalNum;
@@ -243,9 +245,11 @@ static void internal_render(void)
 static void game_init(void)
 {
 	//Load the board here. We only need to do it once
-	load_board(&pacmanGame.board[0], &pacmanGame.pelletHolder[0], "maps/stage4_map");
+	load_board(&pacmanGame.board[0], &pacmanGame.pelletHolder[0], "maps/stage1_map");
 	load_board(&pacmanGame.board[1], &pacmanGame.pelletHolder[1], "maps/stage2_map");
 	load_board(&pacmanGame.board[2], &pacmanGame.pelletHolder[2], "maps/stage3_map");
+	load_board(&pacmanGame.board[3], &pacmanGame.pelletHolder[3], "maps/stage4_map");
+	load_board(&pacmanGame.board[4], &pacmanGame.pelletHolder[4], "maps/boss_map");
 	
 
 	//set to be in menu
