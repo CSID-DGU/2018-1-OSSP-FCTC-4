@@ -241,12 +241,16 @@ static void internal_render(void)
 
 static void game_init(void)
 {
+	char * mapList[4] = {"maps/boss_map", "maps/stage2_map", "maps/map1test", "maps/stage1_map"};
+	int i;
 	//Load the board here. We only need to do it once
-	load_board(&pacmanGame.board[0], &pacmanGame.pelletHolder[3], "maps/stage1_map");
-	load_board(&pacmanGame.board[1], &pacmanGame.pelletHolder[1], "maps/stage2_map");
-	load_board(&pacmanGame.board[2], &pacmanGame.pelletHolder[2], "maps/boss_map");
-	load_board(&pacmanGame.board[0], &pacmanGame.pelletHolder[0], "maps/map1test");
-	
+	for(i=0; i<STAGE_COUNT-1; i++){
+		load_board(&pacmanGame.board[i], &pacmanGame.pelletHolder[i], mapList[i]);
+	}
+	// load_board(&pacmanGame.board[1], &pacmanGame.pelletHolder[1], "maps/boss_map");
+	// load_board(&pacmanGame.board[2], &pacmanGame.pelletHolder[2], "maps/stage2_map");
+	// load_board(&pacmanGame.board[0], &pacmanGame.pelletHolder[0], "maps/map1test");
+	// load_board(&pacmanGame.board[3], &pacmanGame.pelletHolder[3], "maps/stage1_map");
 
 	//set to be in menu
 	state = Menu;

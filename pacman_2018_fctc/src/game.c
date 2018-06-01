@@ -13,6 +13,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define BOSS_STAGE 0
+
 static void process_item(PacmanGame *game);
 static void process_player(Pacman *pacman, Board *board, Player player);
 //static void process_fruit(PacmanGame *game);
@@ -196,6 +198,7 @@ void game_render(PacmanGame *game, int tick)
 			//if(game->mode != SoloState) draw_pacman2_static(&game->pacman_enemy);
 			
 			for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
+			if(game->stageLevel == BOSS_STAGE) draw_ghost(&game->ghosts[4]);
 			
 			draw_large_pellets(&game->pelletHolder[game->stageLevel], false);
 			draw_board(&game->board[game->stageLevel]);
@@ -230,6 +233,8 @@ void game_render(PacmanGame *game, int tick)
 					} else
 						draw_ghost(&game->ghosts[i]);
 				}
+				if(game->stageLevel == BOSS_STAGE) draw_ghost(&game->ghosts[4]);
+
 				if(pac->missile == 1)	
 					for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);
 			}
@@ -255,6 +260,7 @@ void game_render(PacmanGame *game, int tick)
 							game->ghosts[i].isDead = 0;
 					}
 				}
+				if(game->stageLevel == BOSS_STAGE) draw_ghost(&game->ghosts[4]);
 				if(pac->missile == 1)					
 					for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);				
 			}
@@ -272,6 +278,8 @@ void game_render(PacmanGame *game, int tick)
 							} else
 								draw_ghost(&game->ghosts[i]);
 						}
+						if(game->stageLevel == BOSS_STAGE) draw_ghost(&game->ghosts[4]);
+
 						if(pac->missile == 1)					
 							for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);				
 							
@@ -296,6 +304,7 @@ void game_render(PacmanGame *game, int tick)
 									game->ghosts[i].isDead = 0;
 							}
 						}
+						if(game->stageLevel == BOSS_STAGE) draw_ghost(&game->ghosts[4]);
 						if(pac->missile == 1)					
 							for (int i = 0; i < 2; i++) draw_missile(&game->missiles[i]);				
 					}
@@ -313,6 +322,7 @@ void game_render(PacmanGame *game, int tick)
 			if (dt < 2000)
 			{
 				for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
+				if(game->stageLevel == BOSS_STAGE) draw_ghost(&game->ghosts[4]);
 				draw_board(&game->board[game->stageLevel]);
 			}
 			else
@@ -336,6 +346,7 @@ void game_render(PacmanGame *game, int tick)
 				//if(game->mode != SoloState) draw_pacman2_static(&game->pacman_enemy);
 
 				for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
+				if(game->stageLevel == BOSS_STAGE) draw_ghost(&game->ghosts[4]);
 			}
 			else
 			{
@@ -554,7 +565,10 @@ static void process_player(Pacman *pacman, Board *board, Player player)
 
 static void process_ghosts(PacmanGame *game)
 {
-	for (int i = 0; i < 4; i++)
+	int numOfGhosts = 4;
+	if(game->stageLevel == BOSS_STAGE) numOfGhosts = 5;
+	
+	for (int i = 0; i < numOfGhosts; i++)
 	{
 		Ghost *g = &game->ghosts[i];
 
@@ -1282,19 +1296,22 @@ static void process_pellets(PacmanGame *game)
 
 static bool check_pacghost_collision(PacmanGame *game)
 {
-	for (int i = 0; i < 4; i++)
+	int numOfGhosts = 4;
+	if(game->stageLevel == BOSS_STAGE) numOfGhosts = 5;
+	for (int i = 0; i < numOfGhosts; i++)
 	{
 		Ghost *g = &game->ghosts[i];
 		Pacman *pac = &game->pacman;
 		
-		/*
+		
 		switch(g->ghostType) {
 		case Blinky : printf("red : %d \n", g->isDead); break;
 		case Inky   : printf("blue : %d \n", g->isDead); break;
 		case Clyde  : printf("orange : %d \n", g->isDead); break;
 		case Pinky  : printf("pink : %d \n", g->isDead); break;
+		case Boss  : printf("boss : %d \n", g->isDead); break;
 		}
-		*/
+		
 		
 		if(pac->protect == 0 && pac->livesLeft != -1) {
 			if (collides(&game->pacman.body, &g->body)) {
@@ -1343,21 +1360,21 @@ static bool check_ghomissile_collision(PacmanGame *game)
 			Missile *m = &game->missiles[i];
 			Ghost *g = &game->ghosts[j];
 		
-		/*
-		switch(g->ghostType) {
-		case Blinky : printf("red : %d \n", g->isDead); break;
-		case Inky   : printf("blue : %d \n", g->isDead); break;
-		case Clyde  : printf("orange : %d \n", g->isDead); break;
-		case Pinky  : printf("pink : %d \n", g->isDead); break;
+			/*
+			switch(g->ghostType) {
+			case Blinky : printf("red : %d \n", g->isDead); break;
+			case Inky   : printf("blue : %d \n", g->isDead); break;
+			case Clyde  : printf("orange : %d \n", g->isDead); break;
+			case Pinky  : printf("pink : %d \n", g->isDead); break;
+			}
+			*/
+
+			if (collides(&game->ghosts[j].body, &m->body)) {
+				game->ghosts[j].isDead = 1;
+				game->missiles[i].isDead = 1;
+			}
 		}
-		*/
-		
-		if (collides(&game->ghosts[j].body, &m->body)) {
-			game->ghosts[j].isDead = 1;
-			game->missiles[i].isDead = 1;
-		}
-}
-}
+	}
 	return false;
 }
 
@@ -1392,6 +1409,7 @@ void level_init(PacmanGame *game)
 	if(game->mode != SoloState) pacman_level_init(&game->pacman_enemy);
 	
 	//reset pellets
+	printf("level_init : %d\n", game->stageLevel);
 	pellets_init(&game->pelletHolder[game->stageLevel]);
 	missiles_init(game->missiles);
 	//reset ghosts

@@ -23,6 +23,7 @@
 #define PINK_DIR "pink/"
 #define CYAN_DIR "cyan/"
 #define ORANGE_DIR "orange/"
+#define BOSS_DIR "boss/"
 
 #define EYES_DIR "eyes/"
 #define SCARED_DIR "scared/"
@@ -96,8 +97,9 @@ SDL_Surface *pacmanLifeIcon2;
 //ghost sprites
 //
 
+const int NUM_OF_GHOSTS = 5;
 //ghosts have 4 colors * 2 images for main animatino
-SDL_Surface *ghosts[4][4][2];
+SDL_Surface *ghosts[5][4][2];
 
 SDL_Surface *missiles[2][4][2];
 
@@ -400,6 +402,8 @@ const char *red_dir = DIR ENTITIES_DIR GHOST_DIR RED_DIR;
 const char *pink_dir = DIR ENTITIES_DIR GHOST_DIR PINK_DIR;
 const char *cyan_dir = DIR ENTITIES_DIR GHOST_DIR CYAN_DIR;
 const char *orange_dir = DIR ENTITIES_DIR GHOST_DIR ORANGE_DIR;
+const char *boss_dir = DIR ENTITIES_DIR GHOST_DIR BOSS_DIR;
+
 
 const char *one_dir = DIR ENTITIES_DIR MISSILE_DIR;
 const char *two_dir = DIR ENTITIES_DIR MISSILE_DIR;
@@ -412,6 +416,7 @@ const char *get_ghost_dir(GhostType type)
 		case Inky:   return cyan_dir;
 		case Pinky:  return pink_dir;
 		case Clyde:  return orange_dir;
+		case Boss :  return boss_dir;
 	}
 
 	return NULL;
@@ -431,7 +436,7 @@ void load_ghost_images(void)
 {
 	char dirStr[256];
 
-	for (int col = 0; col < 4; col++)
+	for (int col = 0; col < NUM_OF_GHOSTS; col++)
 	{
 		for (int i = 0; i < 2; i++)
 		{

@@ -42,7 +42,7 @@ typedef struct
 	unsigned int ticksSinceModeChange;
 	Pacman pacman;
 	Pacman pacman_enemy;
-	Ghost ghosts[4];
+	Ghost ghosts[5];
 	Missile missiles[2];
 	Board board[STAGE_COUNT];
 	PelletHolder pelletHolder[STAGE_COUNT];

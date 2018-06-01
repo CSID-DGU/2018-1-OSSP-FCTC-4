@@ -6,7 +6,7 @@ void pellets_init(PelletHolder *pelletHolder)
 	{
 		pelletHolder->pellets[i].eaten = false;
 	}
-
+	printf("pellets_init : %d\n", pelletHolder->pelletNumOfCurrentMap);
 	pelletHolder->numLeft = pelletHolder->pelletNumOfCurrentMap;
 	pelletHolder->totalNum = pelletHolder->pelletNumOfCurrentMap;
 }
