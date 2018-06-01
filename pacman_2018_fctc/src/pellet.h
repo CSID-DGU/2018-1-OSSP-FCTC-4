@@ -24,6 +24,7 @@ typedef struct
 //Holds all the pellets in the game. Records how many are eaten and are left.
 typedef struct
 {
+	int pelletNumOfCurrentMap;
 	int numLeft;
 	int totalNum;
 	Pellet pellets[NUM_PELLETS];

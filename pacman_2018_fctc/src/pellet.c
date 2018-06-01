@@ -3,13 +3,13 @@
 
 void pellets_init(PelletHolder *pelletHolder)
 {
-	for (int i = 0; i < NUM_PELLETS; i++)
+	for (int i = 0; i < pelletHolder->pelletNumOfCurrentMap; i++)
 	{
 		pelletHolder->pellets[i].eaten = false;
 	}
 
-	pelletHolder->numLeft = NUM_PELLETS;
-	pelletHolder->totalNum = NUM_PELLETS;
+	pelletHolder->numLeft = pelletHolder->pelletNumOfCurrentMap;
+	pelletHolder->totalNum = pelletHolder->pelletNumOfCurrentMap;
 }
 
 int pellet_points(Pellet *pellet)
