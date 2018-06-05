@@ -95,6 +95,7 @@ static void copy_pacmanGame_info(PacmanGame *game){
 	pacmanGame.highscore = pac->highscore;
 	pacmanGame.currentLevel = pac->currentLevel;
 	pacmanGame.mode = pac->mode;
+	pacmanGame.stageLevel = pac->stageLevel;
 	
 	pacmanGame.pacman = pac->pacman;
 	pacmanGame.pacman_enemy = pac->pacman_enemy;
@@ -241,10 +242,10 @@ static void internal_render(void)
 
 static void game_init(void)
 {
-	char * mapList[4] = {"maps/boss_map", "maps/stage2_map", "maps/map1test", "maps/stage1_map"};
+	char * mapList[4] = {"maps/stage2_map", "maps/boss_map", "maps/map1test", "maps/stage1_map"};
 	int i;
 	//Load the board here. We only need to do it once
-	for(i=0; i<STAGE_COUNT-1; i++){
+	for(i=0; i<STAGE_COUNT-4; i++){
 		load_board(&pacmanGame.board[i], &pacmanGame.pelletHolder[i], mapList[i]);
 	}
 	// load_board(&pacmanGame.board[1], &pacmanGame.pelletHolder[1], "maps/boss_map");
