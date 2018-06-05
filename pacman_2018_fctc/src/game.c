@@ -1304,13 +1304,13 @@ static bool check_pacghost_collision(PacmanGame *game)
 		Pacman *pac = &game->pacman;
 		
 		
-		switch(g->ghostType) {
-		case Blinky : printf("red : %d \n", g->isDead); break;
-		case Inky   : printf("blue : %d \n", g->isDead); break;
-		case Clyde  : printf("orange : %d \n", g->isDead); break;
-		case Pinky  : printf("pink : %d \n", g->isDead); break;
-		case Boss  : printf("boss : %d \n", g->isDead); break;
-		}
+		// switch(g->ghostType) {
+		// case Blinky : printf("red : %d \n", g->isDead); break;
+		// case Inky   : printf("blue : %d \n", g->isDead); break;
+		// case Clyde  : printf("orange : %d \n", g->isDead); break;
+		// case Pinky  : printf("pink : %d \n", g->isDead); break;
+		// case Boss  : printf("boss : %d \n", g->isDead); break;
+		// }
 		
 		
 		if(pac->protect == 0 && pac->livesLeft != -1) {

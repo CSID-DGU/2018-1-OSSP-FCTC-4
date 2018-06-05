@@ -99,7 +99,7 @@ static void copy_pacmanGame_info(PacmanGame *game){
 	pacmanGame.pacman = pac->pacman;
 	pacmanGame.pacman_enemy = pac->pacman_enemy;
 	
-	for(int i=0; i<4; i++) {
+	for(int i=0; i<5; i++) {
 		pacmanGame.ghosts[i] = pac->ghosts[i];
 	}
 	
