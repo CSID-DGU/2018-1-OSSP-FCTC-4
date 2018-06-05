@@ -16,6 +16,7 @@
 #include "sound.h"
 #include "text.h"
 #include "window.h"
+#include "pellet.h"
 // Remote Play 모드에서 정보를 받아옴
 static void copy_pacmanGame_info(PacmanGame *game);
 
@@ -244,10 +245,11 @@ static void internal_render(void)
 static void game_init(void)
 {
 	//Load the board here. We only need to do it once
-	load_board(&pacmanGame.board[0], &pacmanGame.pelletHolder[3], "maps/stage1_map");
+	load_board(&pacmanGame.board[0], &pacmanGame.pelletHolder[0], "maps/stage1_map");
 	load_board(&pacmanGame.board[1], &pacmanGame.pelletHolder[1], "maps/stage2_map");
-	load_board(&pacmanGame.board[2], &pacmanGame.pelletHolder[2], "maps/boss_map");
-	load_board(&pacmanGame.board[0], &pacmanGame.pelletHolder[0], "maps/map1test");
+	load_board(&pacmanGame.board[2], &pacmanGame.pelletHolder[2], "maps/stage3_map");
+	load_board(&pacmanGame.board[3], &pacmanGame.pelletHolder[3], "maps/stage4_map");
+	load_board(&pacmanGame.board[4], &pacmanGame.pelletHolder[4], "maps/boss_map");
 	
 
 	//set to be in menu

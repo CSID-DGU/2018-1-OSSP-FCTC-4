@@ -118,8 +118,10 @@ void game_tick(PacmanGame *game)
 		case LevelBeginState:
 			if (dt > 1800) enter_state(game, GamePlayState);
 			game->pacman.godMode = false;
-			if(game->mode != SoloState) game->pacman_enemy.godMode = false;
-
+			if(game->mode != SoloState) {
+				game->pacman_enemy.godMode = false;
+				enter_state(game, GamePlayState);
+			}
 			break;
 		case GamePlayState:
 
@@ -398,6 +400,17 @@ static void enter_state(PacmanGame *game, GameState state)
 			}
 			game->gameState = LevelBeginState;
 			level_init(game);
+
+			if(game->mode != SoloState){
+			game->currentLevel++;
+			if(game->stageLevel < STAGE_COUNT -1 ){
+				game->stageLevel++;
+			}
+			game->gameState = LevelBeginState;
+			level_init(game);
+
+
+			}
 			break;
 		case DeathState:
 			// Player died and is starting a new game, subtract a life
@@ -1300,6 +1313,7 @@ static void process_pellets(PacmanGame *game)
 		}
 		if (collides_obj(&game->pacman_enemy.body, p->x, p->y) && flag == false)
 		{
+
 			holder->numLeft--;
 			// printf("numLeft : %d\n", holder->numLeft);
 			p->eaten = true;
