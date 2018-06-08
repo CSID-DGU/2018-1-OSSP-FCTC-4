@@ -27,7 +27,8 @@ typedef struct
 	int pelletNumOfCurrentMap;
 	int numLeft;
 	int totalNum;
-	Pellet pellets[NUM_PELLETS];
+	// Pellet pellets[NUM_PELLETS];
+	Pellet pellets[294];
 } PelletHolder;
 
 //Inits the pellets to non-eaten, and resets the pellet counters.

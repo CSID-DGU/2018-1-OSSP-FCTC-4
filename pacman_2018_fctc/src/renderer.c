@@ -270,7 +270,8 @@ void draw_pellet_power(Pellet *p, bool flashing)
 
 void draw_small_pellets(PelletHolder *ph)
 {
-	for (int i = 0; i < NUM_PELLETS; i++)
+	// for (int i = 0; i < NUM_PELLETS; i++)
+	for(int i=0; i<294; i++)
 	{
 		Pellet p = ph->pellets[i];
 
@@ -287,7 +288,8 @@ void draw_large_pellets(PelletHolder *ph, bool flashing)
 	//this comes out to 166.666 ms
 	int frame = animation_get_frame(167, 2);
 
-	for (int i = 0; i < NUM_PELLETS; i++)
+	// for (int i = 0; i < NUM_PELLETS; i++)
+	for(int i=0; i<294; i++)
 	{
 		Pellet p = ph->pellets[i];
 
