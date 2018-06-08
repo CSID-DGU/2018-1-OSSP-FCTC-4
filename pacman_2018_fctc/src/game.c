@@ -460,6 +460,9 @@ static void enter_state(PacmanGame *game, GameState state)
 	}
 
 	//process entering a state
+	
+	bool allPelletsEaten = game->pelletHolder[game->stageLevel].numLeft == 0;
+
 	switch (state)
 	{
 		case GameBeginState:
@@ -471,6 +474,10 @@ static void enter_state(PacmanGame *game, GameState state)
 			
 			break;
 		case GamePlayState:
+			if(game->stageLevel == 4){
+				play_sound(BossSound);
+				//if(allPelletsEaten) stop_sound(BossSound);
+			}
 			break;
 		case WinState:
 			play_sound(GameoverSound);
@@ -488,7 +495,8 @@ static void enter_state(PacmanGame *game, GameState state)
 			level_init(game);
 			break;
 		case ClearState:
-			play_sound(IntrobgmSound);
+			stop_sound(BossSound);
+			play_sound(EndingbgmSound);
 			break;
 	}
 

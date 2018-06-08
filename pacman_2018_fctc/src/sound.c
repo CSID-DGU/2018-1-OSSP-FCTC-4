@@ -29,6 +29,8 @@ static Mix_Chunk *cutsceneSound;
 static Mix_Chunk *coinSound;
 static Mix_Chunk *gameoverSound;
 static Mix_Chunk *introbgmSound;
+static Mix_Chunk *bossSound;
+static Mix_Chunk *endingbgmSound;
 
 static int levelStartChanel;
 static int smallStartChanel;
@@ -70,6 +72,9 @@ void load_sounds(void)
         coinSound = Mix_LoadWAV("sound/coin.wav");
         gameoverSound = Mix_LoadWAV("sound/game_over.wav");
         introbgmSound = Mix_LoadWAV("sound/introBGM.wav");
+        bossSound = Mix_LoadWAV("sound/Eyes_of_Glory.wav");
+        endingbgmSound = Mix_LoadWAV("sound/Parkside.wav");
+	
         set_sound_volume(0.5);
         set_sound_muted(false);
   }
@@ -144,6 +149,8 @@ void play_sound(SoundEffect effectName)
                 case GameoverSound:  chunk = gameoverSound;  channel = &levelStartChanel; break;
                 case PacmanDeathSound: chunk = deathSound; channel = &levelStartChanel; break;
                 case IntrobgmSound:  chunk = introbgmSound;  channel = &levelStartChanel; break;
+                case BossSound:  chunk = bossSound;  channel = &levelStartChanel; break;
+                case EndingbgmSound:  chunk = endingbgmSound;  channel = &levelStartChanel; break;
 	}
         *channel = Mix_PlayChannel(-1, chunk, 0);
 }
@@ -176,6 +183,8 @@ void stop_sound(SoundEffect effectName)
                 case GameoverSound:    channel = &levelStartChanel; break;
                 case PacmanDeathSound: channel = levelStartChanel; break;
                 case IntrobgmSound: channel = levelStartChanel; break;
+                case BossSound: channel = levelStartChanel; break;
+                case EndingbgmSound: channel = levelStartChanel; break;
 		
                 default: printf("badsound\naborting\n"); exit(1); //TODO: fix this up
 
