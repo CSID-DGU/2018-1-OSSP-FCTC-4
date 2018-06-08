@@ -415,6 +415,7 @@ void game_render(PacmanGame *game, int tick)
 		case ClearState:
 			draw_game_clear();
 			for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
+			process_ghosts(game);
 			draw_board(&game->board[game->stageLevel]);
 			draw_credits(num_credits());
 			break;
