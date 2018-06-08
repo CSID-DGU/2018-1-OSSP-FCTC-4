@@ -34,7 +34,6 @@ void game_tick(PacmanGame *game)
 	Pacman *pac = &game->pacman;
 	Pacman *pac2 = &game->pacman_enemy;
 
-
 	// printf("life: %d / %d\n",game->pacman.livesLeft,game->pacman_enemy.livesLeft);
 
 	unsigned dt = ticks_game() - game->ticksSinceModeChange;
@@ -420,16 +419,6 @@ static void enter_state(PacmanGame *game, GameState state)
 			game->gameState = LevelBeginState;
 			level_init(game);
 
-			if(game->mode != SoloState){
-			game->currentLevel++;
-			if(game->stageLevel < STAGE_COUNT -1 ){
-				game->stageLevel++;
-			}
-			game->gameState = LevelBeginState;
-			level_init(game);
-
-
-			}
 			break;
 		case DeathState:
 			// Player died and is starting a new game, subtract a life

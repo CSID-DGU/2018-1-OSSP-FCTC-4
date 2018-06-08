@@ -145,12 +145,12 @@ static void copy_pacmanGame_info(void){
 	
 	pacmanGame.pacman = pac_socket->pacman;
 	pacmanGame.pacman_enemy = pac_socket->pacman_enemy;
-	
+
 	for(int i=0; i<4; i++) {
-		pacmanGame.ghosts[i] = pac->ghosts[i];
+		pacmanGame.ghosts[i] = pac_socket->ghosts[i];
 	}
-	if(pacmanGame.stageLevel == BOSS_STAGE) pacmanGame.ghosts[4] = pac->ghosts[4];
-	
+	if(pacmanGame.stageLevel == BOSS_STAGE) pacmanGame.ghosts[4] = pac_socket->ghosts[4];
+
 	pacmanGame.gameItem1[pacmanGame.stageLevel] = pac_socket->gameItem1;
 	pacmanGame.gameItem2[pacmanGame.stageLevel] = pac_socket->gameItem2;
 	pacmanGame.gameItem3[pacmanGame.stageLevel] = pac_socket->gameItem3;
