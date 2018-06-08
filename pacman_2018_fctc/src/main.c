@@ -202,7 +202,7 @@ static void internal_tick(void)
 					pacmanGame.tick = ticks_game();
 					printf("check : %d\n", pacmanGame.stageLevel);
 					copy_pac_socket_info();
-					send(socket_info->client_fd, (char*)&pac_socket, sizeof(PacmanGame),0);
+					send(socket_info->client_fd, (char*)&pac_socket, sizeof(PacmanGame_socket),0);
 				}
 				else if(menuSystem.role == Client) {
 					
