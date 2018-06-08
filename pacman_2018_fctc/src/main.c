@@ -114,11 +114,14 @@ static void copy_pacmanGame_info(void){
 	pacmanGame.gameItem4[pacmanGame.stageLevel] = pac->gameItem4[pacmanGame.stageLevel];
 	pacmanGame.gameItem5[pacmanGame.stageLevel] = pac->gameItem5[pacmanGame.stageLevel];
 
-					
+
 	pacmanGame.pelletHolder[pacmanGame.stageLevel].numLeft = pac->pelletHolder[pacmanGame.stageLevel].numLeft;
 	pacmanGame.pelletHolder[pacmanGame.stageLevel].totalNum = pac->pelletHolder[pacmanGame.stageLevel].totalNum;
-					
-	for(int i=0; i<NUM_PELLETS; i++){
+	pacmanGame.pelletHolder[pacmanGame.stageLevel].pelletNumOfCurrentMap = pac->pelletHolder[pacmanGame.stageLevel].pelletNumOfCurrentMap;
+	
+	int pellet_num = pacmanGame.pelletHolder[pacmanGame.stageLevel].pelletNumOfCurrentMap;
+	
+	for(int i=0; i<pellet_num; i++){
 		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].x = pac->pelletHolder[pacmanGame.stageLevel].pellets[i].x;
 		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].y = pac->pelletHolder[pacmanGame.stageLevel].pellets[i].y;
 		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].eaten = pac->pelletHolder[pacmanGame.stageLevel].pellets[i].eaten;
@@ -249,7 +252,10 @@ static void game_init(void)
 {
 	//Load the board here. We only need to do it once
 	load_board(&pacmanGame.board[0], &pacmanGame.pelletHolder[0], "maps/map1test");
+	load_board(&pacmanGame.board[1], &pacmanGame.pelletHolder[1], "maps/stage2_map");
+	load_board(&pacmanGame.board[2], &pacmanGame.pelletHolder[2], "maps/stage3_map");
 	load_board(&pacmanGame.board[3], &pacmanGame.pelletHolder[3], "maps/stage4_map");
+	load_board(&pacmanGame.board[4], &pacmanGame.pelletHolder[4], "maps/boss_map");
 	
 
 	//set to be in menu
