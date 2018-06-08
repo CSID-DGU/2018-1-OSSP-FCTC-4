@@ -262,6 +262,11 @@ void execute_red_logic(int curLvl, Ghost *redGhost, Pacman *pacman)
 			tempY = pacman->body.y;
 			redGhost->body.velocity = 95;
 			break;
+		case 6:
+			tempX = rand() % 26;
+			tempY = 5 + rand() % 5;
+			redGhost->body.velocity = 110;
+			break;
 	}
 	redGhost->targetX = tempX;
 	redGhost->targetY = tempY;
@@ -310,6 +315,11 @@ void execute_pink_logic(int curLvl, Ghost *pinkGhost, Pacman *pacman)
 			tempX = pacman->body.x;
 			tempY = pacman->body.y;
 			pinkGhost->body.velocity = 95;
+			break;
+		case 6:
+			tempX = rand() % 26;
+			tempY = 25 + rand() % 5;
+			pinkGhost->body.velocity = 110;
 			break;
 	}
 
@@ -373,6 +383,11 @@ void execute_orange_logic(int curLvl, Ghost *orangeGhost, Pacman *pacman)
 			tempX = pacman->body.x;
 			tempY = pacman->body.y;
 			orangeGhost->body.velocity = 95;
+			break;
+		case 6:
+			tempX = rand() % 26;
+			tempY = 5 + rand() % 5;
+			orangeGhost->body.velocity = 110;
 			break;
 	}
 	orangeGhost->targetX = tempX;
@@ -445,6 +460,11 @@ void execute_blue_logic(int curLvl, Ghost *blueGhost, Ghost *redGhost, Pacman *p
 			tempX = pacman->body.x;
 			tempY = pacman->body.y;
 			blueGhost->body.velocity = 95;
+			break;
+		case 6:
+			tempX = rand() % 26;
+			tempY = 25 + rand() % 5;
+			blueGhost->body.velocity = 110;
 			break;
 	}
 	blueGhost->targetX = tempX;
