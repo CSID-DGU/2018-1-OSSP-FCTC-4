@@ -33,6 +33,7 @@ typedef struct
 	GhostType ghostType;
 	MovementMode movementMode;
 	int isDead; // 0 = false, 1 = true, 2 = rebirth
+	int remain;
 } Ghost;
 
 void ghosts_init(Ghost ghosts[5]);
