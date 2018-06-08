@@ -243,7 +243,7 @@ static void internal_render(void)
 static void game_init(void)
 {
 	//Load the board here. We only need to do it once
-	load_board(&pacmanGame.board[0], &pacmanGame.pelletHolder[0], "maps/stage4_map");
+	load_board(&pacmanGame.board[0], &pacmanGame.pelletHolder[0], "maps/map1test");
 	load_board(&pacmanGame.board[1], &pacmanGame.pelletHolder[1], "maps/stage2_map");
 	load_board(&pacmanGame.board[2], &pacmanGame.pelletHolder[2], "maps/stage3_map");
 	
