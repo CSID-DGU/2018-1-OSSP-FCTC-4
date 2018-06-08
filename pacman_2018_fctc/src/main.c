@@ -94,7 +94,7 @@ static void copy_pacmanGame_info(PacmanGame *game){
 	pacmanGame.gameState = pac->gameState;
 	pacmanGame.ticksSinceModeChange = pac->ticksSinceModeChange;
 	pacmanGame.highscore = pac->highscore;
-	pacmanGame.currentLevel = pac->currentLevel;
+	pacmanGame.currentLevel = pac->stageLevel;
 	pacmanGame.mode = pac->mode;
 	
 	pacmanGame.pacman = pac->pacman;
