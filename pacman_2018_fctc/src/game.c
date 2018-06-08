@@ -707,27 +707,27 @@ static void process_item(PacmanGame *game)
 
 	int curLvl = game->currentLevel;
 
-	if (pelletsEaten >= 30 && f1->itemMode == NotDisplaying)
+	if (pelletsEaten >= 20 && f1->itemMode == NotDisplaying)
 	{
 		f1->itemMode = Displaying;
 		regen_item(f1, curLvl);
 	}
-	else if (pelletsEaten == 60 && f2->itemMode == NotDisplaying)
+	else if (pelletsEaten == 40 && f2->itemMode == NotDisplaying)
 	{
 		f2->itemMode = Displaying;
 		regen_item(f2, curLvl);
 	}
-	else if (pelletsEaten == 90 && f3->itemMode == NotDisplaying)
+	else if (pelletsEaten == 60 && f3->itemMode == NotDisplaying)
 	{
 		f3->itemMode = Displaying;
 		regen_item(f3, curLvl);
 	}
-	else if (pelletsEaten == 120 && f4->itemMode == NotDisplaying)
+	else if (pelletsEaten == 80 && f4->itemMode == NotDisplaying)
 	{
 		f4->itemMode = Displaying;
 		regen_item(f4, curLvl);
 	}
-	else if (pelletsEaten == 150 && f5->itemMode == NotDisplaying)
+	else if (pelletsEaten == 100 && f5->itemMode == NotDisplaying)
 	{
 		f5->itemMode = Displaying;
 		regen_item(f5, curLvl);
@@ -775,7 +775,13 @@ static void process_item(PacmanGame *game)
 	//check for collisions
 
 
-
+	f1->item = Life;
+	f2->item = Move_Fast;
+	f3->item = Move_Slow;
+	f4->item = Ghost_mode;
+	f5->item = Tornado;
+	
+	
 	if (f1->itemMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
 	{
 		f1->itemMode = Displayed;
