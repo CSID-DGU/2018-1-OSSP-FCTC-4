@@ -96,15 +96,13 @@ static void copy_pac_socket_info(){
 	pac_socket->gameState = pacmanGame.gameState;
 	pac_socket->ticksSinceModeChange = pacmanGame.ticksSinceModeChange;
 	pac_socket->highscore = pacmanGame.highscore;
-	printf("1\n");
 	pac_socket->stageLevel = pacmanGame.stageLevel;
 	pac_socket->currentLevel = pacmanGame.currentLevel;
-	printf("2\n");
 	pac_socket->mode = pacmanGame.mode;
 	
 	pac_socket->pacman = pacmanGame.pacman;
 	pac_socket->pacman_enemy = pacmanGame.pacman_enemy;
-	printf("3\n");
+
 	for(int i=0; i<4; i++) {
 		pac_socket->ghosts[i] = pacmanGame.ghosts[i];
 	}
@@ -114,11 +112,11 @@ static void copy_pac_socket_info(){
 	pac_socket->gameItem3 = pacmanGame.gameItem3[pacmanGame.stageLevel];
 	pac_socket->gameItem4 = pacmanGame.gameItem4[pacmanGame.stageLevel];
 	pac_socket->gameItem5 = pacmanGame.gameItem5[pacmanGame.stageLevel];
-	printf("4\n");
+
 	pac_socket->pelletHolder.pelletNumOfCurrentMap = pacmanGame.pelletHolder[pacmanGame.stageLevel].pelletNumOfCurrentMap;
 	pac_socket->pelletHolder.numLeft = pacmanGame.pelletHolder[pacmanGame.stageLevel].numLeft;
 	pac_socket->pelletHolder.totalNum = pacmanGame.pelletHolder[pacmanGame.stageLevel].totalNum;
-	printf("5\n");
+
 	int pellet_num = pac_socket->pelletHolder.pelletNumOfCurrentMap;
 	for(int i=0; i<NUM_PELLETS; i++){
 		pac_socket->pelletHolder.pellets[i].x = pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].x;
@@ -128,7 +126,7 @@ static void copy_pac_socket_info(){
 		if(pac_socket->pelletHolder.pellets[i].type == LargePellet) pac_socket->pelletHolder.pellets[i].image = large_pellet_image();
 		else pac_socket->pelletHolder.pellets[i].image = small_pellet_image();
 	}
-	printf("6\n");
+
 }
 
 static void copy_pacmanGame_info(void){
@@ -137,29 +135,29 @@ static void copy_pacmanGame_info(void){
 	pacmanGame.gameState = pac_socket->gameState;
 	pacmanGame.ticksSinceModeChange = pac_socket->ticksSinceModeChange;
 	pacmanGame.highscore = pac_socket->highscore;
-	printf("1\n");
+	
 	pacmanGame.stageLevel = pac_socket->stageLevel;
 	pacmanGame.currentLevel = pac_socket->currentLevel;
-	printf("2\n");
+	
 	pacmanGame.mode = pac_socket->mode;
 	
 	pacmanGame.pacman = pac_socket->pacman;
 	pacmanGame.pacman_enemy = pac_socket->pacman_enemy;
-	printf("3\n");
+	
 	for(int i=0; i<4; i++) {
 		pacmanGame.ghosts[i] = pac_socket->ghosts[i];
 	}
-	printf("check : %d\n", pacmanGame.stageLevel);
+	
 	pacmanGame.gameItem1[pacmanGame.stageLevel] = pac_socket->gameItem1;
 	pacmanGame.gameItem2[pacmanGame.stageLevel] = pac_socket->gameItem2;
 	pacmanGame.gameItem3[pacmanGame.stageLevel] = pac_socket->gameItem3;
 	pacmanGame.gameItem4[pacmanGame.stageLevel] = pac_socket->gameItem4;
 	pacmanGame.gameItem5[pacmanGame.stageLevel] = pac_socket->gameItem5;
-	printf("4\n");		
+	
 	pacmanGame.pelletHolder[pacmanGame.stageLevel].pelletNumOfCurrentMap = pac_socket->pelletHolder.pelletNumOfCurrentMap;
 	pacmanGame.pelletHolder[pacmanGame.stageLevel].numLeft = pac_socket->pelletHolder.numLeft;
 	pacmanGame.pelletHolder[pacmanGame.stageLevel].totalNum = pac_socket->pelletHolder.totalNum;
-	printf("5\n");
+	
 	int pellet_num = pacmanGame.pelletHolder[pacmanGame.stageLevel].pelletNumOfCurrentMap;
 	for(int i=0; i<NUM_PELLETS; i++){
 		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].x = pac_socket->pelletHolder.pellets[i].x;
@@ -169,7 +167,7 @@ static void copy_pacmanGame_info(void){
 		if(pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].type == LargePellet) pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].image = large_pellet_image();
 		else pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].image = small_pellet_image();
 	}
-	printf("6\n");
+	
 }
 
 static void internal_tick(void)
@@ -199,10 +197,13 @@ static void internal_tick(void)
 					store_enemy_keysinfo(&key_info);
 					
 					game_tick(&pacmanGame);
+					
 					pacmanGame.tick = ticks_game();
-					printf("check : %d\n", pacmanGame.stageLevel);
+					pac_socket = (PacmanGame_socket*)malloc(sizeof(PacmanGame_socket));
 					copy_pac_socket_info();
-					send(socket_info->client_fd, (char*)&pac_socket, sizeof(PacmanGame_socket),0);
+					
+					send(socket_info->client_fd, (char*)pac_socket, sizeof(PacmanGame_socket),0);
+					
 				}
 				else if(menuSystem.role == Client) {
 					
@@ -212,7 +213,9 @@ static void internal_tick(void)
 					
 					pac_socket = (PacmanGame_socket*)malloc(sizeof(PacmanGame_socket));
 					recv(socket_info->client_fd, (char*)pac_socket, sizeof(PacmanGame_socket), MSG_WAITALL);
+					
 					copy_pacmanGame_info();
+					
 				}
 				
 				int flag = 0;
@@ -293,7 +296,6 @@ static void game_init(void)
 {
 	//Load the board here. We only need to do it once
 	load_board(&pacmanGame.board[0], &pacmanGame.pelletHolder[0], "maps/map1test");
-	
 
 	//set to be in menu
 	state = Menu;
