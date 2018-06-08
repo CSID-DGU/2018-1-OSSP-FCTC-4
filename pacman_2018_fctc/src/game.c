@@ -429,6 +429,10 @@ static void enter_state(PacmanGame *game, GameState state)
 				//printf("1: %d / 2: %d\n",game->pacman.livesLeft,game->pacman_enemy.livesLeft);
 				pacdeath_init(game);
 			}
+		case GameoverState:
+			
+			// gamestart_init(&game, menuSystem.mode);
+			break;
 		default: ; //do nothing
 	}
 
@@ -453,6 +457,12 @@ static void enter_state(PacmanGame *game, GameState state)
 			break;
 		case GameoverState:
 			play_sound(GameoverSound);
+			printf("GameoverState\n");
+			game->currentLevel = 1;
+			game->stageLevel = 0;
+			//invalidate the state so it doesn't effect the enter_state function
+			game->gameState = -1;
+			level_init(game);
 			break;
 	}
 
@@ -1449,6 +1459,7 @@ static bool check_ghomissile_collision(PacmanGame *game)
 
 void gamestart_init(PacmanGame *game, int mode)
 {
+	printf("gamestart_init : %d\n", mode);
 	// play mode 저장
 	if(mode == SoloState) game->mode = SoloState;
 	else if(mode == MultiState) game->mode = MultiState;
