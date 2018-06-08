@@ -10,6 +10,7 @@
 #include "sound.h"
 #include "text.h"
 #include "window.h"
+#include "highscore.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -430,11 +431,14 @@ static void enter_state(PacmanGame *game, GameState state)
 				pacdeath_init(game);
 			}
 		case GameoverState:
-			
 			// gamestart_init(&game, menuSystem.mode);
 			break;
 		default: ; //do nothing
 	}
+
+	//save highscore to local file(resources/highscore.txt).
+	int origin_highscore = readScoreFromFile();
+	if (game->pacman.score > origin_highscore) writeScoreToFile(game->pacman.score);
 
 	//process entering a state
 	switch (state)
@@ -1473,7 +1477,8 @@ void gamestart_init(PacmanGame *game, int mode)
 	
 	//we need to reset all fruit
 	//fuit_init();
-	game->highscore = 0; //TODO maybe load this in from a file..?
+	// game->highscore = 0; //TODO maybe load this in from a file..?
+	game->highscore = readScoreFromFile();
 	game->currentLevel = 1;
 	game->stageLevel = 0;
 
