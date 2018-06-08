@@ -71,7 +71,7 @@ int main(void)
 	return 0;
 }
 
-static void main_loop()
+static void main_loop(void)
 {
 	while (gameRunning && !key_held(SDLK_ESCAPE))
 	{
@@ -89,6 +89,7 @@ static void main_loop()
 		fps_sleep();
 	}
 }
+
 
 static void copy_pac_socket_info(){
 	pac_socket->death_player = pacmanGame.death_player;
@@ -164,6 +165,7 @@ static void copy_pacmanGame_info(void){
 		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].y = pac_socket->pelletHolder.pellets[i].y;
 		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].eaten = pac_socket->pelletHolder.pellets[i].eaten;
 		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].type = pac_socket->pelletHolder.pellets[i].type;
+
 		if(pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].type == LargePellet) pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].image = large_pellet_image();
 		else pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].image = small_pellet_image();
 	}
@@ -296,9 +298,10 @@ static void game_init(void)
 {
 	//Load the board here. We only need to do it once
 	load_board(&pacmanGame.board[0], &pacmanGame.pelletHolder[0], "maps/map1test");
-	load_board(&pacmanGame.board[1], &pacmanGame.pelletHolder[1], "maps/boss_map");
-	load_board(&pacmanGame.board[2], &pacmanGame.pelletHolder[2], "maps/stage1_map");
-
+	load_board(&pacmanGame.board[1], &pacmanGame.pelletHolder[1], "maps/stage2_map");
+	load_board(&pacmanGame.board[2], &pacmanGame.pelletHolder[2], "maps/stage3_map");
+	load_board(&pacmanGame.board[3], &pacmanGame.pelletHolder[3], "maps/stage4_map");
+	load_board(&pacmanGame.board[4], &pacmanGame.pelletHolder[4], "maps/boss_map");
 
 	//set to be in menu
 	state = Menu;
