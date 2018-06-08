@@ -8,6 +8,8 @@
 #include "pellet.h"
 #include "missile.h"
 
+#define BOSS_STAGE 1
+
 typedef enum
 {
 	GameBeginState,

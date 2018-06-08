@@ -107,6 +107,7 @@ static void copy_pac_socket_info(){
 	for(int i=0; i<4; i++) {
 		pac_socket->ghosts[i] = pacmanGame.ghosts[i];
 	}
+	if(pac_socket->stageLevel == BOSS_STAGE) pac_socket->ghosts[4] = pacmanGame.ghosts[4];
 	
 	pac_socket->gameItem1 = pacmanGame.gameItem1[pacmanGame.stageLevel];
 	pac_socket->gameItem2 = pacmanGame.gameItem2[pacmanGame.stageLevel];
@@ -145,10 +146,10 @@ static void copy_pacmanGame_info(void){
 	pacmanGame.pacman = pac_socket->pacman;
 	pacmanGame.pacman_enemy = pac_socket->pacman_enemy;
 	
-	for(int i=0; i<5; i++) {
+	for(int i=0; i<4; i++) {
 		pacmanGame.ghosts[i] = pac->ghosts[i];
-
 	}
+	if(pacmanGame.stageLevel == BOSS_STAGE) pacmanGame.ghosts[4] = pac->ghosts[4];
 	
 	pacmanGame.gameItem1[pacmanGame.stageLevel] = pac_socket->gameItem1;
 	pacmanGame.gameItem2[pacmanGame.stageLevel] = pac_socket->gameItem2;

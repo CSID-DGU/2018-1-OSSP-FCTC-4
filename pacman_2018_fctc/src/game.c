@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define BOSS_STAGE 1
+
 
 static void process_item(PacmanGame *game);
 static void process_player(Pacman *pacman, Board *board, Player player);
