@@ -149,13 +149,13 @@ static void copy_pacmanGame_info(void){
 	for(int i=0; i<4; i++) {
 		pacmanGame.ghosts[i] = pac_socket->ghosts[i];
 	}
-	
+	printf("check : %d\n", pacmanGame.stageLevel);
 	pacmanGame.gameItem1[pacmanGame.stageLevel] = pac_socket->gameItem1;
 	pacmanGame.gameItem2[pacmanGame.stageLevel] = pac_socket->gameItem2;
 	pacmanGame.gameItem3[pacmanGame.stageLevel] = pac_socket->gameItem3;
 	pacmanGame.gameItem4[pacmanGame.stageLevel] = pac_socket->gameItem4;
 	pacmanGame.gameItem5[pacmanGame.stageLevel] = pac_socket->gameItem5;
-			printf("4\n");		
+	printf("4\n");		
 	pacmanGame.pelletHolder[pacmanGame.stageLevel].pelletNumOfCurrentMap = pac_socket->pelletHolder.pelletNumOfCurrentMap;
 	pacmanGame.pelletHolder[pacmanGame.stageLevel].numLeft = pac_socket->pelletHolder.numLeft;
 	pacmanGame.pelletHolder[pacmanGame.stageLevel].totalNum = pac_socket->pelletHolder.totalNum;
@@ -200,6 +200,7 @@ static void internal_tick(void)
 					
 					game_tick(&pacmanGame);
 					pacmanGame.tick = ticks_game();
+					printf("check : %d\n", pacmanGame.stageLevel);
 					copy_pac_socket_info();
 					send(socket_info->client_fd, (char*)&pac_socket, sizeof(PacmanGame),0);
 				}
