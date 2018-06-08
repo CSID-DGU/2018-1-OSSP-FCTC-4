@@ -420,16 +420,16 @@ static void enter_state(PacmanGame *game, GameState state)
 			game->gameState = LevelBeginState;
 			level_init(game);
 
-			if(game->mode != SoloState){
-			game->currentLevel++;
-			if(game->stageLevel < STAGE_COUNT -1 ){
-				game->stageLevel++;
-			}
-			game->gameState = LevelBeginState;
-			level_init(game);
+			// if(game->mode != SoloState){
+			// game->currentLevel++;
+			// if(game->stageLevel < STAGE_COUNT -1 ){
+			// 	game->stageLevel++;
+			// }
+			// game->gameState = LevelBeginState;
+			// level_init(game);
 
 
-			}
+			// }
 			break;
 		case DeathState:
 			// Player died and is starting a new game, subtract a life
