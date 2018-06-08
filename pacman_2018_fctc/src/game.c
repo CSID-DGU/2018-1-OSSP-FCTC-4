@@ -418,7 +418,7 @@ static void enter_state(PacmanGame *game, GameState state)
 			}
 			game->gameState = LevelBeginState;
 			level_init(game);
-
+			
 			break;
 		case DeathState:
 			// Player died and is starting a new game, subtract a life
