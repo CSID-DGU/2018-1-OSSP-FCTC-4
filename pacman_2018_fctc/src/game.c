@@ -29,11 +29,13 @@ static Player death_player;
 void game_tick(PacmanGame *game)
 {
 
+
 	Pacman *pac = &game->pacman;
 	Pacman *pac2 = &game->pacman_enemy;
 
 
 	// printf("life: %d / %d\n",game->pacman.livesLeft,game->pacman_enemy.livesLeft);
+
 
 	unsigned dt = ticks_game() - game->ticksSinceModeChange;
 
