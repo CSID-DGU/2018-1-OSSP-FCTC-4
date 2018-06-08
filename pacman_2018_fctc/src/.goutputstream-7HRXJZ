@@ -460,23 +460,25 @@ void load_ghost_images(void)
 
 void load_missile_images(void)
 {
-	for(int i = 0; i<2; i++) {
-	missiles[i][0][0] = load_image(DIR ENTITIES_DIR MISSILE_DIR "u0.png");
-	missiles[i][0][1] = load_image(DIR ENTITIES_DIR MISSILE_DIR "u1.png");
-	missiles[i][0][2] = missiles[0][0][0];
-		
-	missiles[i][1][0] = load_image(DIR ENTITIES_DIR MISSILE_DIR "d0.png");
-	missiles[i][1][1] = load_image(DIR ENTITIES_DIR MISSILE_DIR "d1.png");
-	missiles[i][1][2] = missiles[0][1][0];
+	char dirStr[256];
 
-	missiles[i][2][0] = load_image(DIR ENTITIES_DIR MISSILE_DIR "l0.png");
-	missiles[i][2][1] = load_image(DIR ENTITIES_DIR MISSILE_DIR "l1.png");
-	missiles[i][2][2] = missiles[0][2][0];
+	for (int col = 0; col < 2; col++)
+	{
+		for (int i = 0; i < 2; i++)
+		{
+			sprintf(dirStr, "%s%s%d%s", get_missile_dir(col), "u", i, ".png");
+			missiles[col][0][i] = load_image(dirStr);
 
-	missiles[i][3][0] = load_image(DIR ENTITIES_DIR MISSILE_DIR "r0.png");
-	missiles[i][3][1] = load_image(DIR ENTITIES_DIR MISSILE_DIR "r1.png");
-	missiles[i][3][2] = missiles[0][3][0];
-}
+			sprintf(dirStr, "%s%s%d%s", get_missile_dir(col), "d", i, ".png");
+			missiles[col][1][i] = load_image(dirStr);
+			
+			sprintf(dirStr, "%s%s%d%s", get_missile_dir(col), "l", i, ".png");
+			missiles[col][2][i] = load_image(dirStr);
+
+			sprintf(dirStr, "%s%s%d%s", get_missile_dir(col), "r", i, ".png");
+			missiles[col][3][i] = load_image(dirStr);			
+		}
+	}
 }
 
 
@@ -509,7 +511,6 @@ void dispose_missile_images(void)
 		{
 			SDL_FreeSurface(missiles[i][j][0]);
 			SDL_FreeSurface(missiles[i][j][1]);
-			SDL_FreeSurface(missiles[i][j][2]);			
 		}
 	}
 }
