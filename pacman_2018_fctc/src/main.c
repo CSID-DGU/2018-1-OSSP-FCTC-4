@@ -298,7 +298,7 @@ static void internal_render(void)
 
 static void game_init(void)
 {
-	char * mapList[5] = {"maps/map1test", "maps/boss_map", "maps/stage3_map", "maps/stage1_map", "maps/stage2_map"};
+	char * mapList[6] = {"maps/map1test", "maps/simul2", "maps/simul3", "maps/simul4", "maps/simul_boss","maps/clear_map"};
 	int i;
 	//Load the board here. We only need to do it once
 

@@ -232,6 +232,16 @@ void draw_game_gameover(void)
 	draw_text_coord(get_screen(), "GAME  OVER", 9, 21);
 }
 
+void draw_game_clear(void)
+{
+	set_text_color(RedText);
+	draw_text_coord(get_screen(), "GAME CLEAR ! ! !",7,21);
+	draw_text_coord(get_screen(), "CREATED BY FCTC",7,23);	
+	draw_text_coord(get_screen(), "JOON SEO  HYEON JONG",4,25);
+	draw_text_coord(get_screen(), "INO  JI SU",9,27);
+}
+
+
 //
 //
 // Fruit renderering

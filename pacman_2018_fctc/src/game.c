@@ -96,6 +96,9 @@ void game_tick(PacmanGame *game)
 			// pacman has lost all his lives
 			//it displays "game over" briefly, then goes back to main menu
 			break;
+		case ClearState:
+
+			break;
 	}
 
 	//
@@ -133,8 +136,10 @@ void game_tick(PacmanGame *game)
 			break;
 		case WinState:
 			//if (transitionLevel) //do transition here
-			if (dt > 4000) enter_state(game, LevelBeginState);
-
+			if (dt > 4000){
+				 enter_state(game, LevelBeginState);
+				 if(game->currentLevel == 6) enter_state(game,ClearState);
+			}
 			break;
 		case DeathState:
 			if (dt > 4000)
@@ -153,6 +158,11 @@ void game_tick(PacmanGame *game)
 			{
 				//TODO: go back to main menu
 
+			}
+			break;
+		case ClearState:
+			if(dt > 2000)
+			{
 			}
 			break;
 	}
@@ -346,6 +356,10 @@ void game_render(PacmanGame *game, int tick)
 				//stop rendering the pen, and do the flash animation
 				draw_board_flash(&game->board[game->stageLevel]);
 			}
+			
+			if(game->stageLevel == 6) {
+				enter_state(game,ClearState);
+			}
 
 			break;
 		case DeathState:
@@ -398,6 +412,12 @@ void game_render(PacmanGame *game, int tick)
 			draw_board(&game->board[game->stageLevel]);
 			draw_credits(num_credits());
 			break;
+		case ClearState:
+			draw_game_clear();
+			for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
+			draw_board(&game->board[game->stageLevel]);
+			draw_credits(num_credits());
+			break;
 	}
 }
 
@@ -429,6 +449,8 @@ static void enter_state(PacmanGame *game, GameState state)
 				//printf("1: %d / 2: %d\n",game->pacman.livesLeft,game->pacman_enemy.livesLeft);
 				pacdeath_init(game);
 			}
+		case ClearState:
+			break;
 		default: ; //do nothing
 	}
 
@@ -453,6 +475,9 @@ static void enter_state(PacmanGame *game, GameState state)
 			break;
 		case GameoverState:
 			play_sound(GameoverSound);
+			break;
+		case ClearState:
+			play_sound(IntrobgmSound);
 			break;
 	}
 

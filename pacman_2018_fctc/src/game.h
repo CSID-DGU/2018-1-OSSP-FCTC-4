@@ -17,7 +17,8 @@ typedef enum
 	GamePlayState,
 	WinState,
 	DeathState,
-	GameoverState
+	GameoverState,
+	ClearState
 } GameState;
 
 typedef enum
