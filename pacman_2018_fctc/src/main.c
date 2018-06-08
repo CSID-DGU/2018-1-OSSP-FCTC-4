@@ -114,11 +114,14 @@ static void copy_pacmanGame_info(void){
 	pacmanGame.gameItem4[pacmanGame.stageLevel] = pac->gameItem4[pacmanGame.stageLevel];
 	pacmanGame.gameItem5[pacmanGame.stageLevel] = pac->gameItem5[pacmanGame.stageLevel];
 
-					
+
 	pacmanGame.pelletHolder[pacmanGame.stageLevel].numLeft = pac->pelletHolder[pacmanGame.stageLevel].numLeft;
 	pacmanGame.pelletHolder[pacmanGame.stageLevel].totalNum = pac->pelletHolder[pacmanGame.stageLevel].totalNum;
-					
-	for(int i=0; i<NUM_PELLETS; i++){
+	pacmanGame.pelletHolder[pacmanGame.stageLevel].pelletNumOfCurrentMap = pac->pelletHolder[pacmanGame.stageLevel].pelletNumOfCurrentMap;
+	
+	int pellet_num = pacmanGame.pelletHolder[pacmanGame.stageLevel].pelletNumOfCurrentMap;
+	
+	for(int i=0; i<pellet_num; i++){
 		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].x = pac->pelletHolder[pacmanGame.stageLevel].pellets[i].x;
 		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].y = pac->pelletHolder[pacmanGame.stageLevel].pellets[i].y;
 		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].eaten = pac->pelletHolder[pacmanGame.stageLevel].pellets[i].eaten;
