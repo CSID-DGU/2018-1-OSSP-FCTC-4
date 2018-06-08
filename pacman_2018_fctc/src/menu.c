@@ -129,10 +129,10 @@ static void draw_remote_choice_screen(MenuSystem *menuSystem)
 {
 	draw_player_info();
 	
-	if(menuSystem->role == None) draw_common_indicator(Server, 4, 10);
-	else draw_common_indicator(menuSystem->role, 4, 10);
-	draw_vanity_text("CONNECT SERVER", 7, 15);
-	draw_vanity_text("CONNECT CLIENT", 7, 17);
+	if(menuSystem->role == None) draw_common_indicator(Server, 4, 12);
+	else draw_common_indicator(menuSystem->role, 4, 12);
+	draw_vanity_text("CONNECT SERVER", 7, 17);
+	draw_vanity_text("CONNECT CLIENT", 7, 19);
 }
 
 static void draw_remote_server_screen(MenuSystem *menuSystem)
@@ -142,9 +142,6 @@ static void draw_remote_server_screen(MenuSystem *menuSystem)
 	draw_player_info();
 	
 	draw_vanity_text("WAIT TO CONNECT...", 6, 17);
-	//if (dt%1900 > 400) draw_vanity_text(".", 18, 17);
-	//if (dt%1900 > 900) draw_vanity_text(".", 19, 17);
-	//if (dt%1900 > 1400) draw_vanity_text(".", 20, 17);
 }
 
 static void draw_remote_client_connect_screen(MenuSystem *menuSystem)
@@ -178,10 +175,10 @@ static void draw_player_info(void)
 
 static void draw_mode_choice(MenuSystem *menuSystem)
 {
-	draw_common_indicator(menuSystem->mode, 6, 0);
-	draw_vanity_text("PLAY ONE", 9, 3);
-	draw_vanity_text("PLAY TWO", 9, 5);
-	draw_vanity_text("PLAY MULTI", 9, 7);
+	draw_common_indicator(menuSystem->mode, 6, 1);
+	draw_vanity_text("PLAY ONE", 9, 4);
+	draw_vanity_text("PLAY TWO", 9, 6);
+	draw_vanity_text("PLAY MULTI", 9, 8);
 }
 
 static void draw_ghost_line(GhostDisplayRow *row,  int y, unsigned int dt)
@@ -189,5 +186,5 @@ static void draw_ghost_line(GhostDisplayRow *row,  int y, unsigned int dt)
 	bool drawDescription = dt > 1000;
 	bool drawName = dt > 1500;
 
-	draw_vanity_ghostline(row, y, drawDescription, drawName);
+	draw_vanity_ghostline(row, y+1, drawDescription, drawName);
 }
