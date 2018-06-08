@@ -54,7 +54,7 @@ void draw_vanity_ghostline(GhostDisplayRow *row, int y, bool drawDescription, bo
 void draw_vanity_charnickname(void)
 {
 	set_text_color(WhiteText);
-	draw_text_coord(get_screen(), "CHARACTER / NICKNAME", 5, 10);
+	draw_text_coord(get_screen(), "CHARACTER / NICKNAME", 5, 11);
 }
 
 void draw_vanity_text(const char *text, int x, int y)
@@ -199,9 +199,9 @@ void draw_credits(int numCredits)
 
 	//draw credit + number of credits at the appropriate place
 	set_text_color(WhiteText);
-	draw_text_coord(get_screen(), "CREDIT", 2, 35);
+	draw_text_coord(get_screen(), "CREDIT", 2, 37);
 
-	draw_numtext_coord(get_screen(), scoreStr, 8 - int_length(numCredits), 35);
+	draw_numtext_coord(get_screen(), scoreStr, 8 - int_length(numCredits), 37);
 }
 
 //

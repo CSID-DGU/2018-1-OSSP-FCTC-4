@@ -9,7 +9,8 @@ typedef enum
 	Blinky, // red ghost
 	Inky,   // cyan
 	Pinky,  // pink
-	Clyde   // orange
+	Clyde,   // orange
+	Boss    // boss
 } GhostType;
 
 typedef enum
@@ -32,9 +33,10 @@ typedef struct
 	GhostType ghostType;
 	MovementMode movementMode;
 	int isDead; // 0 = false, 1 = true, 2 = rebirth
+	int remain;
 } Ghost;
 
-void ghosts_init(Ghost ghosts[4]);
+void ghosts_init(Ghost ghosts[5]);
 
 void reset_ghost(Ghost *ghost, GhostType type);
 
@@ -46,6 +48,7 @@ Direction next_direction(Ghost *ghost, Board *board);
 void send_to_home(Ghost *ghost, GhostType type);
 void death_send(Ghost *ghost);
 
+void execute_boss_logic(int curLvl, Ghost *bossGhost, Pacman *pacman);
 void execute_red_logic(int curLvl, Ghost *redGhost, Pacman *pacman);
 void execute_pink_logic(int curLvl, Ghost *pinkGhost, Pacman *pacman);
 void execute_orange_logic(int curLvl, Ghost *orangeGhost, Pacman *pacman);

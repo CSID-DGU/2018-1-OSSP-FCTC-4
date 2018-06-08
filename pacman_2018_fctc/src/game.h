@@ -8,6 +8,8 @@
 #include "pellet.h"
 #include "missile.h"
 
+#define BOSS_STAGE 1
+
 typedef enum
 {
 	GameBeginState,
@@ -42,7 +44,7 @@ typedef struct
 	unsigned int ticksSinceModeChange;
 	Pacman pacman;
 	Pacman pacman_enemy;
-	Ghost ghosts[4];
+	Ghost ghosts[5];
 	Missile missiles[2];
 	Board board[STAGE_COUNT];
 	PelletHolder pelletHolder[STAGE_COUNT];
@@ -55,6 +57,24 @@ typedef struct
 	int tick;
 	Player death_player;
 } PacmanGame;
+
+typedef struct
+{
+	int tick;
+	Player death_player;
+	GameState gameState;
+	unsigned int ticksSinceModeChange;
+	int highscore;
+	int currentLevel;
+	int stageLevel;
+	ModeState mode;
+	Pacman pacman;
+	Pacman pacman_enemy;
+	Ghost ghosts[5];
+	PelletHolder pelletHolder;
+	GameItem gameItem1, gameItem2, gameItem3, gameItem4, gameItem5;
+	
+} PacmanGame_socket;
 
 //Updates the game 1 tick, or 1/60th of a second.
 void game_tick(PacmanGame *game);

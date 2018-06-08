@@ -23,8 +23,13 @@ bool is_ghost_noup_square(int x, int y)
 	//squares are:
 	// (12, 22) (14, 22)
 	// (12, 10) (14, 10)
-	return (x == 12 && y == 22) || (x == 15 && y == 22) ||
+	bool flag = (x == 12 && y == 22) || (x == 15 && y == 22) ||
 	       (x == 12 && y == 10) || (x == 15 && y == 10);
+
+	// if(flag){
+	// 	printf("%d, %d : true\n", x, y);
+	// }
+	return flag;
 }
 
 

@@ -171,30 +171,31 @@ void execute_one_logic(int curLvl, Missile *oneMissile, Ghost *ghost)
 		case 1: // Stage 1
 			tempX = rand() % 12;
 			tempY = rand() % 8;
+			oneMissile->body.velocity = 80;
 			break;
 		case 2: 
 			// Red's AI is to set his target position to pacmans
-			tempX = ghost->body.x;
-			tempY = ghost->body.y;
-			oneMissile->body.velocity = 40;
+			tempX = rand() % 12;
+			tempY = rand() % 8;
+			oneMissile->body.velocity = 80;
 			break;
 		case 3:
 			// Red's AI is to set his target position to pacmans
-			tempX = ghost->body.x;
-			tempY = ghost->body.y;
-			oneMissile->body.velocity = 40;
+			tempX = rand() % 12;
+			tempY = rand() % 8;
+			oneMissile->body.velocity = 80;
 			break;
 		case 4:
 			// Red's AI is to set his target position to pacmans
-			tempX = ghost->body.x;
-			tempY = ghost->body.y;
-			oneMissile->body.velocity = 40;
+			tempX = rand() % 12;
+			tempY = rand() % 8;
+			oneMissile->body.velocity = 80;
 			break;
 		case 5:
 			// Red's AI is to set his target position to pacmans
-			tempX = ghost->body.x;
-			tempY = ghost->body.y;
-			oneMissile->body.velocity = 40;
+			tempX = rand() % 12;
+			tempY = rand() % 8;
+			oneMissile->body.velocity = 80;
 			break;
 	}
 	oneMissile->targetX = tempX;
@@ -204,7 +205,6 @@ void execute_one_logic(int curLvl, Missile *oneMissile, Ghost *ghost)
 	// int rNum = rand() % 26;
 	// int rNum2 = rand() % 30;
 
-	if(oneMissile->isDead == 1) {mdeath_send(oneMissile);}
 }
 
 void execute_two_logic(int curLvl, Missile *twoMissile, Ghost *ghost)
@@ -216,44 +216,52 @@ void execute_two_logic(int curLvl, Missile *twoMissile, Ghost *ghost)
 	int tempX, tempY;
 	switch(curLvl){
 		case 1: // Stage 1
-			tempX = rand() % 12 + 14;
-			tempY = rand() % 8;
-			break;
-		case 2:
-			//use dir_xy_buggy to get 4 up AND 4 left, as per bug in original game
-			dir_xy_buggy(ghost->body.curDir, &targetOffsetX, &targetOffsetY);
 			targetOffsetX *= 4;
 			targetOffsetY *= 4;
 			tempX = ghost->body.x + targetOffsetX;
 			tempY = ghost->body.y + targetOffsetY;
+			twoMissile->body.velocity = 80;
+			break;
+		case 2:
+			//use dir_xy_buggy to get 4 up AND 4 left, as per bug in original game
+			targetOffsetX *= 4;
+			targetOffsetY *= 4;
+			tempX = ghost->body.x + targetOffsetX;
+			tempY = ghost->body.y + targetOffsetY;
+			twoMissile->body.velocity = 80;
 			break;
 		case 3:
 			// Pink's AI is to set his target position to pacmans
-			tempX = ghost->body.x;
-			tempY = ghost->body.y;
-			twoMissile->body.velocity = 40;
+			targetOffsetX *= 4;
+			targetOffsetY *= 4;
+			tempX = ghost->body.x + targetOffsetX;
+			tempY = ghost->body.y + targetOffsetY;
+			twoMissile->body.velocity = 80;
 			break;
 		case 4:
 			// Pink's AI is to set his target position to pacmans
-			tempX = ghost->body.x;
-			tempY = ghost->body.y;
-			twoMissile->body.velocity = 40;
+			targetOffsetX *= 4;
+			targetOffsetY *= 4;
+			tempX = ghost->body.x + targetOffsetX;
+			tempY = ghost->body.y + targetOffsetY;
+			twoMissile->body.velocity = 80;
 			break;
 		case 5:
 			// Pink's AI is to set his target position to pacmans
-			tempX = ghost->body.x;
-			tempY = ghost->body.y;
-			twoMissile->body.velocity = 40;
+			targetOffsetX *= 4;
+			targetOffsetY *= 4;
+			tempX = ghost->body.x + targetOffsetX;
+			tempY = ghost->body.y + targetOffsetY;
+			twoMissile->body.velocity = 80;
 			break;
 	}
 
 	twoMissile->targetX = tempX;
 	twoMissile->targetY = tempY;
 
-	if(twoMissile->isDead == 1) {mdeath_send(twoMissile);}
 }
 
 int missile_speed_normal(int level)
 {
-	return 30;
+	return 80;
 }

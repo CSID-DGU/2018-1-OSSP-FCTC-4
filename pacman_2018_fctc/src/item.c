@@ -14,7 +14,7 @@ int item_points(Item item)
 	{
 		case Move_Fast:     return 500;
 		case Move_Slow: 	  return 1000;
-		case Fly_Missile:   return 500;
+		case Tornado:   return 500;
 		case Ghost_mode:    return 500;
 		case Life:			  return 500;
 		case Prof:			  return 10000;
@@ -39,9 +39,18 @@ Item item_for_level(int level)
 		
 		ran = rand()%122;
 		
-
-			return Fly_Missile;
-
+		if(ran <= 30)
+			return Move_Fast;
+		else if(ran > 30 && ran <= 45)
+			return Move_Slow;
+		else if(ran > 45 && ran <= 60)
+			return Tornado;
+		else if(ran > 60 && ran <= 90)
+			return Ghost_mode;
+		else if(ran > 90 && ran <= 120)
+			return Life;
+		else
+			return Prof;
 	}
 }
 

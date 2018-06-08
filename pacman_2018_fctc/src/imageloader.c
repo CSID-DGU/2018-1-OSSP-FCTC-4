@@ -23,6 +23,7 @@
 #define PINK_DIR "pink/"
 #define CYAN_DIR "cyan/"
 #define ORANGE_DIR "orange/"
+#define BOSS_DIR "boss/"
 
 #define EYES_DIR "eyes/"
 #define SCARED_DIR "scared/"
@@ -96,8 +97,9 @@ SDL_Surface *pacmanLifeIcon2;
 //ghost sprites
 //
 
+const int NUM_OF_GHOSTS = 5;
 //ghosts have 4 colors * 2 images for main animatino
-SDL_Surface *ghosts[4][4][2];
+SDL_Surface *ghosts[5][4][2];
 
 SDL_Surface *missiles[2][4][2];
 
@@ -118,7 +120,7 @@ SDL_Surface *specImages[NUM_SPEC_IMAGES];
 //
 SDL_Surface *movefastImage;
 SDL_Surface *moveslowImage;
-SDL_Surface *flymissileImage;
+SDL_Surface *tornadoImage;
 SDL_Surface *ghostmodeImage;
 SDL_Surface *lifeImage;
 SDL_Surface *profImage;
@@ -400,6 +402,8 @@ const char *red_dir = DIR ENTITIES_DIR GHOST_DIR RED_DIR;
 const char *pink_dir = DIR ENTITIES_DIR GHOST_DIR PINK_DIR;
 const char *cyan_dir = DIR ENTITIES_DIR GHOST_DIR CYAN_DIR;
 const char *orange_dir = DIR ENTITIES_DIR GHOST_DIR ORANGE_DIR;
+const char *boss_dir = DIR ENTITIES_DIR GHOST_DIR BOSS_DIR;
+
 
 const char *one_dir = DIR ENTITIES_DIR MISSILE_DIR;
 const char *two_dir = DIR ENTITIES_DIR MISSILE_DIR;
@@ -412,6 +416,7 @@ const char *get_ghost_dir(GhostType type)
 		case Inky:   return cyan_dir;
 		case Pinky:  return pink_dir;
 		case Clyde:  return orange_dir;
+		case Boss :  return boss_dir;
 	}
 
 	return NULL;
@@ -431,7 +436,7 @@ void load_ghost_images(void)
 {
 	char dirStr[256];
 
-	for (int col = 0; col < 4; col++)
+	for (int col = 0; col < NUM_OF_GHOSTS; col++)
 	{
 		for (int i = 0; i < 2; i++)
 		{
@@ -519,7 +524,7 @@ void load_item_images(void)
 {
 	movefastImage     	= load_image(DIR ITEM_DIR "box.png");
 	moveslowImage 		= load_image(DIR ITEM_DIR "box.png");
-	flymissileImage      	= load_image(DIR ITEM_DIR "box.png");
+	tornadoImage      	= load_image(DIR ITEM_DIR "box.png");
 	ghostmodeImage      = load_image(DIR ITEM_DIR "box.png");
 	lifeImage 			= load_image(DIR ITEM_DIR "box.png");
 	profImage			= load_image(DIR ITEM_DIR "box.png");
@@ -529,7 +534,7 @@ void dispose_item_images(void)
 {
 	SDL_FreeSurface(movefastImage);
 	SDL_FreeSurface(moveslowImage);
-	SDL_FreeSurface(flymissileImage);
+	SDL_FreeSurface(tornadoImage);
 	SDL_FreeSurface(ghostmodeImage);
 	SDL_FreeSurface(lifeImage);
 	SDL_FreeSurface(profImage);
@@ -545,7 +550,7 @@ void load_misc_images(void)
 
 	char dirStr[256];
 
-	const char *itemPntStr[] = {"Fast", "Slow", "Missile", "Ghostmode", "Life", "Prof" };
+	const char *itemPntStr[] = {"Fast", "Slow", "Tornado", "Ghostmode", "Life", "Prof" };
 	const char *ghostPntStr[] = {"200", "400", "800", "1600"};
 
 	for (int i = 0; i < NUM_ITEM; i++)
@@ -968,7 +973,7 @@ SDL_Surface* get_item_image(Item item)
 	{
 		case Move_Fast:     return movefastImage;
 		case Move_Slow: 	return moveslowImage;
-		case Fly_Missile:      return flymissileImage;
+		case Tornado:      return tornadoImage;
 		case Ghost_mode:    return ghostmodeImage;
 		case Life:			return lifeImage;
 		case Prof:			return profImage;
@@ -984,7 +989,7 @@ SDL_Surface* get_itemshow_image(Item item)
 	{
 		case Move_Fast:     return itemPoints[0];
 		case Move_Slow: 	return itemPoints[1];
-		case Fly_Missile:      return itemPoints[2];
+		case Tornado:      return itemPoints[2];
 		case Ghost_mode:    return itemPoints[3];
 		case Life:			return itemPoints[4];
 		case Prof:			return itemPoints[5];
