@@ -19,6 +19,7 @@
 #include "pellet.h"
 // Remote Play 모드에서 정보를 받아옴
 static void copy_pacmanGame_info(void);
+static void copy_pac_socket_info(PacmanGame pacman);
 
 //Initializes all resources.
 static void resource_init(void);
@@ -53,6 +54,7 @@ static PacmanGame pacmanGame;
 static PacmanGame *pac;
 // Socket value
 static Socket_value *socket_info;
+static PacmanGame_socket *pac_socket;
 
 static bool gameRunning = true;
 static int numCredits = 0;
@@ -88,39 +90,81 @@ static void main_loop()
 	}
 }
 
-static void copy_pacmanGame_info(void){
-	pacmanGame.death_player = pac->death_player;
-	pacmanGame.tick = pac->tick;
-	pacmanGame.gameState = pac->gameState;
-	pacmanGame.ticksSinceModeChange = pac->ticksSinceModeChange;
-	pacmanGame.highscore = pac->highscore;
+static void copy_pac_socket_info(PacmanGame pacman){
+	pac_socket->death_player = pacman.death_player;
+	pac_socket->tick = pacman.tick;
+	pac_socket->gameState = pacman.gameState;
+	pac_socket->ticksSinceModeChange = pacman.ticksSinceModeChange;
+	pac_socket->highscore = pacman.highscore;
 	
-	pacmanGame.stageLevel = pac->stageLevel;
-	pacmanGame.currentLevel = pac->currentLevel;
+	pac_socket->stageLevel = pacman.stageLevel;
+	pac_socket->currentLevel = pacman.currentLevel;
 	
-	pacmanGame.mode = pac->mode;
+	pac_socket->mode = pacman.mode;
 	
-	pacmanGame.pacman = pac->pacman;
-	pacmanGame.pacman_enemy = pac->pacman_enemy;
+	pac_socket->pacman = pacman.pacman;
+	pac_socket->pacman_enemy = pacman.pacman_enemy;
 	
 	for(int i=0; i<4; i++) {
-		pacmanGame.ghosts[i] = pac->ghosts[i];
+		pac_socket->ghosts[i] = pacman.ghosts[i];
 	}
 	
-	pacmanGame.gameItem1[pacmanGame.stageLevel] = pac->gameItem1[pacmanGame.stageLevel];
-	pacmanGame.gameItem2[pacmanGame.stageLevel] = pac->gameItem2[pacmanGame.stageLevel];
-	pacmanGame.gameItem3[pacmanGame.stageLevel] = pac->gameItem3[pacmanGame.stageLevel];
-	pacmanGame.gameItem4[pacmanGame.stageLevel] = pac->gameItem4[pacmanGame.stageLevel];
-	pacmanGame.gameItem5[pacmanGame.stageLevel] = pac->gameItem5[pacmanGame.stageLevel];
+	pac_socket->gameItem1 = pacman.gameItem1[pacmanGame.stageLevel];
+	pac_socket->gameItem2 = pacman.gameItem2[pacmanGame.stageLevel];
+	pac_socket->gameItem3 = pacman.gameItem3[pacmanGame.stageLevel];
+	pac_socket->gameItem4 = pacman.gameItem4[pacmanGame.stageLevel];
+	pac_socket->gameItem5 = pacman.gameItem5[pacmanGame.stageLevel];
+	
+	pac_socket->pelletHolder.pelletNumOfCurrentMap = pacman.pelletHolder[pacmanGame.stageLevel].pelletNumOfCurrentMap;
+	pac_socket->pelletHolder.numLeft = pacman.pelletHolder[pacmanGame.stageLevel].numLeft;
+	pac_socket->pelletHolder.totalNum = pacman.pelletHolder[pacmanGame.stageLevel].totalNum;
+	
+	int pellet_num = pac_socket->pelletHolder.pelletNumOfCurrentMap;
+	for(int i=0; i<pellet_num; i++){
+		pac_socket->pelletHolder.pellets[i].x = pacman.pelletHolder[pacmanGame.stageLevel].pellets[i].x;
+		pac_socket->pelletHolder.pellets[i].y = pacman.pelletHolder[pacmanGame.stageLevel].pellets[i].y;
+		pac_socket->pelletHolder.pellets[i].eaten = pacman.pelletHolder[pacmanGame.stageLevel].pellets[i].eaten;
+		pac_socket->pelletHolder.pellets[i].type = pacman.pelletHolder[pacmanGame.stageLevel].pellets[i].type;
+		if(pac_socket->pelletHolder.pellets[i].type == LargePellet) pac_socket->pelletHolder.pellets[i].image = large_pellet_image();
+		else pac_socket->pelletHolder.pellets[i].image = small_pellet_image();
+	}
+}
+
+static void copy_pacmanGame_info(void){
+	pacmanGame.death_player = pac_socket->death_player;
+	pacmanGame.tick = pac_socket->tick;
+	pacmanGame.gameState = pac_socket->gameState;
+	pacmanGame.ticksSinceModeChange = pac_socket->ticksSinceModeChange;
+	pacmanGame.highscore = pac_socket->highscore;
+	
+	pacmanGame.stageLevel = pac_socket->stageLevel;
+	pacmanGame.currentLevel = pac_socket->currentLevel;
+	
+	pacmanGame.mode = pac_socket->mode;
+	
+	pacmanGame.pacman = pac_socket->pacman;
+	pacmanGame.pacman_enemy = pac_socket->pacman_enemy;
+	
+	for(int i=0; i<4; i++) {
+		pacmanGame.ghosts[i] = pac_socket->ghosts[i];
+	}
+	
+	pacmanGame.gameItem1[pacmanGame.stageLevel] = pac_socket->gameItem1;
+	pacmanGame.gameItem2[pacmanGame.stageLevel] = pac_socket->gameItem2;
+	pacmanGame.gameItem3[pacmanGame.stageLevel] = pac_socket->gameItem3;
+	pacmanGame.gameItem4[pacmanGame.stageLevel] = pac_socket->gameItem4;
+	pacmanGame.gameItem5[pacmanGame.stageLevel] = pac_socket->gameItem5;
 					
-	pacmanGame.pelletHolder[pacmanGame.stageLevel].numLeft = pac->pelletHolder[pacmanGame.stageLevel].numLeft;
-	pacmanGame.pelletHolder[pacmanGame.stageLevel].totalNum = pac->pelletHolder[pacmanGame.stageLevel].totalNum;
-					
-	for(int i=0; i<NUM_PELLETS; i++){
-		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].x = pac->pelletHolder[pacmanGame.stageLevel].pellets[i].x;
-		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].y = pac->pelletHolder[pacmanGame.stageLevel].pellets[i].y;
-		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].eaten = pac->pelletHolder[pacmanGame.stageLevel].pellets[i].eaten;
-		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].type = pac->pelletHolder[pacmanGame.stageLevel].pellets[i].type;
+	pacmanGame.pelletHolder[pacmanGame.stageLevel].pelletNumOfCurrentMap = pac_socket->pelletHolder.pelletNumOfCurrentMap;
+	pacmanGame.pelletHolder[pacmanGame.stageLevel].numLeft = pac_socket->pelletHolder.numLeft;
+	pacmanGame.pelletHolder[pacmanGame.stageLevel].totalNum = pac_socket->pelletHolder.totalNum;
+	
+	int pellet_num = pacmanGame.pelletHolder[pacmanGame.stageLevel].pelletNumOfCurrentMap;
+	for(int i=0; i<pellet_num; i++){
+		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].x = pac_socket->pelletHolder.pellets[i].x;
+		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].y = pac_socket->pelletHolder.pellets[i].y;
+		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].eaten = pac_socket->pelletHolder.pellets[i].eaten;
+		pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].type = pac_socket->pelletHolder.pellets[i].type;
 		if(pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].type == LargePellet) pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].image = large_pellet_image();
 		else pacmanGame.pelletHolder[pacmanGame.stageLevel].pellets[i].image = small_pellet_image();
 	}
@@ -155,7 +199,8 @@ static void internal_tick(void)
 					
 					game_tick(&pacmanGame);
 					pacmanGame.tick = ticks_game();
-					send(socket_info->client_fd, (char*)&pacmanGame, sizeof(PacmanGame),0);
+					copy_pac_socket_info(pacmanGame);
+					send(socket_info->client_fd, (char*)&pac_socket, sizeof(PacmanGame),0);
 				}
 				else if(menuSystem.role == Client) {
 					
@@ -163,9 +208,8 @@ static void internal_tick(void)
 					keyinfo_store(&key_info);
 					send(socket_info->client_fd, (char*)&key_info, sizeof(KeyState),0);
 					
-					pac = (PacmanGame*)malloc(sizeof(PacmanGame));
-					recv(socket_info->client_fd, (char*)pac, sizeof(PacmanGame), MSG_WAITALL);
-					
+					pac_socket = (PacmanGame_socket*)malloc(sizeof(PacmanGame_socket));
+					recv(socket_info->client_fd, (char*)pac_socket, sizeof(PacmanGame_socket), MSG_WAITALL);
 					copy_pacmanGame_info();
 				}
 				

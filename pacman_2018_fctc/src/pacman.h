@@ -36,7 +36,6 @@ typedef struct
 	int protect;
 } Pacman;
 
-
 //Initializes pacman's location, lives, score. Call at start of the game.
 void pacman_init(Pacman *pacman);
 
