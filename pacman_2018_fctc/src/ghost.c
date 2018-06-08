@@ -5,14 +5,15 @@
 #include <stdio.h>
 #include <time.h>
 
-void ghosts_init(Ghost ghosts[4])
+void ghosts_init(Ghost ghosts[5])
 {
 	ghosts[0].ghostType = Blinky;
 	ghosts[1].ghostType = Inky;
 	ghosts[2].ghostType = Pinky;
 	ghosts[3].ghostType = Clyde;
+	ghosts[4].ghostType = Boss;
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		reset_ghost(&ghosts[i], ghosts[i].ghostType);
 	}
@@ -34,6 +35,7 @@ void reset_ghost(Ghost *ghost, GhostType type)
 		case Inky: { x = 12; y = 14; ox = -8; oy =  0; mode = Chase; dir = Up;   next = Down; break; }
 		case Clyde: { x = 16; y = 14; ox = -8; oy =  0; mode = Chase; dir = Up;   next = Down; break; }
 		case Pinky: { x = 14; y = 14; ox = -8; oy =  0; mode = Chase; dir = Down; next = Down; break; }
+		case Boss: { x = 14; y = 5; ox = -8; oy =  0; mode = Chase; dir = Down; next = Down; break; }
 
 		//testing
 		//case Inky:  { x = 14; y = 11; ox = -8; oy =  0; mode = Scatter; dir = Left; next = Left; break; }
@@ -178,7 +180,54 @@ void execute_ghost_logic(int curLvl, Ghost *targetGhost, GhostType type, Ghost *
 		case Inky:   execute_blue_logic(curLvl, targetGhost, redGhost, pacman); break;
 		case Clyde:  execute_orange_logic(curLvl, targetGhost, pacman);         break;
 		case Pinky:  execute_pink_logic(curLvl, targetGhost, pacman);           break;
+		case Boss:   execute_boss_logic(curLvl, targetGhost, pacman);           break;
 	}
+}
+
+void execute_boss_logic(int curLvl, Ghost *bossGhost, Pacman *pacman)
+{
+	int tempX, tempY;
+	// switch(curLvl){
+	// 	case 1: // Stage 1
+	// 		// tempX = rand() % 12;
+	// 		tempX = pacman->body.x;
+	// 		tempY = rand() % 8;
+	// 		break;
+	// 	case 2: 
+	// 		// Red's AI is to set his target position to pacmans
+	// 		tempX = pacman->body.x;
+	// 		tempY = pacman->body.y;
+	// 		bossGhost->body.velocity = 85;
+	// 		break;
+	// 	case 3:
+	// 		// Red's AI is to set his target position to pacmans
+	// 		tempX = pacman->body.x;
+	// 		tempY = pacman->body.y;
+	// 		bossGhost->body.velocity = 85;
+	// 		break;
+	// 	case 4:
+	// 		// Red's AI is to set his target position to pacmans
+	// 		tempX = pacman->body.x;
+	// 		tempY = pacman->body.y;
+	// 		bossGhost->body.velocity = 90;
+	// 		break;
+	// 	case 5:
+	// 		// Red's AI is to set his target position to pacmans
+	// 		tempX = pacman->body.x;
+	// 		tempY = pacman->body.y;
+	// 		bossGhost->body.velocity = 95;
+	// 		break;
+	// }
+	tempX = pacman->body.x;
+	tempY = rand() % 8;
+	bossGhost->targetX = tempX;
+	bossGhost->targetY = tempY;
+
+	// Red's Ai is random x, y
+	// int rNum = rand() % 26;
+	// int rNum2 = rand() % 30;
+
+	if(bossGhost->isDead == 1) {death_send(bossGhost);}
 }
 
 void execute_red_logic(int curLvl, Ghost *redGhost, Pacman *pacman)

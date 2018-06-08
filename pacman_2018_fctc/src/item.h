@@ -9,7 +9,7 @@ typedef enum
 {
 	Move_Fast,
 	Move_Slow,
-	Fly_Missile,
+	Tornado,
 	Ghost_mode,
 	Life,
 	Prof
