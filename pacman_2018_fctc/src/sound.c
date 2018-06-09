@@ -31,6 +31,8 @@ static Mix_Chunk *gameoverSound;
 static Mix_Chunk *introbgmSound;
 static Mix_Chunk *bossSound;
 static Mix_Chunk *endingbgmSound;
+static Mix_Chunk *beepSound;
+
 
 static Mix_Chunk *stage1Sound;
 static Mix_Chunk *stage2Sound;
@@ -93,6 +95,7 @@ void load_sounds(void)
         stage2Sound = Mix_LoadWAV("sound/Operatic_3.wav");
         stage3Sound = Mix_LoadWAV("sound/Stuff.wav");
         stage4Sound = Mix_LoadWAV("sound/Apprehensive_at_Best.wav");
+        beepSound = Mix_LoadWAV("sound/beep2.wav");
 	
         set_sound_volume(0.5);
         set_sound_muted(false);
@@ -174,6 +177,7 @@ void play_sound(SoundEffect effectName)
                 case Stage2Sound:  chunk = stage2Sound;  channel = &stage2StartChanel; break;
                 case Stage3Sound:  chunk = stage3Sound;  channel = &stage3StartChanel; break;
                 case Stage4Sound:  chunk = stage4Sound;  channel = &stage4StartChanel; break;
+                case BeepSound:  chunk = beepSound;  channel = &stage4StartChanel; break;
 	}
         *channel = Mix_PlayChannel(-1, chunk, 0);
 }
@@ -212,6 +216,7 @@ void stop_sound(SoundEffect effectName)
                 case Stage2Sound: channel = stage2StartChanel; break;
                 case Stage3Sound: channel = stage3StartChanel; break;
                 case Stage4Sound: channel = stage4StartChanel; break;
+                case BeepSound: channel = stage4StartChanel; break;
 		
                 default: printf("badsound\naborting\n"); exit(1); //TODO: fix this up
 

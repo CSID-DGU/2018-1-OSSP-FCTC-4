@@ -404,12 +404,14 @@ static void key_down_hacks(int keycode)
 		{
 			menuSystem.mode++;
 			if(menuSystem.mode > 2) menuSystem.mode = 0;
+			play_sound(BeepSound);
 		}
 		
 		if (keycode == SDLK_UP)
 		{
 			menuSystem.mode--;
 			if(menuSystem.mode == -1) menuSystem.mode = 2;
+			play_sound(BeepSound);
 		}
 	}
 	else if(state == Remote){

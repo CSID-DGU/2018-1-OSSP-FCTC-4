@@ -31,7 +31,8 @@ typedef enum
 	Stage1Sound,
 	Stage2Sound,
 	Stage3Sound,
-	Stage4Sound
+	Stage4Sound,
+	BeepSound
 
 } SoundEffect;
 //Initializes and loads all sounds. Must be called before playing any sounds.
