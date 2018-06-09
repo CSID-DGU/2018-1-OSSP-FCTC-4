@@ -357,7 +357,7 @@ void game_render(PacmanGame *game, int tick)
 				draw_board_flash(&game->board[game->stageLevel]);
 			}
 			
-			if(game->stageLevel == 6) {
+			if(game->currentLevel == 6) {
 				enter_state(game,ClearState);
 			}
 
@@ -474,12 +474,33 @@ static void enter_state(PacmanGame *game, GameState state)
 			
 			break;
 		case GamePlayState:
+			if(game->stageLevel == 0){
+				play_sound(Stage1Sound);
+				//if(allPelletsEaten) stop_sound(Stage1Sound);
+			}
+			if(game->stageLevel == 1){
+				play_sound(Stage2Sound);
+				//if(allPelletsEaten) stop_sound(Stage2Sound);
+			}
+			if(game->stageLevel == 2){
+				play_sound(Stage3Sound);
+				//if(allPelletsEaten) stop_sound(Stage3Sound);
+			}
+			if(game->stageLevel == 3){
+				play_sound(Stage4Sound);
+				//if(allPelletsEaten) stop_sound(Stage4Sound);
+			}
 			if(game->stageLevel == 4){
 				play_sound(BossSound);
-				//if(allPelletsEaten) stop_sound(BossSound);
+				//if(allPelletsEaten) stop_sound(Stage4Sound);
 			}
 			break;
 		case WinState:
+			stop_sound(Stage1Sound);	
+			stop_sound(Stage2Sound);	
+			stop_sound(Stage3Sound);	
+			stop_sound(Stage4Sound);	
+			stop_sound(BossSound);	
 			play_sound(GameoverSound);
 			break;
 		case DeathState:
@@ -495,7 +516,7 @@ static void enter_state(PacmanGame *game, GameState state)
 			level_init(game);
 			break;
 		case ClearState:
-			stop_sound(BossSound);
+			//stop_sound(BossSound);
 			play_sound(EndingbgmSound);
 			break;
 	}

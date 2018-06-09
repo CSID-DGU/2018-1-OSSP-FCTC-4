@@ -32,8 +32,23 @@ static Mix_Chunk *introbgmSound;
 static Mix_Chunk *bossSound;
 static Mix_Chunk *endingbgmSound;
 
+static Mix_Chunk *stage1Sound;
+static Mix_Chunk *stage2Sound;
+static Mix_Chunk *stage3Sound;
+static Mix_Chunk *stage4Sound;
+
+
+
+
 static int levelStartChanel;
 static int smallStartChanel;
+static int bossStartChanel;
+static int stage1StartChanel;
+static int stage2StartChanel;
+static int stage3StartChanel;
+static int stage4StartChanel;
+
+
 
 void load_sounds(void)
 {
@@ -71,9 +86,13 @@ void load_sounds(void)
         cutsceneSound = Mix_LoadWAV("sound/cutscene.wav");
         coinSound = Mix_LoadWAV("sound/coin.wav");
         gameoverSound = Mix_LoadWAV("sound/game_over.wav");
-        introbgmSound = Mix_LoadWAV("sound/introBGM.wav");
+        introbgmSound = Mix_LoadWAV("sound/Requiem_In_Cello.wav");
         bossSound = Mix_LoadWAV("sound/Eyes_of_Glory.wav");
-        endingbgmSound = Mix_LoadWAV("sound/Parkside.wav");
+        endingbgmSound = Mix_LoadWAV("sound/Toe_Jam.wav");
+        stage1Sound = Mix_LoadWAV("sound/Coupe.wav");
+        stage2Sound = Mix_LoadWAV("sound/Operatic_3.wav");
+        stage3Sound = Mix_LoadWAV("sound/Stuff.wav");
+        stage4Sound = Mix_LoadWAV("sound/Apprehensive_at_Best.wav");
 	
         set_sound_volume(0.5);
         set_sound_muted(false);
@@ -149,8 +168,12 @@ void play_sound(SoundEffect effectName)
                 case GameoverSound:  chunk = gameoverSound;  channel = &levelStartChanel; break;
                 case PacmanDeathSound: chunk = deathSound; channel = &levelStartChanel; break;
                 case IntrobgmSound:  chunk = introbgmSound;  channel = &levelStartChanel; break;
-                case BossSound:  chunk = bossSound;  channel = &levelStartChanel; break;
+                case BossSound:  chunk = bossSound;  channel = &bossStartChanel; break;
                 case EndingbgmSound:  chunk = endingbgmSound;  channel = &levelStartChanel; break;
+                case Stage1Sound:  chunk = stage1Sound;  channel = &stage1StartChanel; break;
+                case Stage2Sound:  chunk = stage2Sound;  channel = &stage2StartChanel; break;
+                case Stage3Sound:  chunk = stage3Sound;  channel = &stage3StartChanel; break;
+                case Stage4Sound:  chunk = stage4Sound;  channel = &stage4StartChanel; break;
 	}
         *channel = Mix_PlayChannel(-1, chunk, 0);
 }
@@ -183,8 +206,12 @@ void stop_sound(SoundEffect effectName)
                 case GameoverSound:    channel = &levelStartChanel; break;
                 case PacmanDeathSound: channel = levelStartChanel; break;
                 case IntrobgmSound: channel = levelStartChanel; break;
-                case BossSound: channel = levelStartChanel; break;
+                case BossSound: channel = bossStartChanel; break;
                 case EndingbgmSound: channel = levelStartChanel; break;
+                case Stage1Sound: channel = stage1StartChanel; break;
+                case Stage2Sound: channel = stage2StartChanel; break;
+                case Stage3Sound: channel = stage3StartChanel; break;
+                case Stage4Sound: channel = stage4StartChanel; break;
 		
                 default: printf("badsound\naborting\n"); exit(1); //TODO: fix this up
 

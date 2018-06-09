@@ -27,7 +27,12 @@ typedef enum
         PacmanDeathSound,
 	IntrobgmSound,
 	BossSound,
-	EndingbgmSound
+	EndingbgmSound,
+	Stage1Sound,
+	Stage2Sound,
+	Stage3Sound,
+	Stage4Sound
+
 } SoundEffect;
 //Initializes and loads all sounds. Must be called before playing any sounds.
 void load_sounds(void);
