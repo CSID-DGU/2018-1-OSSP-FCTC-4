@@ -240,7 +240,6 @@ void draw_game_clear(void)
 	draw_text_coord(get_screen(), "CREATED BY FCTC",7,23);	
 	draw_text_coord(get_screen(), "INO  JI SU",9,27);
 	draw_text_coord(get_screen(), "JOON SEO  HYEON JONG",4,25);
-	draw_text_coord(get_screen(), "SN",25,32);
 }
 
 
