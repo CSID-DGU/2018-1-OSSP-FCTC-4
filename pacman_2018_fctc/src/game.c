@@ -508,6 +508,12 @@ static void enter_state(PacmanGame *game, GameState state)
 			play_sound(GameoverSound);
 			break;
 		case DeathState:
+			stop_sound(Stage1Sound);	
+			stop_sound(Stage2Sound);	
+			stop_sound(Stage3Sound);	
+			stop_sound(Stage4Sound);	
+			stop_sound(BossSound);	
+
 			play_sound(PacmanDeathSound);
 			break;
 		case GameoverState:
@@ -1486,6 +1492,7 @@ static bool check_pacghost_collision(PacmanGame *game)
 					}
 					else {
 						if(g->isDead == 2) { death_player = Two; return true;}
+					play_sound(SirenSound);
 						g->isDead = 1;
 						death_send(g);
 					}
