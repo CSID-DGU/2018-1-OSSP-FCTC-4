@@ -517,7 +517,11 @@ static void enter_state(PacmanGame *game, GameState state)
 			game->stageLevel = 0;
 			//invalidate the state so it doesn't effect the enter_state function
 			game->gameState = -1;
-			stop_sound(Stage1Sound);	
+			if(game->stageLevel == 1){
+				stop_sound(Stage1Sound);
+				//if(allPelletsEaten) stop_sound(Stage2Sound);
+			}
+
 			stop_sound(Stage2Sound);	
 			stop_sound(Stage3Sound);	
 			stop_sound(Stage4Sound);	
