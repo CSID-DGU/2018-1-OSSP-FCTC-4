@@ -8,7 +8,7 @@
 #include "pellet.h"
 #include "missile.h"
 
-#define BOSS_STAGE 0
+#define BOSS_STAGE 4
 
 typedef enum
 {
