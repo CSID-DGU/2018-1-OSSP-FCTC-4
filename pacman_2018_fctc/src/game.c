@@ -1495,6 +1495,7 @@ static bool check_pacghost_collision(PacmanGame *game)
 					}
 					else {
 						if(g->isDead == 2) { death_player = Two; return true;}
+					play_sound(SirenSound);
 						g->isDead = 1;
 						death_send(g);
 					}
