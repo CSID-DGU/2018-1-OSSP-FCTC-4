@@ -102,7 +102,7 @@ void game_tick(PacmanGame *game)
 			break;
 	}
 
-	//
+	//p
 	// State Transitions - refer to gameflow for descriptions
 	//
 
@@ -858,13 +858,6 @@ static void process_item(PacmanGame *game)
 
 	//check for collisions
 
-
-	f1->item = Life;
-	f2->item = Move_Fast;
-	f3->item = Move_Slow;
-	f4->item = Ghost_mode;
-	f5->item = Tornado;
-	
 	
 	if (f1->itemMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
 	{
