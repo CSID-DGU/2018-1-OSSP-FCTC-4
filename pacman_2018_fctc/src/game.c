@@ -10,6 +10,7 @@
 #include "sound.h"
 #include "text.h"
 #include "window.h"
+#include "highscore.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -96,9 +97,12 @@ void game_tick(PacmanGame *game)
 			// pacman has lost all his lives
 			//it displays "game over" briefly, then goes back to main menu
 			break;
+		case ClearState:
+
+			break;
 	}
 
-	//
+	//p
 	// State Transitions - refer to gameflow for descriptions
 	//
 
@@ -133,8 +137,10 @@ void game_tick(PacmanGame *game)
 			break;
 		case WinState:
 			//if (transitionLevel) //do transition here
-			if (dt > 4000) enter_state(game, LevelBeginState);
-
+			if (dt > 4000){
+				 enter_state(game, LevelBeginState);
+				 if(game->currentLevel == 6) enter_state(game,ClearState);
+			}
 			break;
 		case DeathState:
 			if (dt > 4000)
@@ -153,6 +159,11 @@ void game_tick(PacmanGame *game)
 			{
 				//TODO: go back to main menu
 
+			}
+			break;
+		case ClearState:
+			if(dt > 2000)
+			{
 			}
 			break;
 	}
@@ -346,6 +357,10 @@ void game_render(PacmanGame *game, int tick)
 				//stop rendering the pen, and do the flash animation
 				draw_board_flash(&game->board[game->stageLevel]);
 			}
+			
+			if(game->currentLevel == 6) {
+				enter_state(game,ClearState);
+			}
 
 			break;
 		case DeathState:
@@ -398,6 +413,13 @@ void game_render(PacmanGame *game, int tick)
 			draw_board(&game->board[game->stageLevel]);
 			draw_credits(num_credits());
 			break;
+		case ClearState:
+			draw_game_clear();
+			for (int i = 0; i < 4; i++) draw_ghost(&game->ghosts[i]);
+			process_ghosts(game);
+			draw_board(&game->board[game->stageLevel]);
+			draw_credits(num_credits());
+			break;
 	}
 }
 
@@ -430,13 +452,21 @@ static void enter_state(PacmanGame *game, GameState state)
 				pacdeath_init(game);
 			}
 		case GameoverState:
-			
 			// gamestart_init(&game, menuSystem.mode);
+			break;
+		case ClearState:
 			break;
 		default: ; //do nothing
 	}
 
+	//save highscore to local file(resources/highscore.txt).
+	int origin_highscore = readScoreFromFile();
+	if (game->pacman.score > origin_highscore) writeScoreToFile(game->pacman.score);
+
 	//process entering a state
+	
+	bool allPelletsEaten = game->pelletHolder[game->stageLevel].numLeft == 0;
+
 	switch (state)
 	{
 		case GameBeginState:
@@ -448,12 +478,42 @@ static void enter_state(PacmanGame *game, GameState state)
 			
 			break;
 		case GamePlayState:
+			if(game->stageLevel == 0){
+				play_sound(Stage1Sound);
+				//if(allPelletsEaten) stop_sound(Stage1Sound);
+			}
+			if(game->stageLevel == 1){
+				play_sound(Stage2Sound);
+				//if(allPelletsEaten) stop_sound(Stage2Sound);
+			}
+			if(game->stageLevel == 2){
+				play_sound(Stage3Sound);
+				//if(allPelletsEaten) stop_sound(Stage3Sound);
+			}
+			if(game->stageLevel == 3){
+				play_sound(Stage4Sound);
+				//if(allPelletsEaten) stop_sound(Stage4Sound);
+			}
+			if(game->stageLevel == 4){
+				play_sound(BossSound);
+				//if(allPelletsEaten) stop_sound(Stage4Sound);
+			}
 			break;
 		case WinState:
+			stop_sound(Stage1Sound);	
+			stop_sound(Stage2Sound);	
+			stop_sound(Stage3Sound);	
+			stop_sound(Stage4Sound);	
+			stop_sound(BossSound);	
 			play_sound(GameoverSound);
 			break;
 		case DeathState:
 			play_sound(PacmanDeathSound);
+			stop_sound(Stage1Sound);	
+			stop_sound(Stage2Sound);	
+			stop_sound(Stage3Sound);	
+			stop_sound(Stage4Sound);	
+			stop_sound(BossSound);
 			break;
 		case GameoverState:
 			play_sound(GameoverSound);
@@ -462,7 +522,21 @@ static void enter_state(PacmanGame *game, GameState state)
 			game->stageLevel = 0;
 			//invalidate the state so it doesn't effect the enter_state function
 			game->gameState = -1;
+			if(game->stageLevel == 1){
+				stop_sound(Stage1Sound);
+				//if(allPelletsEaten) stop_sound(Stage2Sound);
+			}
+
+			stop_sound(Stage2Sound);	
+			stop_sound(Stage3Sound);	
+			stop_sound(Stage4Sound);	
+			stop_sound(BossSound);
+
 			level_init(game);
+			break;
+		case ClearState:
+			//stop_sound(BossSound);
+			play_sound(EndingbgmSound);
 			break;
 	}
 
@@ -717,27 +791,27 @@ static void process_item(PacmanGame *game)
 
 	int curLvl = game->currentLevel;
 
-	if (pelletsEaten >= 30 && f1->itemMode == NotDisplaying)
+	if (pelletsEaten >= 20 && f1->itemMode == NotDisplaying)
 	{
 		f1->itemMode = Displaying;
 		regen_item(f1, curLvl);
 	}
-	else if (pelletsEaten == 60 && f2->itemMode == NotDisplaying)
+	else if (pelletsEaten == 40 && f2->itemMode == NotDisplaying)
 	{
 		f2->itemMode = Displaying;
 		regen_item(f2, curLvl);
 	}
-	else if (pelletsEaten == 90 && f3->itemMode == NotDisplaying)
+	else if (pelletsEaten == 60 && f3->itemMode == NotDisplaying)
 	{
 		f3->itemMode = Displaying;
 		regen_item(f3, curLvl);
 	}
-	else if (pelletsEaten == 120 && f4->itemMode == NotDisplaying)
+	else if (pelletsEaten == 80 && f4->itemMode == NotDisplaying)
 	{
 		f4->itemMode = Displaying;
 		regen_item(f4, curLvl);
 	}
-	else if (pelletsEaten == 150 && f5->itemMode == NotDisplaying)
+	else if (pelletsEaten == 100 && f5->itemMode == NotDisplaying)
 	{
 		f5->itemMode = Displaying;
 		regen_item(f5, curLvl);
@@ -784,8 +858,7 @@ static void process_item(PacmanGame *game)
 
 	//check for collisions
 
-
-
+	
 	if (f1->itemMode == Displaying && collides_obj(&pac->body, f1->x, f1->y))
 	{
 		f1->itemMode = Displayed;
@@ -1415,6 +1488,7 @@ static bool check_pacghost_collision(PacmanGame *game)
 					}
 					else {
 						if(g->isDead == 2) { death_player = Two; return true;}
+					play_sound(SirenSound);
 						g->isDead = 1;
 						death_send(g);
 					}
@@ -1473,7 +1547,8 @@ void gamestart_init(PacmanGame *game, int mode)
 	
 	//we need to reset all fruit
 	//fuit_init();
-	game->highscore = 0; //TODO maybe load this in from a file..?
+	// game->highscore = 0; //TODO maybe load this in from a file..?
+	game->highscore = readScoreFromFile();
 	game->currentLevel = 1;
 	game->stageLevel = 0;
 

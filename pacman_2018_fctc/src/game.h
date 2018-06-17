@@ -8,7 +8,7 @@
 #include "pellet.h"
 #include "missile.h"
 
-#define BOSS_STAGE 1
+#define BOSS_STAGE 4
 
 typedef enum
 {
@@ -17,7 +17,8 @@ typedef enum
 	GamePlayState,
 	WinState,
 	DeathState,
-	GameoverState
+	GameoverState,
+	ClearState
 } GameState;
 
 typedef enum

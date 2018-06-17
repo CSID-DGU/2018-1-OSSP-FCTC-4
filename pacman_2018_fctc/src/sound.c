@@ -29,9 +29,42 @@ static Mix_Chunk *cutsceneSound;
 static Mix_Chunk *coinSound;
 static Mix_Chunk *gameoverSound;
 static Mix_Chunk *introbgmSound;
+static Mix_Chunk *bossSound;
+static Mix_Chunk *endingbgmSound;
+static Mix_Chunk *beepSound;
+
+
+static Mix_Chunk *stage1Sound;
+static Mix_Chunk *stage2Sound;
+static Mix_Chunk *stage3Sound;
+static Mix_Chunk *stage4Sound;
 
 static int levelStartChanel;
 static int smallStartChanel;
+static int largeStartChanel;
+static int sirenChanel;
+static int fruitEatChanel;
+static int munch_aChanel;
+static int munch_bChanel;
+static int bonusChanel;
+static int dieChanel;
+static int deathChanel;
+static int chomp1Chanel;
+static int chomp2Chanel;
+static int cutsceneChanel;
+static int coinChanel;
+static int gameoverChanel;
+static int introChanel;
+static int endingChanel;
+static int beepChanel;
+static int bossStartChanel;
+static int stage1StartChanel;
+static int stage2StartChanel;
+static int stage3StartChanel;
+static int stage4StartChanel;
+static int boosterChanel;
+
+
 
 void load_sounds(void)
 {
@@ -69,7 +102,15 @@ void load_sounds(void)
         cutsceneSound = Mix_LoadWAV("sound/cutscene.wav");
         coinSound = Mix_LoadWAV("sound/coin.wav");
         gameoverSound = Mix_LoadWAV("sound/game_over.wav");
-        introbgmSound = Mix_LoadWAV("sound/introBGM.wav");
+        introbgmSound = Mix_LoadWAV("sound/Requiem_In_Cello.wav");
+        bossSound = Mix_LoadWAV("sound/Eyes_of_Glory.wav");
+        endingbgmSound = Mix_LoadWAV("sound/Toe_Jam.wav");
+        stage1Sound = Mix_LoadWAV("sound/Coupe.wav");
+        stage2Sound = Mix_LoadWAV("sound/Operatic_3.wav");
+        stage3Sound = Mix_LoadWAV("sound/Stuff.wav");
+        stage4Sound = Mix_LoadWAV("sound/Apprehensive_at_Best.wav");
+        beepSound = Mix_LoadWAV("sound/beep2.wav");
+	
         set_sound_volume(0.5);
         set_sound_muted(false);
   }
@@ -129,21 +170,28 @@ void play_sound(SoundEffect effectName)
 		{
 		case LevelStartSound:  chunk = levelStart; channel = &levelStartChanel; break;
                 case SmallSound:    chunk = smallEatSound; channel = &smallStartChanel; break;
-                case LargeSound:    chunk = largeEatSound; channel = &levelStartChanel; break;
-                case SirenSound:       chunk = sirenSound; channel = &levelStartChanel; break;
-                case FruitSound:    chunk = fruitEatSound; channel = &levelStartChanel; break;
-                case Munch_Asound:  chunk = munch_aSound;  channel = &levelStartChanel; break;
-                case Munch_Bsound: chunk = munch_bSound;   channel = &levelStartChanel; break;
-                case BoosterSound:  chunk = boosterSound;  channel = &levelStartChanel; break;
-                case BonusSound:  chunk = bonusSound;  channel = &levelStartChanel; break;
-                case DieSound:  chunk = dieSound;  channel = &levelStartChanel; break;
-                case Chomp1Sound:  chunk = chomp1Sound;  channel = &levelStartChanel; break;
-                case Chomp2Sound:  chunk = chomp2Sound;  channel = &levelStartChanel; break;
-                case CutsceneSound:  chunk = cutsceneSound;  channel = &levelStartChanel; break;
-                case CoinSound:  chunk = coinSound;  channel = &levelStartChanel; break;
-                case GameoverSound:  chunk = gameoverSound;  channel = &levelStartChanel; break;
-                case PacmanDeathSound: chunk = deathSound; channel = &levelStartChanel; break;
-                case IntrobgmSound:  chunk = introbgmSound;  channel = &levelStartChanel; break;
+                case LargeSound:    chunk = largeEatSound; channel = &largeStartChanel; break;
+                case SirenSound:       chunk = sirenSound; channel = &sirenChanel; break;
+                case FruitSound:    chunk = fruitEatSound; channel = &fruitEatChanel; break;
+                case Munch_Asound:  chunk = munch_aSound;  channel = &munch_aChanel; break;
+                case Munch_Bsound: chunk = munch_bSound;   channel = &munch_bChanel; break;
+                case BoosterSound:  chunk = boosterSound;  channel = &boosterChanel; break;
+                case BonusSound:  chunk = bonusSound;  channel = &bonusChanel; break;
+                case DieSound:  chunk = dieSound;  channel = &dieChanel; break;
+                case Chomp1Sound:  chunk = chomp1Sound;  channel = &chomp1Chanel; break;
+                case Chomp2Sound:  chunk = chomp2Sound;  channel = &chomp2Chanel; break;
+                case CutsceneSound:  chunk = cutsceneSound;  channel = &cutsceneChanel; break;
+                case CoinSound:  chunk = coinSound;  channel = &coinChanel; break;
+                case GameoverSound:  chunk = gameoverSound;  channel = &gameoverChanel; break;
+                case PacmanDeathSound: chunk = deathSound; channel = &deathChanel; break;
+                case IntrobgmSound:  chunk = introbgmSound;  channel = &introChanel; break;
+                case BossSound:  chunk = bossSound;  channel = &bossStartChanel; break;
+                case EndingbgmSound:  chunk = endingbgmSound;  channel = &endingChanel; break;
+                case Stage1Sound:  chunk = stage1Sound;  channel = &stage1StartChanel; break;
+                case Stage2Sound:  chunk = stage2Sound;  channel = &stage2StartChanel; break;
+                case Stage3Sound:  chunk = stage3Sound;  channel = &stage3StartChanel; break;
+                case Stage4Sound:  chunk = stage4Sound;  channel = &stage4StartChanel; break;
+                case BeepSound:  chunk = beepSound;  channel = &beepChanel; break;
 	}
         *channel = Mix_PlayChannel(-1, chunk, 0);
 }
@@ -160,22 +208,29 @@ void stop_sound(SoundEffect effectName)
         switch (effectName)
         {
 		case LevelStartSound:  channel = levelStartChanel; break;
-                case SmallSound:    channel = levelStartChanel; break;
-                case LargeSound:        channel = levelStartChanel; break;
-                case SirenSound:        channel = levelStartChanel; break;
-                case FruitSound:       channel = &levelStartChanel; break;
-                case Munch_Asound:    channel = &levelStartChanel; break;
-                case Munch_Bsound:    channel = &levelStartChanel; break;
-                case BoosterSound:    channel = &levelStartChanel; break;
-                case BonusSound:    channel = &levelStartChanel; break;
-                case DieSound:    channel = &levelStartChanel; break;
-                case Chomp1Sound:    channel = &levelStartChanel; break;
-                case Chomp2Sound:    channel = &levelStartChanel; break;
-                case CutsceneSound:    channel = &levelStartChanel; break;
-                case CoinSound:    channel = &levelStartChanel; break;
-                case GameoverSound:    channel = &levelStartChanel; break;
-                case PacmanDeathSound: channel = levelStartChanel; break;
-                case IntrobgmSound: channel = levelStartChanel; break;
+                case SmallSound:    channel = smallStartChanel; break;
+                case LargeSound:        channel = largeStartChanel; break;
+                case SirenSound:        channel = sirenChanel; break;
+               // case FruitSound:       channel = &fruitEatChanel; break;
+               // case Munch_Asound:    channel = &munch_aChanel; break;
+               // case Munch_Bsound:    channel = &munch_bChanel; break;
+               // case BoosterSound:    channel = &boosterChanel; break;
+               // case BonusSound:    channel = &bonusChanel; break;
+               // case DieSound:    channel = &dieChanel; break;
+               // case Chomp1Sound:    channel = &chomp1Chanel; break;
+               // case Chomp2Sound:    channel = &chomp2Chanel; break;
+               // case CutsceneSound:    channel = &cutsceneChanel; break;
+               // case CoinSound:    channel = &coinChanel; break;
+               // case GameoverSound:    channel = &gameoverChanel; break;
+               // case PacmanDeathSound: channel = deathChanel; break;
+                case IntrobgmSound: channel = introChanel; break;
+                case BossSound: channel = bossStartChanel; break;
+                case EndingbgmSound: channel = endingChanel; break;
+                case Stage1Sound: channel = stage1StartChanel; break;
+                case Stage2Sound: channel = stage2StartChanel; break;
+                case Stage3Sound: channel = stage3StartChanel; break;
+                case Stage4Sound: channel = stage4StartChanel; break;
+                case BeepSound: channel = beepChanel; break;
 		
                 default: printf("badsound\naborting\n"); exit(1); //TODO: fix this up
 

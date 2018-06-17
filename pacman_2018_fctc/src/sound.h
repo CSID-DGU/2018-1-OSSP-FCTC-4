@@ -25,7 +25,15 @@ typedef enum
         CoinSound,
         GameoverSound,
         PacmanDeathSound,
-	IntrobgmSound
+	IntrobgmSound,
+	BossSound,
+	EndingbgmSound,
+	Stage1Sound,
+	Stage2Sound,
+	Stage3Sound,
+	Stage4Sound,
+	BeepSound
+
 } SoundEffect;
 //Initializes and loads all sounds. Must be called before playing any sounds.
 void load_sounds(void);

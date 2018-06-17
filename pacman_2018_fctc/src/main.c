@@ -298,7 +298,7 @@ static void internal_render(void)
 
 static void game_init(void)
 {
-	char * mapList[5] = {"maps/map1test", "maps/boss_map", "maps/stage3_map", "maps/stage1_map", "maps/stage2_map"};
+	char * mapList[6] = {"maps/stage1_map", "maps/stage2_map", "maps/stage3_map", "maps/stage4_map", "maps/boss_map","maps/clear_map"};
 	int i;
 	//Load the board here. We only need to do it once
 
@@ -404,12 +404,14 @@ static void key_down_hacks(int keycode)
 		{
 			menuSystem.mode++;
 			if(menuSystem.mode > 2) menuSystem.mode = 0;
+			play_sound(BeepSound);
 		}
 		
 		if (keycode == SDLK_UP)
 		{
 			menuSystem.mode--;
 			if(menuSystem.mode == -1) menuSystem.mode = 2;
+			play_sound(BeepSound);
 		}
 	}
 	else if(state == Remote){
