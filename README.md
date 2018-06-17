@@ -1,8 +1,14 @@
 # 2018-1-OSSP-FCTC-4
-asd
+
 리눅스 SDL을 이용한 Pacman
 <br><br>
-Pacman_2018_OSSP Folder : Our new Pacman (    Lines) <br>
+Pacman_2018_OSSP Folder : Our new Pacman (    Lines) <br><br>
+Remote Play Mode<br>
+1. main menu에서 multi mode를 선택<br>
+2. connnect to server를 선택하여 client 접속을 대기<br>
+3. 다른 PC에서 접속하여 multi mode의 connect to client를 선택<br>
+4. server로 연결한 PC의 IP주소를 입력하여 게임을 즐기면 된다!!<br><br>
+
 Pacman 2017_OSSP Folder : Our new Pacman (4795 Lines) 
 From https://github.com/CSID-DGU/2017-2-OSSP-Awkward-3 <br>
 Pacman_original Folder : Original version (4482 Lines) 
