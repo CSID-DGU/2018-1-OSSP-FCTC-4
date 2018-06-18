@@ -7,7 +7,7 @@ Pacman_2018_OSSP Folder : Our new Pacman (    Lines) <br><br>
 1. Compile : $ make
 2. Execute : ./game_debug
 <br><br>
-Remote Play Mode<br>
+Remote Play Mode
 1. main menu에서 multi mode를 선택<br>
 2. connnect to server를 선택하여 client 접속을 대기<br>
 3. 다른 PC에서 접속하여 multi mode의 connect to client를 선택<br>
