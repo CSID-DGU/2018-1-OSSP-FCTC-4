@@ -2,7 +2,8 @@
 
 리눅스 SDL을 이용한 Pacman
 <br><br>
-Pacman_2018_OSSP Folder : Our new Pacman (    Lines) <br><br>
+Pacman_2018_OSSP Folder : Our new Pacman (    Lines)
+<br><br>
 실행방법 
 1. Compile : $ make
 2. Execute : ./game_debug
